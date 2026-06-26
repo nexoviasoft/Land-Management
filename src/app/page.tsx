@@ -1,8 +1,27 @@
+"use client";
+
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import Link from "next/link";
+import { toast } from "sonner";
 
 export default function Home() {
+  const handleSearch = () => {
+    const promise = new Promise((resolve) => {
+      setTimeout(() => {
+        resolve({ code: "CS-2931", area: "5.5 Katha" });
+      }, 1500);
+    });
+
+    toast.promise(promise, {
+      loading: "Querying secure blockchain land registry...",
+      success: (data: any) => {
+        return `Khatian ${data.code} Verified! Registered Area: ${data.area}.`;
+      },
+      error: "Failed to connect to ILMIS node.",
+    });
+  };
+
   return (
     <div className="min-h-screen bg-slate-50 text-slate-900 flex flex-col justify-between font-sans">
       <Navbar />
@@ -65,6 +84,7 @@ export default function Home() {
               <div className="space-y-1 flex flex-col justify-end">
                 <button
                   type="button"
+                  onClick={handleSearch}
                   className="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2.5 px-4 rounded-lg text-xs transition-colors flex items-center justify-center gap-2 shadow-sm"
                 >
                   <svg className="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">

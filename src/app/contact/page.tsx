@@ -1,8 +1,29 @@
+"use client";
+
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import Link from "next/link";
+import { toast } from "sonner";
+import { FormEvent } from "react";
 
 export default function ContactPage() {
+  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const promise = new Promise((resolve) => {
+      setTimeout(() => {
+        resolve({ status: "success" });
+      }, 1500);
+    });
+
+    toast.promise(promise, {
+      loading: "Transmitting your message securely...",
+      success: "Message sent! Our support desk will reply within 24 hours.",
+      error: "Transmission failed. Please check network connection.",
+    });
+
+    e.currentTarget.reset();
+  };
+
   return (
     <div className="min-h-screen bg-slate-50 text-slate-900 flex flex-col justify-between font-sans">
       <Navbar />
@@ -62,7 +83,7 @@ export default function ContactPage() {
             {/* Form */}
             <div className="md:col-span-7 bg-white border border-slate-200 rounded-2xl p-8 space-y-6 shadow-sm">
               <h3 className="text-xl font-bold text-slate-800">Send a Message</h3>
-              <form className="space-y-4">
+              <form onSubmit={handleSubmit} className="space-y-4">
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div className="space-y-1.5">
                     <label className="text-xs font-semibold text-slate-500">Full Name</label>
