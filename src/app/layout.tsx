@@ -1,21 +1,40 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Bai_Jamjuree } from "next/font/google";
 import "./globals.css";
+
 import TosterProvider from "@/components/TosterProvider";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
+const baiJamjuree = Bai_Jamjuree({
+  subsets: ["latin", "thai"],
+  variable: "--font-bai-jamjuree",
+  weight: ["300", "400", "500", "600", "700"],
+  display: "swap",
 });
 
 export const metadata: Metadata = {
-  title: "LandSync - Integrated Land Management Information System",
-  description: "Verify deeds, track mutations, and pay land development taxes digitally.",
+  title: {
+    default: "LandSync",
+    template: "%s | LandSync",
+  },
+  description:
+    "Integrated Land Management Information System. Verify deeds, manage land records, apply for mutations, and pay land development taxes online.",
+  keywords: [
+    "LandSync",
+    "Land Management",
+    "Land Records",
+    "Mutation",
+    "Land Tax",
+    "Digital Land Service",
+    "Bangladesh Land",
+    "Land Information System",
+  ],
+  authors: [
+    {
+      name: "LandSync Team",
+    },
+  ],
+  creator: "LandSync",
+  applicationName: "LandSync",
 };
 
 export default function RootLayout({
@@ -26,11 +45,12 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+      suppressHydrationWarning
+      className={`${baiJamjuree.variable}`}
     >
-      <body className="min-h-full flex flex-col">
-        {children}
+      <body className="min-h-screen font-sans antialiased bg-background text-foreground">
         <TosterProvider />
+        {children}
       </body>
     </html>
   );

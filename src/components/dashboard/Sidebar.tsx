@@ -2,207 +2,137 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useState } from "react";
+import {
+  LayoutGrid,
+  ClipboardList,
+  AlertTriangle,
+  FileText,
+  MapPin,
+  Home,
+  FileBadge,
+  PenLine,
+  Banknote,
+  MessageSquare,
+  ArrowLeftRight,
+  Shield,
+  User,
+  Menu,
+  X,
+  LogOut,
+} from "lucide-react";
+
+type NavLink = {
+  name: string;
+  href: string;
+  icon: React.ReactNode;
+  badge?: string;
+};
 
 export default function Sidebar() {
   const pathname = usePathname() || "";
+  const [mobileOpen, setMobileOpen] = useState(false);
 
-  // Determine role based on route pathname
   const isAdmin = pathname.includes("/admin");
   const isUser = pathname.includes("/user");
 
-  // Dynamic Navigation Links based on role
-  const getNavLinks = () => {
+  const getNavLinks = (): NavLink[] => {
     if (isAdmin) {
       return [
-        {
-          name: "Admin Overview",
-          href: "/dashboard/admin",
-          icon: (
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v4a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v4a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v4a2 2 0 01-2 2H6a2 2 0 01-2-2v-4zM14 16a2 2 0 012-2h2a2 2 0 012 2v4a2 2 0 01-2 2h-2a2 2 0 01-2-2v-4z" />
-            </svg>
-          ),
-        },
-        {
-          name: "Mutation Requests Queue",
-          href: "/dashboard/admin",
-          badge: "42",
-          icon: (
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
-            </svg>
-          ),
-        },
-        {
-          name: "Disputed Land Claims",
-          href: "/dashboard/admin",
-          badge: "3",
-          icon: (
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-            </svg>
-          ),
-        },
-        {
-          name: "Registry Audit Logs",
-          href: "/dashboard/admin",
-          icon: (
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-            </svg>
-          ),
-        },
-        {
-          name: "Land Survey Dispatch",
-          href: "/dashboard/admin",
-          icon: (
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-            </svg>
-          ),
-        },
+        { name: "Admin Overview", href: "/dashboard/admin", icon: <LayoutGrid size={18} /> },
+        { name: "Mutation Requests Queue", href: "/dashboard/admin", badge: "42", icon: <ClipboardList size={18} /> },
+        { name: "Disputed Land Claims", href: "/dashboard/admin", badge: "3", icon: <AlertTriangle size={18} /> },
+        { name: "Registry Audit Logs", href: "/dashboard/admin", icon: <FileText size={18} /> },
+        { name: "Land Survey Dispatch", href: "/dashboard/admin", icon: <MapPin size={18} /> },
       ];
     } else if (isUser) {
       return [
-        {
-          name: "Citizen Overview",
-          href: "/dashboard/user",
-          icon: (
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
-            </svg>
-          ),
-        },
-        {
-          name: "My Registered Deeds",
-          href: "/dashboard/user",
-          badge: "3",
-          icon: (
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h4.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2" />
-            </svg>
-          ),
-        },
-        {
-          name: "Mutation Petitions",
-          href: "/dashboard/user",
-          badge: "1",
-          icon: (
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-            </svg>
-          ),
-        },
-        {
-          name: "Online LD Tax (Khazana)",
-          icon: (
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-            </svg>
-          ),
-          href: "/dashboard/user",
-        },
-        {
-          name: "Support Desk Tickets",
-          href: "/dashboard/user",
-          icon: (
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
-            </svg>
-          ),
-        },
+        { name: "Citizen Overview", href: "/dashboard/user", icon: <Home size={18} /> },
+        { name: "My Registered Deeds", href: "/dashboard/user", badge: "3", icon: <FileBadge size={18} /> },
+        { name: "Mutation Petitions", href: "/dashboard/user", badge: "1", icon: <PenLine size={18} /> },
+        { name: "Online LD Tax (Khazana)", href: "/dashboard/user", icon: <Banknote size={18} /> },
+        { name: "Support Desk Tickets", href: "/dashboard/user", icon: <MessageSquare size={18} /> },
       ];
     } else {
-      // Default / General Dashboard links
       return [
-        {
-          name: "Portal Selection",
-          href: "/dashboard",
-          icon: (
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v4a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v4a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v4a2 2 0 01-2 2H6a2 2 0 01-2-2v-4zM14 16a2 2 0 012-2h2a2 2 0 012 2v4a2 2 0 01-2 2h-2a2 2 0 01-2-2v-4z" />
-            </svg>
-          ),
-        },
-        {
-          name: "User Console",
-          href: "/dashboard/user",
-          icon: (
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-            </svg>
-          ),
-        },
-        {
-          name: "Admin Console",
-          href: "/dashboard/admin",
-          icon: (
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
-            </svg>
-          ),
-        },
+        { name: "Portal Selection", href: "/dashboard", icon: <LayoutGrid size={18} /> },
+        { name: "User Console", href: "/dashboard/user", icon: <User size={18} /> },
+        { name: "Admin Console", href: "/dashboard/admin", icon: <Shield size={18} /> },
       ];
     }
   };
 
   const navLinks = getNavLinks();
 
-  return (
-    <aside className="w-full md:w-64 bg-white border-b md:border-b-0 md:border-r border-slate-200 flex flex-col shrink-0">
-      
-      {/* Header/Logo */}
-      <div className="p-6 border-b border-slate-200 flex items-center justify-between">
-        <Link href="/" className="text-xl font-bold bg-gradient-to-r from-emerald-600 to-teal-700 bg-clip-text text-transparent">
+  const accentActive = isAdmin ? "text-teal-600" : "text-emerald-600";
+  const badgeCls = isAdmin
+    ? "bg-teal-50 text-teal-700 border border-teal-200"
+    : "bg-emerald-50 text-emerald-700 border border-emerald-200";
+  const rolePillCls = isAdmin
+    ? "bg-teal-50 text-teal-700 border border-teal-200"
+    : isUser
+      ? "bg-emerald-50 text-emerald-700 border border-emerald-200"
+      : "bg-slate-100 text-slate-500";
+  const avatarCls = isAdmin
+    ? "bg-teal-50 text-teal-700 border-teal-200"
+    : "bg-emerald-50 text-emerald-700 border-emerald-200";
+
+  const SidebarContent = () => (
+    <div className="flex flex-col h-full">
+      {/* Header */}
+      <div className="px-5 py-4 border-b border-slate-100 flex items-center justify-between">
+        <Link
+          href="/"
+          onClick={() => setMobileOpen(false)}
+          className="text-lg font-bold bg-gradient-to-r from-emerald-600 to-teal-700 bg-clip-text text-transparent tracking-tight"
+        >
           LandSync Panel
         </Link>
-        <span className="text-[10px] font-bold uppercase tracking-wider text-slate-500 bg-slate-100 border border-slate-200 px-2 py-0.5 rounded">
-          ILMIS
-        </span>
+        <div className="flex items-center gap-2">
+          <span className="text-[9px] font-bold uppercase tracking-widest text-slate-400 bg-slate-100 border border-slate-200 px-2 py-0.5 rounded">
+            ILMIS
+          </span>
+          {/* Close button — mobile only */}
+          <button
+            className="md:hidden p-1 rounded-md text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition-colors"
+            onClick={() => setMobileOpen(false)}
+            aria-label="Close menu"
+          >
+            <X size={18} />
+          </button>
+        </div>
       </div>
 
-      {/* Dynamic Navigation links based on role */}
-      <nav className="flex-grow p-4 space-y-1.5 flex flex-col">
-        <div className="flex items-center justify-between px-3 mb-2">
+      {/* Nav */}
+      <nav className="flex-1 overflow-y-auto px-3 py-4 space-y-0.5">
+        {/* Role label row */}
+        <div className="flex items-center justify-between px-2 mb-3">
           <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400">
             {isAdmin ? "Admin Navigation" : isUser ? "Citizen Navigation" : "Console Portal"}
           </span>
-          <span
-            className={`text-[9px] font-bold uppercase px-2 py-0.5 rounded-full ${
-              isAdmin
-                ? "bg-teal-50 text-teal-700 border border-teal-200"
-                : isUser
-                ? "bg-emerald-50 text-emerald-700 border border-emerald-200"
-                : "bg-slate-100 text-slate-500"
-            }`}
-          >
+          <span className={`text-[9px] font-bold uppercase px-2 py-0.5 rounded-full ${rolePillCls}`}>
             {isAdmin ? "Admin" : isUser ? "Citizen" : "Select Role"}
           </span>
         </div>
 
         {navLinks.map((link, idx) => {
-          const isLinkActive = pathname === link.href;
+          const isActive = pathname === link.href;
           return (
             <Link
               key={idx}
               href={link.href}
-              className={`flex items-center justify-between px-3 py-2.5 rounded-lg text-sm font-semibold transition-all duration-200 ${
-                isLinkActive
-                  ? "bg-slate-100 text-slate-900 shadow-sm border border-slate-200/40"
-                  : "text-slate-650 hover:bg-slate-100/50 hover:text-slate-900"
-              }`}
+              onClick={() => setMobileOpen(false)}
+              className={`flex items-center justify-between px-3 py-2.5 rounded-xl text-sm font-semibold transition-all duration-150 ${isActive
+                  ? "bg-slate-100 text-slate-900 shadow-sm border border-slate-200/60"
+                  : "text-slate-600 hover:bg-slate-50 hover:text-slate-900"
+                }`}
             >
               <div className="flex items-center gap-3">
-                <span className={isLinkActive ? (isAdmin ? "text-teal-600" : "text-emerald-600") : "text-slate-450"}>
-                  {link.icon}
-                </span>
-                <span>{link.name}</span>
+                <span className={isActive ? accentActive : "text-slate-400"}>{link.icon}</span>
+                <span className="leading-tight">{link.name}</span>
               </div>
               {link.badge && (
-                <span className={`text-[10px] font-extrabold px-1.5 py-0.5 rounded-full ${
-                  isAdmin ? "bg-teal-50 text-teal-700 border border-teal-200" : "bg-emerald-5 border border-emerald-200 text-emerald-700"
-                }`}>
+                <span className={`text-[10px] font-extrabold px-1.5 py-0.5 rounded-full min-w-[20px] text-center ${badgeCls}`}>
                   {link.badge}
                 </span>
               )}
@@ -210,62 +140,103 @@ export default function Sidebar() {
           );
         })}
 
-        <div className="border-t border-slate-200 my-4"></div>
+        {/* Divider + Shortcuts */}
+        <div className="border-t border-slate-100 my-3 pt-3">
+          <span className="px-2 text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-2 block">
+            System Shortcuts
+          </span>
 
-        {/* Quick shortcuts to switch roles easily or go home */}
-        <span className="px-3 text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-2 block">
-          System Shortcuts
-        </span>
-        
-        {isAdmin && (
-          <Link
-            href="/dashboard/user"
-            className="flex items-center gap-3 px-3 py-2 rounded-lg text-xs font-medium text-slate-500 hover:text-slate-900 hover:bg-slate-100/40 transition-all"
-          >
-            <svg className="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
-            </svg>
-            <span>Switch to Citizen View</span>
-          </Link>
-        )}
+          {isAdmin && (
+            <Link
+              href="/dashboard/user"
+              onClick={() => setMobileOpen(false)}
+              className="flex items-center gap-3 px-3 py-2 rounded-xl text-xs font-medium text-slate-500 hover:text-slate-900 hover:bg-slate-50 transition-all"
+            >
+              <ArrowLeftRight size={15} className="shrink-0" />
+              <span>Switch to Citizen View</span>
+            </Link>
+          )}
 
-        {isUser && (
-          <Link
-            href="/dashboard/admin"
-            className="flex items-center gap-3 px-3 py-2 rounded-lg text-xs font-medium text-slate-500 hover:text-slate-900 hover:bg-slate-100/40 transition-all"
-          >
-            <svg className="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
-            </svg>
+          {isUser && (
+            <Link
+              href="/dashboard/admin"
+              onClick={() => setMobileOpen(false)}
+              className="flex items-center gap-3 px-3 py-2 rounded-xl text-xs font-medium text-slate-500 hover:text-slate-900 hover:bg-slate-50 transition-all"
+            >
+              <ArrowLeftRight size={15} className="shrink-0" />
               <span>Switch to Admin View</span>
-          </Link>
-        )}
+            </Link>
+          )}
 
-        <Link
-          href="/"
-          className="flex items-center gap-3 px-3 py-2 rounded-lg text-xs font-medium text-slate-500 hover:text-slate-900 hover:bg-slate-100/40 transition-all"
-        >
-          <svg className="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
-          </svg>
-          <span>Exit to Homepage</span>
-        </Link>
+          <Link
+            href="/"
+            onClick={() => setMobileOpen(false)}
+            className="flex items-center gap-3 px-3 py-2 rounded-xl text-xs font-medium text-slate-500 hover:text-slate-900 hover:bg-slate-50 transition-all"
+          >
+            <LogOut size={15} className="shrink-0" />
+            <span>Exit to Homepage</span>
+          </Link>
+        </div>
       </nav>
 
-      {/* Footer/User session mockup */}
-      <div className="p-4 border-t border-slate-200 bg-slate-50 flex items-center gap-3">
-        <div className={`w-9 h-9 rounded-full border flex items-center justify-center font-bold text-sm ${
-          isAdmin
-            ? "bg-teal-50 text-teal-700 border-teal-200"
-            : "bg-emerald-50 text-emerald-700 border-emerald-200"
-        }`}>
+      {/* Footer */}
+      <div className="px-4 py-3 border-t border-slate-100 bg-slate-50/70 flex items-center gap-3">
+        <div
+          className={`w-8 h-8 rounded-full border flex items-center justify-center font-bold text-xs shrink-0 ${avatarCls}`}
+        >
           {isAdmin ? "AD" : "CF"}
         </div>
-        <div className="flex-grow min-w-0">
+        <div className="flex-1 min-w-0">
           <p className="text-xs font-bold text-slate-800 truncate">{isAdmin ? "Admin Desk #1" : "Aftab Farhan"}</p>
-          <p className="text-[10px] text-slate-500 truncate">{isAdmin ? "admin@landsync.gov.bd" : "aftab@landsync.gov"}</p>
+          <p className="text-[10px] text-slate-400 truncate">
+            {isAdmin ? "admin@landsync.gov.bd" : "aftab@landsync.gov"}
+          </p>
         </div>
       </div>
-    </aside>
+    </div>
+  );
+
+  return (
+    <>
+      {/* ── Mobile top bar ── */}
+      <div className="md:hidden flex items-center justify-between px-4 py-3 bg-white border-b border-slate-200 sticky top-0 z-30">
+        <Link href="/" className="text-base font-bold bg-gradient-to-r from-emerald-600 to-teal-700 bg-clip-text text-transparent">
+          LandSync Panel
+        </Link>
+        <div className="flex items-center gap-2">
+          <span className={`text-[9px] font-bold uppercase px-2 py-0.5 rounded-full ${rolePillCls}`}>
+            {isAdmin ? "Admin" : isUser ? "Citizen" : "Portal"}
+          </span>
+          <button
+            onClick={() => setMobileOpen(true)}
+            className="p-2 rounded-lg text-slate-500 hover:text-slate-800 hover:bg-slate-100 transition-colors"
+            aria-label="Open menu"
+          >
+            <Menu size={20} />
+          </button>
+        </div>
+      </div>
+
+      {/* ── Mobile drawer backdrop ── */}
+      {mobileOpen && (
+        <div
+          className="md:hidden fixed inset-0 z-40 bg-black/30 backdrop-blur-sm"
+          onClick={() => setMobileOpen(false)}
+        />
+      )}
+
+      {/* ── Mobile drawer ── */}
+      <aside
+        className={`md:hidden fixed inset-y-0 left-0 z-50 w-72 bg-white shadow-2xl flex flex-col transform transition-transform duration-300 ease-in-out ${mobileOpen ? "translate-x-0" : "-translate-x-full"
+          }`}
+      >
+        <SidebarContent />
+      </aside>
+
+      {/* ── Desktop sidebar ── */}
+      <aside className="hidden md:flex flex-col w-64 shrink-0 bg-white border-r border-slate-200 min-h-screen sticky top-0 h-screen">
+        <SidebarContent />
+      </aside>
+    </>
   );
 }

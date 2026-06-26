@@ -1,33 +1,63 @@
 "use client";
 
 import { usePathname } from "next/navigation";
+import { Bell, Shield, User, Wifi } from "lucide-react";
 
 export default function TopNavbar() {
   const pathname = usePathname() || "";
   const isAdmin = pathname.includes("/admin");
   const isUser = pathname.includes("/user");
 
+  const consoleLabel = isAdmin
+    ? "ADMINISTRATOR"
+    : isUser
+      ? "CITIZEN PORTAL"
+      : "LANDSYNC ROOT";
+
+  const consoleCls = isAdmin
+    ? "bg-teal-50 border-teal-200 text-teal-700"
+    : isUser
+      ? "bg-emerald-50 border-emerald-200 text-emerald-700"
+      : "bg-slate-50 border-slate-200 text-slate-600";
+
+  const ConsoleIcon = isAdmin ? Shield : isUser ? User : Wifi;
+
   return (
-    <header className="h-16 border-b border-slate-200 bg-white px-6 flex items-center justify-between">
-      <div className="text-xs text-slate-500 font-medium flex items-center gap-2">
-        <span>System Status:</span>
-        <span className="text-emerald-600 font-bold flex items-center gap-1">
-          <span className="w-1.5 h-1.5 rounded-full bg-emerald-550 animate-pulse"></span>
-          Secure Connection
+    <header className="h-14 border-b border-slate-200 bg-white px-4 md:px-6 flex items-center justify-between gap-3 sticky top-0 z-20">
+      {/* Left — system status */}
+      <div className="flex items-center gap-2 text-xs text-slate-500 font-medium min-w-0">
+        <span className="hidden sm:inline shrink-0">System Status:</span>
+        <span className="text-emerald-600 font-bold flex items-center gap-1.5 shrink-0">
+          <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+          <span className="hidden xs:inline">Secure Connection</span>
+          <span className="xs:hidden">Secure</span>
         </span>
       </div>
-      
-      <div className="flex items-center gap-4">
-        {/* Displaying active role in top navbar */}
-        <span className="hidden sm:inline-block text-[10px] font-bold tracking-wider uppercase bg-slate-50 border border-slate-200 px-3 py-1 rounded text-slate-600">
-          Active Console: {isAdmin ? "ADMINISTRATOR" : isUser ? "CITIZEN PORTAL" : "LANDSYNC ROOT"}
+
+      {/* Right — role pill + notification bell */}
+      <div className="flex items-center gap-2 shrink-0">
+        {/* Active console badge */}
+        <span
+          className={`hidden sm:inline-flex items-center gap-1.5 text-[10px] font-bold tracking-wider uppercase border px-2.5 py-1 rounded-lg ${consoleCls}`}
+        >
+          <ConsoleIcon size={11} />
+          {consoleLabel}
         </span>
 
-        <button className="relative p-1.5 rounded-lg bg-slate-50 border border-slate-200 text-slate-500 hover:text-slate-800 transition-colors">
-          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
-          </svg>
-          <span className="absolute top-1 right-1 w-2 h-2 rounded-full bg-emerald-500"></span>
+        {/* Mobile — icon-only badge */}
+        <span
+          className={`sm:hidden inline-flex items-center justify-center w-7 h-7 rounded-lg border ${consoleCls}`}
+        >
+          <ConsoleIcon size={13} />
+        </span>
+
+        {/* Notification bell */}
+        <button
+          aria-label="Notifications"
+          className="relative p-1.5 rounded-lg bg-slate-50 border border-slate-200 text-slate-500 hover:text-slate-800 hover:bg-slate-100 transition-colors"
+        >
+          <Bell size={17} />
+          <span className="absolute top-1 right-1 w-1.5 h-1.5 rounded-full bg-emerald-500" />
         </button>
       </div>
     </header>
