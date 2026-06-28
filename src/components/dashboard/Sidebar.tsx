@@ -3,6 +3,8 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
+import { useSelector } from "react-redux";
+import { RootState } from "@/redux/store";
 import {
   LayoutGrid,
   ClipboardList,
@@ -33,49 +35,21 @@ export default function Sidebar() {
   const pathname = usePathname() || "";
   const [mobileOpen, setMobileOpen] = useState(false);
 
-  const isAdmin = pathname.includes("/admin");
-  const isUser = pathname.includes("/user");
+  const role = useSelector((state: RootState) => state.auth.role);
 
-  const getNavLinks = (): NavLink[] => {
-    if (isAdmin) {
-      return [
-        { name: "Admin Overview", href: "/dashboard/admin", icon: <LayoutGrid size={18} /> },
-        { name: "Mutation Requests Queue", href: "/dashboard/admin", badge: "42", icon: <ClipboardList size={18} /> },
-        { name: "Disputed Land Claims", href: "/dashboard/admin", badge: "3", icon: <AlertTriangle size={18} /> },
-        { name: "Registry Audit Logs", href: "/dashboard/admin", icon: <FileText size={18} /> },
-        { name: "Land Survey Dispatch", href: "/dashboard/admin", icon: <MapPin size={18} /> },
-      ];
-    } else if (isUser) {
-      return [
-        { name: "Citizen Overview", href: "/dashboard/user", icon: <Home size={18} /> },
-        { name: "My Registered Deeds", href: "/dashboard/user", badge: "3", icon: <FileBadge size={18} /> },
-        { name: "Mutation Petitions", href: "/dashboard/user", badge: "1", icon: <PenLine size={18} /> },
-        { name: "Online LD Tax (Khazana)", href: "/dashboard/user", icon: <Banknote size={18} /> },
-        { name: "Support Desk Tickets", href: "/dashboard/user", icon: <MessageSquare size={18} /> },
-      ];
-    } else {
-      return [
-        { name: "Portal Selection", href: "/dashboard", icon: <LayoutGrid size={18} /> },
-        { name: "User Console", href: "/dashboard/user", icon: <User size={18} /> },
-        { name: "Admin Console", href: "/dashboard/admin", icon: <Shield size={18} /> },
-      ];
-    }
-  };
+  const adminLinks = [
+    { name: "Overview", href: "/dashboard/admin", icon: <LayoutGrid size={18} /> },
+    { name: "Users Management", href: "/dashboard/users", badge: "3", icon: <AlertTriangle size={18} /> },
+    { name: "Land Documents", href: "/dashboard/landdocuments", icon: <FileText size={18} /> },
+    { name: "Profile", href: "/dashboard/profile", icon: <User size={18} /> },
+  ];
 
-  const navLinks = getNavLinks();
+  const partnerLinks = [
+    { name: "My Documents", href: "/dashboard/landdocuments", icon: <FileText size={18} /> },
+    { name: "Profile", href: "/dashboard/profile", icon: <User size={18} /> },
+  ];
 
-  const accentActive = isAdmin ? "text-teal-600" : "text-emerald-600";
-  const badgeCls = isAdmin
-    ? "bg-teal-50 text-teal-700 border border-teal-200"
-    : "bg-emerald-50 text-emerald-700 border border-emerald-200";
-  const rolePillCls = isAdmin
-    ? "bg-teal-50 text-teal-700 border border-teal-200"
-    : isUser
-      ? "bg-emerald-50 text-emerald-700 border border-emerald-200"
-      : "bg-slate-100 text-slate-500";
-  const avatarCls = isAdmin
-    ? "bg-teal-50 text-teal-700 border-teal-200"
-    : "bg-emerald-50 text-emerald-700 border-emerald-200";
+  const navLinks = role === "partner" ? partnerLinks : adminLinks;
 
   const SidebarContent = () => (
     <div className="flex flex-col h-full">
@@ -105,16 +79,6 @@ export default function Sidebar() {
 
       {/* Nav */}
       <nav className="flex-1 overflow-y-auto px-3 py-4 space-y-0.5">
-        {/* Role label row */}
-        <div className="flex items-center justify-between px-2 mb-3">
-          <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400">
-            {isAdmin ? "Admin Navigation" : isUser ? "Citizen Navigation" : "Console Portal"}
-          </span>
-          <span className={`text-[9px] font-bold uppercase px-2 py-0.5 rounded-full ${rolePillCls}`}>
-            {isAdmin ? "Admin" : isUser ? "Citizen" : "Select Role"}
-          </span>
-        </div>
-
         {navLinks.map((link, idx) => {
           const isActive = pathname === link.href;
           return (
@@ -123,73 +87,30 @@ export default function Sidebar() {
               href={link.href}
               onClick={() => setMobileOpen(false)}
               className={`flex items-center justify-between px-3 py-2.5 rounded-xl text-sm font-semibold transition-all duration-150 ${isActive
-                  ? "bg-slate-100 text-slate-900 shadow-sm border border-slate-200/60"
-                  : "text-slate-600 hover:bg-slate-50 hover:text-slate-900"
+                ? "bg-slate-100 text-slate-900 shadow-sm border border-slate-200/60"
+                : "text-slate-600 hover:bg-slate-50 hover:text-slate-900"
                 }`}
             >
               <div className="flex items-center gap-3">
-                <span className={isActive ? accentActive : "text-slate-400"}>{link.icon}</span>
+                <span className={isActive ? "text-emerald-600" : "text-slate-400"}>{link.icon}</span>
                 <span className="leading-tight">{link.name}</span>
               </div>
-              {link.badge && (
-                <span className={`text-[10px] font-extrabold px-1.5 py-0.5 rounded-full min-w-[20px] text-center ${badgeCls}`}>
-                  {link.badge}
-                </span>
-              )}
             </Link>
           );
         })}
-
-        {/* Divider + Shortcuts */}
-        <div className="border-t border-slate-100 my-3 pt-3">
-          <span className="px-2 text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-2 block">
-            System Shortcuts
-          </span>
-
-          {isAdmin && (
-            <Link
-              href="/dashboard/user"
-              onClick={() => setMobileOpen(false)}
-              className="flex items-center gap-3 px-3 py-2 rounded-xl text-xs font-medium text-slate-500 hover:text-slate-900 hover:bg-slate-50 transition-all"
-            >
-              <ArrowLeftRight size={15} className="shrink-0" />
-              <span>Switch to Citizen View</span>
-            </Link>
-          )}
-
-          {isUser && (
-            <Link
-              href="/dashboard/admin"
-              onClick={() => setMobileOpen(false)}
-              className="flex items-center gap-3 px-3 py-2 rounded-xl text-xs font-medium text-slate-500 hover:text-slate-900 hover:bg-slate-50 transition-all"
-            >
-              <ArrowLeftRight size={15} className="shrink-0" />
-              <span>Switch to Admin View</span>
-            </Link>
-          )}
-
-          <Link
-            href="/"
-            onClick={() => setMobileOpen(false)}
-            className="flex items-center gap-3 px-3 py-2 rounded-xl text-xs font-medium text-slate-500 hover:text-slate-900 hover:bg-slate-50 transition-all"
-          >
-            <LogOut size={15} className="shrink-0" />
-            <span>Exit to Homepage</span>
-          </Link>
-        </div>
       </nav>
 
       {/* Footer */}
       <div className="px-4 py-3 border-t border-slate-100 bg-slate-50/70 flex items-center gap-3">
         <div
-          className={`w-8 h-8 rounded-full border flex items-center justify-center font-bold text-xs shrink-0 ${avatarCls}`}
+          className="w-8 h-8 rounded-full border flex items-center justify-center font-bold text-xs shrink-0 bg-emerald-50 text-emerald-700 border-emerald-200"
         >
-          {isAdmin ? "AD" : "CF"}
+          AD
         </div>
         <div className="flex-1 min-w-0">
-          <p className="text-xs font-bold text-slate-800 truncate">{isAdmin ? "Admin Desk #1" : "Aftab Farhan"}</p>
+          <p className="text-xs font-bold text-slate-800 truncate">Admin</p>
           <p className="text-[10px] text-slate-400 truncate">
-            {isAdmin ? "admin@landsync.gov.bd" : "aftab@landsync.gov"}
+            admin@landsync.gov.bd
           </p>
         </div>
       </div>
@@ -204,8 +125,8 @@ export default function Sidebar() {
           LandSync Panel
         </Link>
         <div className="flex items-center gap-2">
-          <span className={`text-[9px] font-bold uppercase px-2 py-0.5 rounded-full ${rolePillCls}`}>
-            {isAdmin ? "Admin" : isUser ? "Citizen" : "Portal"}
+          <span className="text-[9px] font-bold uppercase px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200">
+            Admin
           </span>
           <button
             onClick={() => setMobileOpen(true)}

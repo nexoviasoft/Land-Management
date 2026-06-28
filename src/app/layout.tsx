@@ -4,6 +4,8 @@ import "./globals.css";
 
 import TosterProvider from "@/components/TosterProvider";
 
+import { ReduxProvider } from "@/redux/Provider";
+
 const baiJamjuree = Bai_Jamjuree({
   subsets: ["latin", "thai"],
   variable: "--font-bai-jamjuree",
@@ -49,8 +51,10 @@ export default function RootLayout({
       className={`${baiJamjuree.variable}`}
     >
       <body className="min-h-screen font-sans antialiased bg-background text-foreground">
-        <TosterProvider />
-        {children}
+        <ReduxProvider>
+          <TosterProvider />
+          {children}
+        </ReduxProvider>
       </body>
     </html>
   );
