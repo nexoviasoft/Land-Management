@@ -91,19 +91,19 @@ export default function LandDocumentsPage() {
                 docs.map((doc: any) => (
                   <tr key={doc.id} className="hover:bg-slate-50/50 transition-colors">
                     <td className="py-4 px-6">
-                      <div className="font-semibold text-slate-800">{doc.location.mouza}</div>
-                      <div className="text-xs text-slate-450 mt-0.5">{doc.location.upazila}, {doc.location.district}</div>
+                      <div className="font-semibold text-slate-800">{doc.location?.mouza || 'N/A'}</div>
+                      <div className="text-xs text-slate-450 mt-0.5">{doc.location?.upazila || 'N/A'}, {doc.location?.district || 'N/A'}</div>
                     </td>
                     <td className="py-4 px-6">
                       <span className="inline-flex items-center px-2.5 py-0.5 rounded-lg text-xs font-semibold bg-emerald-50 text-emerald-700 border border-emerald-100">
-                        {doc.landDetails.landType}
+                        {doc.landDetails?.landType || 'N/A'}
                       </span>
                     </td>
                     <td className="py-4 px-6 text-slate-700 font-bold">
-                      {doc.landDetails.khatianNo}
+                      {doc.landDetails?.khatianNo || 'N/A'}
                     </td>
                     <td className="py-4 px-6 text-slate-650 font-medium">
-                      {doc.landDetails.dagNo}
+                      {doc.landDetails?.dagNo || 'N/A'}
                     </td>
                     <td className="py-4 px-6">
                       <div className="flex justify-center items-center gap-2">

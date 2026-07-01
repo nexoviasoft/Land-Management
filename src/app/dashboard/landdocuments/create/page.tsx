@@ -7,6 +7,8 @@ import {
   useUploadLanddocFileMutation,
 } from "@/redux/api/landdocApiSlice";
 import { MOCK_MOUZAS } from "@/data/mouzaData";
+import Select from "react-select";
+import CreatableSelect from "react-select/creatable";
 
 export default function CreateLandDocPage() {
   const router = useRouter();
@@ -148,7 +150,7 @@ export default function CreateLandDocPage() {
   return (
     <div className="w-full">
       <div className="bg-white/80 backdrop-blur-xl border border-slate-200/80 p-6 md:p-8 rounded-3xl shadow-sm relative">
-        <button 
+        <button
           onClick={() => router.back()}
           className="absolute top-6 right-6 w-8 h-8 flex items-center justify-center text-slate-400 hover:text-slate-650 hover:bg-slate-100 rounded-full transition"
         >
@@ -163,41 +165,80 @@ export default function CreateLandDocPage() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
                 <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1.5">Division *</label>
-                <select required name="division" value={formData.location.division} onChange={handleLocationChange} className="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition bg-white text-slate-800">
-                  <option value="">Select Division</option>
-                  {divisions.map((div) => (
-                    <option key={div.division} value={div.division}>{div.division}</option>
-                  ))}
-                </select>
+                <Select
+                  options={divisions.map((div) => ({ value: div.division, label: div.division }))}
+                  value={formData.location.division ? { value: formData.location.division, label: formData.location.division } : null}
+                  onChange={(option: any) => setFormData({
+                    ...formData,
+                    location: { 
+                      ...formData.location, 
+                      division: option?.value || "",
+                      district: "",
+                      upazila: "",
+                      mouza: ""
+                    }
+                  })}
+                  placeholder="Select Division"
+                  isClearable
+                  required
+                />
               </div>
               <div>
                 <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1.5">District *</label>
-                <select required name="district" value={formData.location.district} onChange={handleLocationChange} className="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition bg-white text-slate-800" disabled={!formData.location.division}>
-                  <option value="">Select District</option>
-                  {districts.map((dist) => (
-                    <option key={dist.district} value={dist.district}>{dist.district}</option>
-                  ))}
-                </select>
+                <Select
+                  options={districts.map((dist) => ({ value: dist.district, label: dist.district }))}
+                  value={formData.location.district ? { value: formData.location.district, label: formData.location.district } : null}
+                  onChange={(option: any) => setFormData({
+                    ...formData,
+                    location: { 
+                      ...formData.location, 
+                      district: option?.value || "",
+                      upazila: "",
+                      mouza: ""
+                    }
+                  })}
+                  placeholder="Select District"
+                  isDisabled={!formData.location.division}
+                  isClearable
+                  required
+                />
               </div>
               <div>
                 <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1.5">Upazila *</label>
-                <select required name="upazila" value={formData.location.upazila} onChange={handleLocationChange} className="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition bg-white text-slate-800" disabled={!formData.location.district}>
-                  <option value="">Select Upazila</option>
-                  {upazilas.map((upa) => (
-                    <option key={upa} value={upa}>{upa}</option>
-                  ))}
-                </select>
+                <Select
+                  options={upazilas.map((upa) => ({ value: upa, label: upa }))}
+                  value={formData.location.upazila ? { value: formData.location.upazila, label: formData.location.upazila } : null}
+                  onChange={(option: any) => setFormData({
+                    ...formData,
+                    location: { 
+                      ...formData.location, 
+                      upazila: option?.value || "",
+                      mouza: ""
+                    }
+                  })}
+                  placeholder="Select Upazila"
+                  isDisabled={!formData.location.district}
+                  isClearable
+                  required
+                />
               </div>
               <div>
                 <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1.5">Mouza *</label>
-                <input required type="text" name="mouza" list="mouza-options" value={formData.location.mouza} onChange={handleLocationChange} className="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition bg-white/50 text-slate-800" />
-                <datalist id="mouza-options">
-                  {(formData.location.upazila === "Mithapukur" || formData.location.upazila === "মিঠাপুকুর") 
-                    && MOCK_MOUZAS.map((mouza) => (
-                        <option key={mouza.MOUZA_NAME} value={mouza.MOUZA_NAME} />
-                      ))
+                <CreatableSelect
+                  options={
+                    (formData.location.upazila === "Mithapukur" || formData.location.upazila === "মিঠাপুকুর")
+                      ? MOCK_MOUZAS.map((mouza) => ({ value: mouza.MOUZA_NAME, label: mouza.MOUZA_NAME }))
+                      : []
                   }
-                </datalist>
+                  value={formData.location.mouza ? { value: formData.location.mouza, label: formData.location.mouza } : null}
+                  onChange={(option: any) => setFormData({
+                    ...formData,
+                    location: { ...formData.location, mouza: option?.value || "" }
+                  })}
+                  placeholder="Select or Type Mouza"
+                  isClearable
+                  required
+                />
               </div>
             </div>
           </div>
@@ -220,7 +261,23 @@ export default function CreateLandDocPage() {
               </div>
               <div>
                 <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1.5">Land Type *</label>
-                <input required type="text" name="landType" value={formData.landDetails.landType} onChange={handleDetailsChange} className="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition bg-white/50 text-slate-800" />
+                <Select
+                  options={[
+                    { value: 'Agricultural', label: 'Agricultural (কৃষি)' },
+                    { value: 'Residential', label: 'Residential (আবাসিক)' },
+                    { value: 'Commercial', label: 'Commercial (বাণিজ্যিক)' },
+                    { value: 'Industrial', label: 'Industrial (শিল্প)' },
+                    { value: 'Fallow', label: 'Fallow (পতিত)' }
+                  ]}
+                  value={formData.landDetails.landType ? { value: formData.landDetails.landType, label: formData.landDetails.landType } : null}
+                  onChange={(option: any) => setFormData({
+                    ...formData,
+                    landDetails: { ...formData.landDetails, landType: option?.value || "" }
+                  })}
+                  placeholder="Select Land Type"
+                  isClearable
+                  required
+                />
               </div>
             </div>
           </div>
@@ -248,7 +305,7 @@ export default function CreateLandDocPage() {
                 + Add Record
               </button>
             </div>
-            
+
             {otherRecords.map((record, index) => (
               <div key={index} className="flex gap-4 items-end mb-4 bg-slate-50/50 border border-slate-150 p-4 rounded-2xl relative">
                 <div className="flex-1">
