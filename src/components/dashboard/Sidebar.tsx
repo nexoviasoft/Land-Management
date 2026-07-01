@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
 import { useSelector } from "react-redux";
+import Image from "next/image";
 import { RootState } from "@/redux/store";
 import {
   LayoutGrid,
@@ -19,6 +20,7 @@ import {
   ArrowLeftRight,
   Shield,
   User,
+  Users,
   Menu,
   X,
   LogOut,
@@ -36,10 +38,11 @@ export default function Sidebar() {
   const [mobileOpen, setMobileOpen] = useState(false);
 
   const role = useSelector((state: RootState) => state.auth.role);
+  const user = useSelector((state: RootState) => state.auth.user);
 
   const adminLinks = [
     { name: "Overview", href: "/dashboard/admin", icon: <LayoutGrid size={18} /> },
-    { name: "Users Management", href: "/dashboard/users", badge: "3", icon: <AlertTriangle size={18} /> },
+    { name: "Users Management", href: "/dashboard/users", badge: "3", icon: <Users size={18} /> },
     { name: "Land Documents", href: "/dashboard/landdocuments", icon: <FileText size={18} /> },
     { name: "Profile", href: "/dashboard/profile", icon: <User size={18} /> },
   ];
@@ -78,7 +81,7 @@ export default function Sidebar() {
       </div>
 
       {/* Nav */}
-      <nav className="flex-1 overflow-y-auto px-3 py-4 space-y-0.5">
+      <nav className="flex-1 overflow-y-auto px-3 py-4 space-y-1">
         {navLinks.map((link, idx) => {
           const isActive = pathname === link.href;
           return (
@@ -86,13 +89,13 @@ export default function Sidebar() {
               key={idx}
               href={link.href}
               onClick={() => setMobileOpen(false)}
-              className={`flex items-center justify-between px-3 py-2.5 rounded-xl text-sm font-semibold transition-all duration-150 ${isActive
-                ? "bg-slate-100 text-slate-900 shadow-sm border border-slate-200/60"
-                : "text-slate-600 hover:bg-slate-50 hover:text-slate-900"
+              className={`group flex items-center justify-between px-4 py-3 rounded-xl text-sm font-medium transition-all duration-300 relative overflow-hidden ${isActive
+                ? "bg-gradient-to-r from-emerald-500/10 to-teal-500/5 text-emerald-700 shadow-sm border border-emerald-500/10 before:absolute before:left-0 before:top-1/4 before:bottom-1/4 before:w-1 before:bg-emerald-600 before:rounded-r"
+                : "text-slate-600 hover:bg-slate-50 hover:text-slate-900 hover:translate-x-1"
                 }`}
             >
               <div className="flex items-center gap-3">
-                <span className={isActive ? "text-emerald-600" : "text-slate-400"}>{link.icon}</span>
+                <span className={`transition-transform duration-300 group-hover:scale-110 ${isActive ? "text-emerald-600" : "text-slate-400 group-hover:text-slate-600"}`}>{link.icon}</span>
                 <span className="leading-tight">{link.name}</span>
               </div>
             </Link>
@@ -102,15 +105,26 @@ export default function Sidebar() {
 
       {/* Footer */}
       <div className="px-4 py-3 border-t border-slate-100 bg-slate-50/70 flex items-center gap-3">
-        <div
-          className="w-8 h-8 rounded-full border flex items-center justify-center font-bold text-xs shrink-0 bg-emerald-50 text-emerald-700 border-emerald-200"
-        >
-          AD
-        </div>
+        {user?.picture ? (
+          <div className="w-8 h-8 rounded-full border overflow-hidden relative shrink-0 border-emerald-200 bg-white">
+            <Image
+              src={user.picture.startsWith('http') ? user.picture : `http://localhost:8000${user.picture}`}
+              alt={user.name || "User"}
+              layout="fill"
+              objectFit="cover"
+            />
+          </div>
+        ) : (
+          <div
+            className="w-8 h-8 rounded-full border flex items-center justify-center font-bold text-xs shrink-0 bg-emerald-50 text-emerald-700 border-emerald-200"
+          >
+            {user?.name?.charAt(0).toUpperCase() || user?.email?.charAt(0).toUpperCase() || 'U'}
+          </div>
+        )}
         <div className="flex-1 min-w-0">
-          <p className="text-xs font-bold text-slate-800 truncate">Admin</p>
+          <p className="text-xs font-bold text-slate-800 truncate">{user?.name || 'User'}</p>
           <p className="text-[10px] text-slate-400 truncate">
-            admin@landsync.gov.bd
+            {user?.email || ''}
           </p>
         </div>
       </div>

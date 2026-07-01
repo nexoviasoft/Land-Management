@@ -118,7 +118,7 @@ export default function ProfilePage() {
   }
 
   if (isFetching) {
-    return <div className="p-6 max-w-4xl mx-auto animate-pulse flex space-x-4">Loading profile...</div>;
+    return <div className="p-6 w-full animate-pulse flex space-x-4">Loading profile...</div>;
   }
 
   const profileImageUrl = user?.picture?.startsWith("http")
@@ -128,17 +128,17 @@ export default function ProfilePage() {
     : "";
 
   return (
-    <div className="max-w-4xl mx-auto p-6 mt-6">
-      <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+    <div className="w-full p-4 md:p-6 mt-4">
+      <div className="bg-white/80 backdrop-blur-xl rounded-3xl shadow-sm border border-slate-200/80 overflow-hidden">
         {/* Banner */}
-        <div className="h-32 bg-gradient-to-r from-indigo-500 to-purple-600"></div>
+        <div className="h-32 bg-gradient-to-r from-emerald-500 via-teal-500 to-teal-650"></div>
         
-        <div className="px-8 pb-8 relative">
+        <div className="px-6 md:px-8 pb-8 relative">
           <form onSubmit={handleSubmit}>
             {/* Profile Picture Upload */}
             <div className="flex flex-col sm:flex-row gap-6 items-end sm:items-center -mt-12 mb-8">
               <div className="relative group">
-                <div className="w-28 h-28 rounded-full border-4 border-white shadow-lg overflow-hidden bg-indigo-100 flex items-center justify-center text-indigo-500 text-3xl font-bold relative">
+                <div className="w-28 h-28 rounded-full border-4 border-white shadow-md overflow-hidden bg-emerald-50 flex items-center justify-center text-emerald-600 text-3xl font-bold relative">
                   {file ? (
                     <Image src={URL.createObjectURL(file)} alt="Preview" layout="fill" objectFit="cover" />
                   ) : profileImageUrl ? (
@@ -160,8 +160,8 @@ export default function ProfilePage() {
               </div>
               
               <div className="flex-1 mt-4 sm:mt-12">
-                <h1 className="text-2xl font-bold text-gray-900">{user.name}</h1>
-                <span className="inline-block mt-1 px-3 py-1 bg-indigo-50 text-indigo-700 text-xs font-semibold rounded-full uppercase tracking-wider">
+                <h1 className="text-2xl font-bold text-slate-805">{user.name}</h1>
+                <span className="inline-block mt-1 px-3 py-1 bg-emerald-50 text-emerald-700 border border-emerald-100 text-xs font-semibold rounded-full uppercase tracking-wider">
                   {user.role} Account
                 </span>
               </div>
@@ -170,69 +170,71 @@ export default function ProfilePage() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
               {/* Personal Information */}
               <div className="space-y-6">
-                <h3 className="text-lg font-semibold text-gray-900 border-b pb-2">Personal Information</h3>
+                <h3 className="text-lg font-semibold text-slate-800 border-b border-slate-100 pb-2">Personal Information</h3>
                 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700">Full Name</label>
+                  <label className="block text-sm font-medium text-slate-700">Full Name</label>
                   <input
                     required
                     type="text"
                     name="name"
                     value={formData.name}
                     onChange={handleChange}
-                    className="mt-1 block w-full border border-gray-300 rounded-lg p-2.5 shadow-sm focus:ring-indigo-500 focus:border-indigo-500 transition-colors"
+                    className="mt-1 block w-full border border-slate-200/85 rounded-xl p-2.5 shadow-sm focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-500 focus:outline-none transition-all"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700">Email Address</label>
+                  <label className="block text-sm font-medium text-slate-700">Email Address</label>
                   <input
                     required
                     type="email"
                     name="email"
                     value={formData.email}
                     onChange={handleChange}
-                    className="mt-1 block w-full border border-gray-300 rounded-lg p-2.5 shadow-sm focus:ring-indigo-500 focus:border-indigo-500 transition-colors bg-gray-50"
+                    className="mt-1 block w-full border border-slate-200/85 rounded-xl p-2.5 shadow-sm bg-slate-50 text-slate-500 cursor-not-allowed"
+                    disabled
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700">Phone Number</label>
+                  <label className="block text-sm font-medium text-slate-700">Phone Number</label>
                   <input
                     required
                     type="text"
                     name="phone"
                     value={formData.phone}
                     onChange={handleChange}
-                    className="mt-1 block w-full border border-gray-300 rounded-lg p-2.5 shadow-sm focus:ring-indigo-500 focus:border-indigo-500 transition-colors"
+                    className="mt-1 block w-full border border-slate-200/85 rounded-xl p-2.5 shadow-sm focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-500 focus:outline-none transition-all"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700">National ID (NID)</label>
+                  <label className="block text-sm font-medium text-slate-700">National ID (NID)</label>
                   <input
                     required
                     type="text"
                     name="Nid"
                     value={formData.Nid}
                     onChange={handleChange}
-                    className="mt-1 block w-full border border-gray-300 rounded-lg p-2.5 shadow-sm focus:ring-indigo-500 focus:border-indigo-500 transition-colors bg-gray-50"
+                    className="mt-1 block w-full border border-slate-200/85 rounded-xl p-2.5 shadow-sm bg-slate-50 text-slate-500 cursor-not-allowed"
+                    disabled
                   />
                 </div>
               </div>
 
               {/* Security & Password */}
               <div className="space-y-6">
-                <h3 className="text-lg font-semibold text-gray-900 border-b pb-2">Security</h3>
+                <h3 className="text-lg font-semibold text-slate-800 border-b border-slate-100 pb-2">Security</h3>
                 
-                <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
-                  <h4 className="text-sm font-medium text-yellow-800 flex items-center gap-2">
+                <div className="bg-amber-50/70 border border-amber-200/60 rounded-2xl p-5">
+                  <h4 className="text-sm font-semibold text-amber-800 flex items-center gap-2">
                     <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
                       <path fillRule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clipRule="evenodd" />
                     </svg>
                     Update Password
                   </h4>
-                  <p className="text-xs text-yellow-700 mt-1 mb-3">
+                  <p className="text-xs text-amber-700 mt-1 mb-4">
                     Leave this field blank if you do not wish to change your password.
                   </p>
                   <input
@@ -241,17 +243,17 @@ export default function ProfilePage() {
                     value={formData.password}
                     onChange={handleChange}
                     placeholder="Enter new password"
-                    className="block w-full border border-yellow-300 rounded-lg p-2.5 shadow-sm focus:ring-yellow-500 focus:border-yellow-500 transition-colors"
+                    className="block w-full border border-amber-200/85 rounded-xl p-2.5 shadow-sm focus:ring-4 focus:ring-amber-500/10 focus:border-amber-500 focus:outline-none transition-all bg-white"
                   />
                 </div>
               </div>
             </div>
 
-            <div className="mt-10 flex justify-end border-t pt-6">
+            <div className="mt-10 flex justify-end border-t border-slate-100 pt-6">
               <button
                 type="submit"
                 disabled={isUpdating || isUploading}
-                className="px-8 py-3 bg-indigo-600 text-white font-medium rounded-lg hover:bg-indigo-700 disabled:opacity-50 transition-colors shadow-sm flex items-center gap-2"
+                className="px-8 py-3 bg-gradient-to-r from-emerald-600 to-teal-600 text-white font-semibold rounded-xl hover:from-emerald-700 hover:to-teal-700 disabled:opacity-50 transition shadow-md shadow-emerald-500/10 flex items-center gap-2"
               >
                 {isUpdating || isUploading ? (
                   <>

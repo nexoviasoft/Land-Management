@@ -59,7 +59,7 @@ export default function Navbar() {
     visible: {
       opacity: 1,
       y: 0,
-      transition: { duration: 0.6, ease: "easeOut" },
+      transition: { duration: 0.6, ease: "easeOut" as any },
     },
   };
 
@@ -68,15 +68,15 @@ export default function Navbar() {
     visible: (i: number) => ({
       opacity: 1,
       y: 0,
-      transition: { duration: 0.5, delay: i * 0.08, ease: "easeOut" },
+      transition: { duration: 0.5, delay: i * 0.08, ease: "easeOut" as any },
     }),
     hover: { scale: 1.05, transition: { duration: 0.3 } },
   };
 
   const mobileMenuVariants = {
     hidden: { opacity: 0, height: 0 },
-    visible: { opacity: 1, height: "auto", transition: { duration: 0.4, ease: "easeOut" } },
-    exit: { opacity: 0, height: 0, transition: { duration: 0.3, ease: "easeIn" } },
+    visible: { opacity: 1, height: "auto", transition: { duration: 0.4, ease: "easeOut" as any } },
+    exit: { opacity: 0, height: 0, transition: { duration: 0.3, ease: "easeIn" as any } },
   };
 
   const mobileLinkVariants = {
@@ -84,7 +84,7 @@ export default function Navbar() {
     visible: (i: number) => ({
       opacity: 1,
       x: 0,
-      transition: { duration: 0.3, delay: i * 0.05, ease: "easeOut" },
+      transition: { duration: 0.3, delay: i * 0.05, ease: "easeOut" as any },
     }),
   };
 
@@ -94,7 +94,7 @@ export default function Navbar() {
   };
 
   const logoVariants = {
-    hover: { rotate: 360, transition: { duration: 0.6, ease: "easeInOut" } },
+    hover: { rotate: 360, transition: { duration: 0.6, ease: "easeInOut" as any } },
   };
 
   return (

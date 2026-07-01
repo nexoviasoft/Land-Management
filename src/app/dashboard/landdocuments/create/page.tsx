@@ -146,24 +146,24 @@ export default function CreateLandDocPage() {
   };
 
   return (
-    <div className="p-6 max-w-4xl mx-auto">
-      <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 relative">
+    <div className="w-full">
+      <div className="bg-white/80 backdrop-blur-xl border border-slate-200/80 p-6 md:p-8 rounded-3xl shadow-sm relative">
         <button 
           onClick={() => router.back()}
-          className="absolute top-4 right-4 text-gray-400 hover:text-gray-600"
+          className="absolute top-6 right-6 w-8 h-8 flex items-center justify-center text-slate-400 hover:text-slate-650 hover:bg-slate-100 rounded-full transition"
         >
           ✕
         </button>
-        <h2 className="text-2xl font-bold mb-6 text-gray-800">Add New Land Document</h2>
+        <h2 className="text-2xl font-bold mb-6 text-slate-800">Add New Land Document</h2>
 
         <form onSubmit={handleSubmit} className="space-y-8">
           {/* Location Section */}
           <div>
-            <h3 className="text-lg font-semibold border-b pb-2 mb-4 text-gray-700">Location Details</h3>
+            <h3 className="text-lg font-bold border-b border-slate-100 pb-2 mb-4 text-slate-700">Location Details</h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700">Division *</label>
-                <select required name="division" value={formData.location.division} onChange={handleLocationChange} className="mt-1 block w-full border border-gray-300 rounded-md p-2 bg-white">
+                <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1.5">Division *</label>
+                <select required name="division" value={formData.location.division} onChange={handleLocationChange} className="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition bg-white text-slate-800">
                   <option value="">Select Division</option>
                   {divisions.map((div) => (
                     <option key={div.division} value={div.division}>{div.division}</option>
@@ -171,8 +171,8 @@ export default function CreateLandDocPage() {
                 </select>
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700">District *</label>
-                <select required name="district" value={formData.location.district} onChange={handleLocationChange} className="mt-1 block w-full border border-gray-300 rounded-md p-2 bg-white" disabled={!formData.location.division}>
+                <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1.5">District *</label>
+                <select required name="district" value={formData.location.district} onChange={handleLocationChange} className="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition bg-white text-slate-800" disabled={!formData.location.division}>
                   <option value="">Select District</option>
                   {districts.map((dist) => (
                     <option key={dist.district} value={dist.district}>{dist.district}</option>
@@ -180,8 +180,8 @@ export default function CreateLandDocPage() {
                 </select>
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700">Upazila *</label>
-                <select required name="upazila" value={formData.location.upazila} onChange={handleLocationChange} className="mt-1 block w-full border border-gray-300 rounded-md p-2 bg-white" disabled={!formData.location.district}>
+                <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1.5">Upazila *</label>
+                <select required name="upazila" value={formData.location.upazila} onChange={handleLocationChange} className="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition bg-white text-slate-800" disabled={!formData.location.district}>
                   <option value="">Select Upazila</option>
                   {upazilas.map((upa) => (
                     <option key={upa} value={upa}>{upa}</option>
@@ -189,8 +189,8 @@ export default function CreateLandDocPage() {
                 </select>
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700">Mouza *</label>
-                <input required type="text" name="mouza" list="mouza-options" value={formData.location.mouza} onChange={handleLocationChange} className="mt-1 block w-full border border-gray-300 rounded-md p-2" />
+                <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1.5">Mouza *</label>
+                <input required type="text" name="mouza" list="mouza-options" value={formData.location.mouza} onChange={handleLocationChange} className="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition bg-white/50 text-slate-800" />
                 <datalist id="mouza-options">
                   {(formData.location.upazila === "Mithapukur" || formData.location.upazila === "মিঠাপুকুর") 
                     && MOCK_MOUZAS.map((mouza) => (
@@ -204,73 +204,73 @@ export default function CreateLandDocPage() {
 
           {/* Land Details Section */}
           <div>
-            <h3 className="text-lg font-semibold border-b pb-2 mb-4 text-gray-700">Land Details</h3>
+            <h3 className="text-lg font-bold border-b border-slate-100 pb-2 mb-4 text-slate-700">Land Details</h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700">Khatian No *</label>
-                <input required type="text" name="khatianNo" value={formData.landDetails.khatianNo} onChange={handleDetailsChange} className="mt-1 block w-full border border-gray-300 rounded-md p-2" />
+                <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1.5">Khatian No *</label>
+                <input required type="text" name="khatianNo" value={formData.landDetails.khatianNo} onChange={handleDetailsChange} className="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition bg-white/50 text-slate-800" />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700">Dag No *</label>
-                <input required type="text" name="dagNo" value={formData.landDetails.dagNo} onChange={handleDetailsChange} className="mt-1 block w-full border border-gray-300 rounded-md p-2" />
+                <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1.5">Dag No *</label>
+                <input required type="text" name="dagNo" value={formData.landDetails.dagNo} onChange={handleDetailsChange} className="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition bg-white/50 text-slate-800" />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700">Kharij Case No *</label>
-                <input required type="text" name="kharijCaseNo" value={formData.landDetails.kharijCaseNo} onChange={handleDetailsChange} className="mt-1 block w-full border border-gray-300 rounded-md p-2" />
+                <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1.5">Kharij Case No *</label>
+                <input required type="text" name="kharijCaseNo" value={formData.landDetails.kharijCaseNo} onChange={handleDetailsChange} className="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition bg-white/50 text-slate-800" />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700">Land Type *</label>
-                <input required type="text" name="landType" value={formData.landDetails.landType} onChange={handleDetailsChange} className="mt-1 block w-full border border-gray-300 rounded-md p-2" />
+                <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1.5">Land Type *</label>
+                <input required type="text" name="landType" value={formData.landDetails.landType} onChange={handleDetailsChange} className="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition bg-white/50 text-slate-800" />
               </div>
             </div>
           </div>
 
           {/* Required Documents */}
           <div>
-            <h3 className="text-lg font-semibold border-b pb-2 mb-4 text-gray-700">Required Documents</h3>
+            <h3 className="text-lg font-bold border-b border-slate-100 pb-2 mb-4 text-slate-700">Required Documents</h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700">Khatian Copy *</label>
-                <input required type="file" accept="image/*,.pdf" onChange={(e) => setKhatianFile(e.target.files?.[0] || null)} className="mt-1 block w-full" />
+                <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1.5">Khatian Copy *</label>
+                <input required type="file" accept="image/*,.pdf" onChange={(e) => setKhatianFile(e.target.files?.[0] || null)} className="w-full text-slate-800 text-sm file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-emerald-50 file:text-emerald-700 hover:file:bg-emerald-100 transition" />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700">Kharij Copy *</label>
-                <input required type="file" accept="image/*,.pdf" onChange={(e) => setKharijFile(e.target.files?.[0] || null)} className="mt-1 block w-full" />
+                <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1.5">Kharij Copy *</label>
+                <input required type="file" accept="image/*,.pdf" onChange={(e) => setKharijFile(e.target.files?.[0] || null)} className="w-full text-slate-800 text-sm file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-emerald-50 file:text-emerald-700 hover:file:bg-emerald-100 transition" />
               </div>
             </div>
           </div>
 
           {/* Other Records */}
           <div>
-            <div className="flex justify-between items-center border-b pb-2 mb-4">
-              <h3 className="text-lg font-semibold text-gray-700">Other Records (Optional)</h3>
-              <button type="button" onClick={addOtherRecord} className="text-sm bg-gray-100 text-gray-700 px-3 py-1 rounded hover:bg-gray-200">
+            <div className="flex justify-between items-center border-b border-slate-100 pb-2 mb-4">
+              <h3 className="text-lg font-bold text-slate-700">Other Records (Optional)</h3>
+              <button type="button" onClick={addOtherRecord} className="text-xs bg-emerald-50 hover:bg-emerald-100 text-emerald-700 font-semibold px-3 py-1.5 rounded-lg transition-colors">
                 + Add Record
               </button>
             </div>
             
             {otherRecords.map((record, index) => (
-              <div key={index} className="flex gap-4 items-end mb-4 bg-gray-50 p-4 rounded-md">
+              <div key={index} className="flex gap-4 items-end mb-4 bg-slate-50/50 border border-slate-150 p-4 rounded-2xl relative">
                 <div className="flex-1">
-                  <label className="block text-xs font-medium text-gray-700">Document Name</label>
-                  <input required type="text" value={record.name} onChange={(e) => updateOtherRecord(index, "name", e.target.value)} className="mt-1 block w-full border border-gray-300 rounded-md p-2 text-sm" placeholder="e.g. Deed Copy" />
+                  <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1.5">Document Name</label>
+                  <input required type="text" value={record.name} onChange={(e) => updateOtherRecord(index, "name", e.target.value)} className="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition bg-white/50 text-slate-800 text-sm" placeholder="e.g. Deed Copy" />
                 </div>
                 <div className="flex-1">
-                  <label className="block text-xs font-medium text-gray-700">File</label>
-                  <input required type="file" accept="image/*,.pdf" onChange={(e) => updateOtherRecord(index, "file", e.target.files?.[0] || null)} className="mt-1 block w-full text-sm" />
+                  <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1.5">File</label>
+                  <input required type="file" accept="image/*,.pdf" onChange={(e) => updateOtherRecord(index, "file", e.target.files?.[0] || null)} className="w-full text-slate-800 text-sm file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-emerald-50 file:text-emerald-700 hover:file:bg-emerald-100 transition" />
                 </div>
-                <button type="button" onClick={() => removeOtherRecord(index)} className="px-3 py-2 bg-red-100 text-red-600 rounded-md hover:bg-red-200 text-sm">
+                <button type="button" onClick={() => removeOtherRecord(index)} className="px-4 py-2.5 bg-red-50 text-red-600 hover:bg-red-100 font-semibold rounded-xl text-xs transition">
                   Remove
                 </button>
               </div>
             ))}
           </div>
 
-          <div className="pt-6 border-t flex justify-end gap-4">
-            <button type="button" onClick={() => router.back()} className="px-6 py-2 border rounded-md text-gray-700 hover:bg-gray-50">
+          <div className="pt-6 border-t border-slate-100 flex justify-end gap-4">
+            <button type="button" onClick={() => router.back()} className="px-6 py-2.5 border border-slate-200 text-slate-700 hover:bg-slate-50 font-semibold rounded-xl transition">
               Cancel
             </button>
-            <button type="submit" disabled={isCreating || isUploading} className="px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:opacity-50">
+            <button type="submit" disabled={isCreating || isUploading} className="px-6 py-2.5 bg-gradient-to-r from-emerald-600 to-teal-650 hover:from-emerald-700 hover:to-teal-750 text-white font-semibold rounded-xl disabled:opacity-50 transition shadow-md shadow-emerald-500/10">
               {isCreating || isUploading ? "Saving..." : "Save Document"}
             </button>
           </div>

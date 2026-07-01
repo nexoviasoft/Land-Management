@@ -70,7 +70,7 @@ export default function Footer() {
     visible: {
       opacity: 1,
       y: 0,
-      transition: { duration: 0.6, ease: "easeOut" },
+      transition: { duration: 0.6, ease: "easeOut" as any },
     },
   };
 
@@ -110,7 +110,7 @@ export default function Footer() {
           backgroundSize: "50px 50px",
         }}
         animate={{ backgroundPosition: ["0px 0px", "50px 50px"] }}
-        transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
+        transition={{ duration: 20, repeat: Infinity, ease: "linear" as any }}
       />
 
       <div className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
