@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import Image from "next/image";
 import {
   useGetUsersQuery,
@@ -10,8 +10,23 @@ import {
 } from "@/redux/api/usersApiSlice";
 import UserCreateModal from "./components/UserCreateModal";
 import UserEditModal from "./components/UserEditModal";
-import { useState } from "react";
 import { useRouter } from "next/navigation";
+import {
+  Users,
+  ShieldCheck,
+  UserX,
+  Plus,
+  Trash2,
+  Ban,
+  Eye,
+  Edit,
+  ShieldAlert,
+  X,
+  Phone,
+  Mail,
+  FileSpreadsheet,
+  UserCheck,
+} from "lucide-react";
 
 type UserRole = "partner" | "admin";
 
@@ -27,10 +42,132 @@ interface User {
   createdAt: string;
 }
 
+// Custom Delete Confirmation Modal Component
+function DeleteConfirmModal({
+  isOpen,
+  onClose,
+  onConfirm,
+  userName,
+}: {
+  isOpen: boolean;
+  onClose: () => void;
+  onConfirm: () => void;
+  userName: string;
+}) {
+  if (!isOpen) return null;
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/40 backdrop-blur-sm transition-all duration-300">
+      <div className="bg-white/95 backdrop-blur-xl border border-white rounded-3xl p-6 w-full max-w-sm shadow-xl mx-4 relative hover:scale-[1.01] transition-transform duration-300">
+        <button
+          onClick={onClose}
+          className="absolute top-4 right-4 text-slate-400 hover:text-slate-600 transition-colors"
+        >
+          <X className="w-5 h-5" />
+        </button>
+        <div className="flex flex-col items-center text-center space-y-4">
+          <div className="w-12 h-12 rounded-2xl bg-red-50 text-red-650 flex items-center justify-center shadow-inner">
+            <Trash2 className="w-6 h-6 text-red-600" />
+          </div>
+          <div className="space-y-2">
+            <h3 className="text-lg font-bold text-slate-800">Delete User</h3>
+            <p className="text-xs text-slate-500 leading-relaxed">
+              Are you sure you want to delete <span className="font-semibold text-slate-700">{userName}</span>? This action is permanent and cannot be undone.
+            </p>
+          </div>
+          <div className="flex w-full gap-3 pt-2">
+            <button
+              onClick={onClose}
+              className="flex-1 py-2.5 border border-slate-200 text-slate-600 hover:bg-slate-50 font-bold rounded-xl text-xs transition-all active:scale-95"
+            >
+              Cancel
+            </button>
+            <button
+              onClick={onConfirm}
+              className="flex-1 py-2.5 bg-red-600 hover:bg-red-700 text-white font-bold rounded-xl text-xs transition-all shadow-md shadow-red-500/10 active:scale-95"
+            >
+              Delete
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// Custom Ban/Unban Confirmation Modal Component
+function BanConfirmModal({
+  isOpen,
+  onClose,
+  onConfirm,
+  userName,
+  isBanned,
+}: {
+  isOpen: boolean;
+  onClose: () => void;
+  onConfirm: () => void;
+  userName: string;
+  isBanned: boolean;
+}) {
+  if (!isOpen) return null;
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/40 backdrop-blur-sm transition-all duration-300">
+      <div className="bg-white/95 backdrop-blur-xl border border-white rounded-3xl p-6 w-full max-w-sm shadow-xl mx-4 relative hover:scale-[1.01] transition-transform duration-300">
+        <button
+          onClick={onClose}
+          className="absolute top-4 right-4 text-slate-400 hover:text-slate-600 transition-colors"
+        >
+          <X className="w-5 h-5" />
+        </button>
+        <div className="flex flex-col items-center text-center space-y-4">
+          <div className={`w-12 h-12 rounded-2xl flex items-center justify-center shadow-inner ${
+            isBanned ? "bg-emerald-50 text-emerald-600" : "bg-amber-50 text-amber-600"
+          }`}>
+            {isBanned ? <UserCheck className="w-6 h-6" /> : <Ban className="w-6 h-6" />}
+          </div>
+          <div className="space-y-2">
+            <h3 className="text-lg font-bold text-slate-800">
+              {isBanned ? "Unban User" : "Ban User"}
+            </h3>
+            <p className="text-xs text-slate-500 leading-relaxed">
+              Are you sure you want to {isBanned ? "unban" : "ban"}{" "}
+              <span className="font-semibold text-slate-700">{userName}</span>?{" "}
+              {isBanned
+                ? "This will restore their access to the system immediately."
+                : "This will revoke their access to the system immediately."}
+            </p>
+          </div>
+          <div className="flex w-full gap-3 pt-2">
+            <button
+              onClick={onClose}
+              className="flex-1 py-2.5 border border-slate-200 text-slate-600 hover:bg-slate-50 font-bold rounded-xl text-xs transition-all active:scale-95"
+            >
+              Cancel
+            </button>
+            <button
+              onClick={onConfirm}
+              className={`flex-1 py-2.5 text-white font-bold rounded-xl text-xs transition-all shadow-md active:scale-95 ${
+                isBanned
+                  ? "bg-emerald-600 hover:bg-emerald-700 shadow-emerald-500/10"
+                  : "bg-amber-600 hover:bg-amber-700 shadow-amber-500/10"
+              }`}
+            >
+              {isBanned ? "Unban" : "Ban"}
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export default function UsersPage() {
   const router = useRouter();
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [editingUser, setEditingUser] = useState<User | null>(null);
+
+  // States for confirmation modals
+  const [deleteTarget, setDeleteTarget] = useState<User | null>(null);
+  const [banTarget, setBanTarget] = useState<User | null>(null);
 
   const { data: responseData, error, isLoading } = useGetUsersQuery({});
   const [deleteUser] = useDeleteUserMutation();
@@ -39,115 +176,175 @@ export default function UsersPage() {
 
   const users: User[] = responseData?.data || [];
 
-  const handleDelete = async (id: string) => {
-    if (!confirm("Are you sure you want to delete this user?")) return;
+  // Computed stats
+  const totalUsers = users.length;
+  const activeUsers = users.filter((u) => !u.isBanned).length;
+  const bannedUsers = users.filter((u) => u.isBanned).length;
+  const adminUsers = users.filter((u) => u.role === "admin").length;
+
+  const handleConfirmDelete = async () => {
+    if (!deleteTarget) return;
     try {
-      await deleteUser(id).unwrap();
+      await deleteUser(deleteTarget.id).unwrap();
+      setDeleteTarget(null);
     } catch (error) {
       console.error(error);
       alert("Error deleting user");
     }
   };
 
-  const handleToggleBan = async (id: string, isCurrentlyBanned: boolean) => {
+  const handleConfirmToggleBan = async () => {
+    if (!banTarget) return;
     try {
-      if (isCurrentlyBanned) {
-        await unbanUser(id).unwrap();
+      if (banTarget.isBanned) {
+        await unbanUser(banTarget.id).unwrap();
       } else {
-        await banUser(id).unwrap();
+        await banUser(banTarget.id).unwrap();
       }
+      setBanTarget(null);
     } catch (error) {
       console.error(error);
-      alert(`Error trying to ${isCurrentlyBanned ? "unban" : "ban"} user`);
+      alert(`Error trying to ${banTarget.isBanned ? "unban" : "ban"} user`);
     }
   };
 
   if (isLoading) {
-    return <div className="p-6 text-gray-500">Loading users...</div>;
+    return (
+      <div className="w-full min-h-[60vh] flex flex-col items-center justify-center gap-4">
+        <span className="w-10 h-10 border-4 border-emerald-500/30 border-t-emerald-600 rounded-full animate-spin" />
+        <span className="text-sm font-semibold text-slate-500">Loading users...</span>
+      </div>
+    );
   }
 
   if (error) {
-    return <div className="p-6 text-red-500">Error loading users.</div>;
+    return (
+      <div className="w-full min-h-[40vh] flex flex-col items-center justify-center text-center gap-3">
+        <div className="w-12 h-12 rounded-full bg-red-50 text-red-500 flex items-center justify-center border border-red-100">
+          <ShieldAlert className="w-6 h-6" />
+        </div>
+        <h3 className="text-base font-bold text-slate-800">Error loading users</h3>
+        <p className="text-xs text-slate-500 max-w-sm">
+          Please check your connection and try again.
+        </p>
+      </div>
+    );
   }
 
   return (
-    <div className="w-full space-y-8 py-4">
+    <div className="w-full space-y-8 py-4 sm:py-6 relative overflow-x-hidden">
+      {/* Background Radial Glow elements */}
+      <div className="absolute top-[-10%] right-[-5%] w-[400px] h-[400px] bg-emerald-400/5 rounded-full blur-[120px] -z-10 pointer-events-none" />
+      <div className="absolute bottom-[10%] left-[-5%] w-[350px] h-[350px] bg-teal-400/5 rounded-full blur-[110px] -z-10 pointer-events-none" />
+
       {/* Header Panel */}
-      <div className="bg-white/70 backdrop-blur-xl border border-slate-200/80 p-6 md:p-8 rounded-3xl flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 shadow-sm">
-        <div className="space-y-1">
-          <h1 className="text-2xl font-extrabold text-slate-900 tracking-tight">Users Management</h1>
-          <p className="text-xs text-slate-500 font-medium">Manage and audit registered user profiles and authority configurations</p>
+      <div className="relative overflow-hidden bg-white/60 backdrop-blur-xl border border-white/90 p-6 md:p-8 rounded-3xl flex flex-col sm:flex-row justify-between items-start sm:items-center gap-6 shadow-[0_20px_50px_rgba(0,0,0,0.02)] hover:shadow-[0_20px_50px_rgba(16,185,129,0.04)] transition-all duration-500 group">
+        {/* Ambient background decoration */}
+        <div className="absolute top-0 right-0 w-64 h-64 bg-gradient-to-br from-emerald-500/10 to-teal-500/0 rounded-full blur-3xl pointer-events-none group-hover:scale-110 transition-transform duration-700" />
+        <div className="absolute -left-12 -bottom-12 w-48 h-48 bg-gradient-to-tr from-teal-500/5 to-emerald-500/0 rounded-full blur-2xl pointer-events-none" />
+        
+        <div className="relative space-y-1">
+          <h1 className="text-2xl md:text-3xl font-extrabold bg-gradient-to-r from-slate-900 via-slate-800 to-emerald-950 bg-clip-text text-transparent tracking-tight">
+            Users Management
+          </h1>
+          <p className="text-xs text-slate-500 font-semibold mt-0.5">
+            Manage, audit, and configure user profiles and dashboard authorities
+          </p>
         </div>
         <button
           onClick={() => setIsCreateModalOpen(true)}
-          className="px-5 py-2.5 bg-gradient-to-r from-emerald-600 to-teal-600 text-white font-semibold rounded-xl text-sm hover:from-emerald-700 hover:to-teal-700 transition shadow-md shadow-emerald-500/10"
+          className="relative z-10 px-6 py-3 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white font-bold rounded-xl text-sm transition-all duration-300 shadow-md shadow-emerald-500/10 hover:shadow-emerald-500/25 hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98] flex items-center gap-2"
         >
+          <Plus className="w-4.5 h-4.5 animate-pulse" />
           Add New User
         </button>
       </div>
 
-      <UserCreateModal
-        isOpen={isCreateModalOpen}
-        onClose={() => setIsCreateModalOpen(false)}
-      />
+      {/* Statistics Row */}
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+        {[
+          { label: "Total Users", value: totalUsers, icon: Users, color: "from-emerald-500 to-teal-500", glow: "group-hover:bg-emerald-500/5", border: "hover:border-emerald-500/20" },
+          { label: "Active Users", value: activeUsers, icon: ShieldCheck, color: "from-teal-500 to-emerald-500", glow: "group-hover:bg-teal-500/5", border: "hover:border-teal-500/20" },
+          { label: "Banned Users", value: bannedUsers, icon: Ban, color: "from-rose-500 to-red-600", glow: "group-hover:bg-rose-500/5", border: "hover:border-rose-500/20" },
+          { label: "Admins", value: adminUsers, icon: ShieldAlert, color: "from-slate-700 to-slate-800", glow: "group-hover:bg-slate-700/5", border: "hover:border-slate-700/20" },
+        ].map((stat, i) => (
+          <div
+            key={i}
+            className={`group bg-white/50 backdrop-blur-xl border border-white/95 p-5 rounded-3xl shadow-sm flex items-center justify-between gap-4 transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_12px_30px_rgba(0,0,0,0.03)] ${stat.border} relative overflow-hidden`}
+          >
+            {/* Hover color glow layer */}
+            <div className={`absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 ${stat.glow} pointer-events-none`} />
+            
+            <div className="space-y-1 relative z-10">
+              <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">{stat.label}</span>
+              <p className="text-2xl font-extrabold text-slate-800">{stat.value}</p>
+            </div>
+            
+            <div className={`relative z-10 w-11 h-11 rounded-2xl bg-gradient-to-br ${stat.color} text-white flex items-center justify-center shadow-md shadow-slate-200/50 group-hover:shadow-lg group-hover:scale-105 group-hover:rotate-3 transition-all duration-300`}>
+              <stat.icon className="w-5.5 h-5.5" />
+            </div>
+          </div>
+        ))}
+      </div>
 
-      <UserEditModal
-        isOpen={!!editingUser}
-        onClose={() => setEditingUser(null)}
-        user={editingUser}
-      />
-
-      {/* Table Card */}
-      <div className="bg-white/80 backdrop-blur-xl rounded-3xl border border-slate-200/80 shadow-sm overflow-hidden">
-        <div className="overflow-x-auto">
+      {/* Main Users List Container */}
+      <div className="bg-white/45 backdrop-blur-xl rounded-3xl border border-white/85 shadow-[0_12px_40px_-12px_rgba(148,163,184,0.08)] overflow-hidden">
+        
+        {/* Desktop View Table */}
+        <div className="hidden md:block overflow-x-auto">
           <table className="w-full text-left border-collapse">
             <thead>
-              <tr className="bg-slate-55/75 text-slate-500 uppercase text-[11px] font-semibold tracking-wider border-b border-slate-200/80">
-                <th className="py-4 px-6">Name</th>
-                <th className="py-4 px-6">Email / Phone</th>
-                <th className="py-4 px-6">NID</th>
-                <th className="py-4 px-6">Role</th>
-                <th className="py-4 px-6">Status</th>
-                <th className="py-4 px-6 text-center">Actions</th>
+              <tr className="bg-slate-50/50 text-slate-500 uppercase text-[11px] font-semibold tracking-wider border-b border-slate-200/40">
+                <th className="py-4.5 px-6">Name</th>
+                <th className="py-4.5 px-6">Email & Phone</th>
+                <th className="py-4.5 px-6">NID</th>
+                <th className="py-4.5 px-6">Role</th>
+                <th className="py-4.5 px-6">Status</th>
+                <th className="py-4.5 px-6 text-center">Actions</th>
               </tr>
             </thead>
-            <tbody className="text-slate-600 text-sm divide-y divide-slate-100">
+            <tbody className="text-slate-600 text-sm divide-y divide-slate-100/50">
               {users.length === 0 ? (
                 <tr>
-                  <td colSpan={6} className="py-12 text-center text-slate-400 font-medium">
+                  <td colSpan={6} className="py-16 text-center text-slate-400 font-semibold">
                     No users found.
                   </td>
                 </tr>
               ) : (
                 users.map((user) => (
-                  <tr
-                    key={user.id}
-                    className="hover:bg-slate-50/50 transition-colors"
-                  >
+                  <tr key={user.id} className="hover:bg-white/30 transition-colors duration-200">
                     <td className="py-4 px-6 flex items-center gap-3">
                       {user.picture ? (
                         <div className="w-10 h-10 rounded-full overflow-hidden relative border border-slate-200 shadow-sm bg-white shrink-0">
                           <Image
-                            src={user.picture.startsWith('http') ? user.picture : `http://localhost:8000${user.picture}`}
+                            src={user.picture.startsWith("http") ? user.picture : `https://land-management-api.vercel.app${user.picture}`}
                             alt={user.name}
                             layout="fill"
                             objectFit="cover"
                           />
                         </div>
                       ) : (
-                        <div className="w-10 h-10 rounded-full bg-gradient-to-tr from-emerald-500 to-teal-500 flex items-center justify-center text-white font-bold text-sm shadow-sm shrink-0">
+                        <div className="w-10 h-10 rounded-full bg-gradient-to-tr from-emerald-500 to-teal-500 flex items-center justify-center text-white font-extrabold text-xs shadow-sm shrink-0">
                           {user.name.charAt(0).toUpperCase()}
                         </div>
                       )}
-                      <span className="font-semibold text-slate-800">{user.name}</span>
+                      <span className="font-bold text-slate-800">{user.name}</span>
                     </td>
                     <td className="py-4 px-6">
-                      <div className="font-medium text-slate-700">{user.email}</div>
-                      <div className="text-xs text-slate-450 mt-0.5">{user.phone || "No phone added"}</div>
+                      <div className="font-semibold text-slate-700 flex items-center gap-1.5">
+                        <Mail className="w-3.5 h-3.5 text-slate-400" />
+                        {user.email}
+                      </div>
+                      {user.phone && (
+                        <div className="text-[11px] text-slate-400 font-medium mt-1 flex items-center gap-1.5">
+                          <Phone className="w-3.5 h-3.5 text-slate-400" />
+                          {user.phone}
+                        </div>
+                      )}
                     </td>
-                    <td className="py-4 px-6 font-medium text-slate-600">{user.Nid || "—"}</td>
+                    <td className="py-4 px-6 font-semibold text-slate-600">{user.Nid || "—"}</td>
                     <td className="py-4 px-6">
-                      <span className={`inline-flex items-center px-2.5 py-0.5 rounded-lg text-xs font-semibold border ${
+                      <span className={`inline-flex items-center px-2.5 py-0.5 rounded-lg text-[10px] font-bold uppercase tracking-wider border ${
                         user.role === "admin"
                           ? "bg-teal-50 text-teal-700 border-teal-100"
                           : "bg-emerald-50 text-emerald-700 border-emerald-100"
@@ -156,14 +353,12 @@ export default function UsersPage() {
                       </span>
                     </td>
                     <td className="py-4 px-6">
-                      <span
-                        className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider border ${
-                          user.isBanned
-                            ? "bg-red-50 text-red-700 border-red-100"
-                            : "bg-emerald-50 text-emerald-700 border-emerald-100"
-                        }`}
-                      >
-                        <span className={`w-1.5 h-1.5 rounded-full ${user.isBanned ? "bg-red-500" : "bg-emerald-500"}`} />
+                      <span className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider border ${
+                        user.isBanned
+                          ? "bg-red-50 text-red-700 border-red-100"
+                          : "bg-emerald-50 text-emerald-700 border-emerald-100"
+                      }`}>
+                        <span className={`w-1.5 h-1.5 rounded-full ${user.isBanned ? "bg-red-500 animate-pulse" : "bg-emerald-500"}`} />
                         {user.isBanned ? "Banned" : "Active"}
                       </span>
                     </td>
@@ -171,31 +366,34 @@ export default function UsersPage() {
                       <div className="flex justify-center items-center gap-2">
                         <button
                           onClick={() => router.push(`/dashboard/users/${user.id}`)}
-                          className="px-3 py-1.5 text-xs font-semibold rounded-lg bg-white border border-slate-200 text-slate-700 hover:bg-slate-55 transition shadow-sm"
+                          className="px-3 py-1.5 text-xs font-bold rounded-xl bg-white border border-slate-200 text-slate-600 hover:bg-slate-50 transition shadow-sm flex items-center gap-1 active:scale-95"
                         >
+                          <Eye className="w-3.5 h-3.5" />
                           View
                         </button>
                         <button
                           onClick={() => setEditingUser(user)}
-                          className="px-3 py-1.5 text-xs font-semibold rounded-lg bg-emerald-50 text-emerald-700 border border-emerald-100 hover:bg-emerald-100/70 transition shadow-sm"
+                          className="px-3 py-1.5 text-xs font-bold rounded-xl bg-emerald-50/40 text-emerald-800 border border-emerald-200/50 hover:bg-emerald-100/70 transition shadow-sm flex items-center gap-1 active:scale-95"
                         >
+                          <Edit className="w-3.5 h-3.5" />
                           Edit
                         </button>
                         <button
-                          onClick={() => handleToggleBan(user.id, user.isBanned)}
-                          className={`px-3 py-1.5 text-xs font-semibold rounded-lg border transition shadow-sm ${
+                          onClick={() => setBanTarget(user)}
+                          className={`px-3 py-1.5 text-xs font-bold rounded-xl border transition shadow-sm flex items-center gap-1 active:scale-95 ${
                             user.isBanned
                               ? "bg-emerald-600 text-white hover:bg-emerald-700 border-transparent"
-                              : "bg-amber-50 text-amber-705 border-amber-100 hover:bg-amber-100/70"
+                              : "bg-amber-50 text-amber-700 border-amber-200 hover:bg-amber-100/70"
                           }`}
                         >
+                          <Ban className="w-3.5 h-3.5" />
                           {user.isBanned ? "Unban" : "Ban"}
                         </button>
-                        
                         <button
-                          onClick={() => handleDelete(user.id)}
-                          className="px-3 py-1.5 text-xs font-semibold rounded-lg bg-red-50 text-red-705 border border-red-100 hover:bg-red-100/70 transition shadow-sm"
+                          onClick={() => setDeleteTarget(user)}
+                          className="px-3 py-1.5 text-xs font-bold rounded-xl bg-red-50 text-red-600 border border-red-200 hover:bg-red-100/80 transition shadow-sm flex items-center gap-1 active:scale-95"
                         >
+                          <Trash2 className="w-3.5 h-3.5" />
                           Delete
                         </button>
                       </div>
@@ -206,7 +404,148 @@ export default function UsersPage() {
             </tbody>
           </table>
         </div>
+
+        {/* Mobile Card List View */}
+        <div className="block md:hidden p-4 space-y-4">
+          {users.length === 0 ? (
+            <div className="py-12 text-center text-slate-400 font-semibold bg-white/20 rounded-2xl">
+              No users found.
+            </div>
+          ) : (
+            users.map((user) => (
+              <div
+                key={user.id}
+                className="bg-white/50 backdrop-blur-md border border-white/60 p-5 rounded-2xl space-y-4 shadow-sm relative hover:border-emerald-500/20 transition-all duration-300"
+              >
+                <div className="flex items-center gap-3">
+                  {user.picture ? (
+                    <div className="w-12 h-12 rounded-full overflow-hidden relative border border-slate-200 shadow-sm bg-white shrink-0">
+                      <Image
+                        src={user.picture.startsWith("http") ? user.picture : `https://land-management-api.vercel.app${user.picture}`}
+                        alt={user.name}
+                        layout="fill"
+                        objectFit="cover"
+                      />
+                    </div>
+                  ) : (
+                    <div className="w-12 h-12 rounded-full bg-gradient-to-tr from-emerald-500 to-teal-500 flex items-center justify-center text-white font-extrabold text-sm shadow-sm shrink-0">
+                      {user.name.charAt(0).toUpperCase()}
+                    </div>
+                  )}
+                  <div className="flex-grow min-w-0">
+                    <h4 className="font-bold text-slate-800 truncate">{user.name}</h4>
+                    <div className="flex items-center gap-2 mt-1">
+                      <span className={`inline-block px-2 py-0.5 rounded-lg text-[9px] font-bold uppercase tracking-wider border ${
+                        user.role === "admin"
+                          ? "bg-teal-50 text-teal-700 border-teal-100"
+                          : "bg-emerald-50 text-emerald-700 border-emerald-100"
+                      }`}>
+                        {user.role}
+                      </span>
+                      <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[9px] font-bold uppercase tracking-wider border ${
+                        user.isBanned
+                          ? "bg-red-50 text-red-700 border-red-100"
+                          : "bg-emerald-50 text-emerald-700 border-emerald-100"
+                      }`}>
+                        <span className={`w-1.5 h-1.5 rounded-full ${user.isBanned ? "bg-red-500" : "bg-emerald-500"}`} />
+                        {user.isBanned ? "Banned" : "Active"}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="space-y-2 text-xs border-t border-slate-200/30 pt-3 text-slate-600">
+                  <div className="flex items-center gap-2">
+                    <Mail className="w-4 h-4 text-slate-400 shrink-0" />
+                    <span className="truncate">{user.email}</span>
+                  </div>
+                  {user.phone && (
+                    <div className="flex items-center gap-2">
+                      <Phone className="w-4 h-4 text-slate-400 shrink-0" />
+                      <span>{user.phone}</span>
+                    </div>
+                  )}
+                  {user.Nid && (
+                    <div className="flex items-center gap-2">
+                      <FileSpreadsheet className="w-4 h-4 text-slate-400 shrink-0" />
+                      <span>NID: {user.Nid}</span>
+                    </div>
+                  )}
+                </div>
+
+                {/* Actions grid for mobile */}
+                <div className="grid grid-cols-2 gap-2 pt-2 border-t border-slate-200/30">
+                  <button
+                    onClick={() => router.push(`/dashboard/users/${user.id}`)}
+                    className="py-2.5 text-xs font-bold rounded-xl bg-white border border-slate-200 text-slate-600 hover:bg-slate-50 transition shadow-sm flex items-center justify-center gap-1 active:scale-95"
+                  >
+                    <Eye className="w-3.5 h-3.5" />
+                    View Details
+                  </button>
+                  <button
+                    onClick={() => setEditingUser(user)}
+                    className="py-2.5 text-xs font-bold rounded-xl bg-emerald-50/40 text-emerald-800 border border-emerald-200/50 hover:bg-emerald-100/70 transition shadow-sm flex items-center justify-center gap-1 active:scale-95"
+                  >
+                    <Edit className="w-3.5 h-3.5" />
+                    Edit User
+                  </button>
+                  <button
+                    onClick={() => setBanTarget(user)}
+                    className={`py-2.5 text-xs font-bold rounded-xl border transition shadow-sm flex items-center justify-center gap-1 active:scale-95 ${
+                      user.isBanned
+                        ? "bg-emerald-600 text-white hover:bg-emerald-700 border-transparent col-span-2"
+                        : "bg-amber-50 text-amber-700 border-amber-200 hover:bg-amber-100/70"
+                    }`}
+                  >
+                    <Ban className="w-3.5 h-3.5" />
+                    {user.isBanned ? "Unban" : "Ban User"}
+                  </button>
+                  {!user.isBanned && (
+                    <button
+                      onClick={() => setDeleteTarget(user)}
+                      className="py-2.5 text-xs font-bold rounded-xl bg-red-50 text-red-600 border border-red-200 hover:bg-red-100/80 transition shadow-sm flex items-center justify-center gap-1 active:scale-95"
+                    >
+                      <Trash2 className="w-3.5 h-3.5 text-red-600" />
+                      Delete
+                    </button>
+                  )}
+                </div>
+              </div>
+            ))
+          )}
+        </div>
+
       </div>
+
+      {/* Create Modal */}
+      <UserCreateModal
+        isOpen={isCreateModalOpen}
+        onClose={() => setIsCreateModalOpen(false)}
+      />
+
+      {/* Edit Modal */}
+      <UserEditModal
+        isOpen={!!editingUser}
+        onClose={() => setEditingUser(null)}
+        user={editingUser}
+      />
+
+      {/* Delete Confirmation Modal */}
+      <DeleteConfirmModal
+        isOpen={!!deleteTarget}
+        onClose={() => setDeleteTarget(null)}
+        onConfirm={handleConfirmDelete}
+        userName={deleteTarget?.name || ""}
+      />
+
+      {/* Ban Confirmation Modal */}
+      <BanConfirmModal
+        isOpen={!!banTarget}
+        onClose={() => setBanTarget(null)}
+        onConfirm={handleConfirmToggleBan}
+        userName={banTarget?.name || ""}
+        isBanned={banTarget?.isBanned || false}
+      />
     </div>
   );
 }

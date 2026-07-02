@@ -28,6 +28,11 @@ const authSlice = createSlice({
       state.user = null;
       state.token = null;
       state.role = null;
+      if (typeof window !== 'undefined') {
+        localStorage.removeItem('token');
+        localStorage.removeItem('user');
+        localStorage.removeItem('role');
+      }
     },
   },
 });

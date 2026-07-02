@@ -3,6 +3,24 @@
 import React from "react";
 import { useParams, useRouter } from "next/navigation";
 import { useGetLanddocQuery } from "@/redux/api/landdocApiSlice";
+import { toast } from "sonner";
+import {
+  ArrowLeft,
+  Download,
+  Eye,
+  MapPin,
+  Tag,
+  FileText,
+  Calendar,
+  Layers,
+  Grid,
+  FileSpreadsheet,
+  Map,
+  Navigation,
+  Locate,
+  AlertTriangle,
+  FolderOpen
+} from "lucide-react";
 
 export default function LandDocumentDetailsPage() {
   const params = useParams();
@@ -17,33 +35,27 @@ export default function LandDocumentDetailsPage() {
 
   if (isLoading) {
     return (
-      <div className="w-full">
-        <div className="animate-pulse space-y-6">
-          <div className="h-8 bg-slate-200 rounded w-1/4"></div>
-          <div className="h-64 bg-slate-200 rounded w-full"></div>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div className="h-48 bg-slate-200 rounded"></div>
-            <div className="h-48 bg-slate-200 rounded"></div>
-          </div>
-        </div>
+      <div className="w-full min-h-[60vh] flex flex-col items-center justify-center gap-4">
+        <span className="w-10 h-10 border-4 border-emerald-500/30 border-t-emerald-600 rounded-full animate-spin" />
+        <span className="text-sm font-semibold text-slate-500">Loading document details...</span>
       </div>
     );
   }
 
   if (error || !landdoc) {
     return (
-      <div className="w-full flex flex-col items-center justify-center min-h-[50vh] text-red-500">
-        <svg
-          className="w-16 h-16 mb-4 text-red-400"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke="currentColor"
+      <div className="w-full min-h-[40vh] flex flex-col items-center justify-center text-center gap-3">
+        <div className="w-12 h-12 rounded-full bg-red-50 text-red-500 flex items-center justify-center border border-red-100">
+          <AlertTriangle className="w-6 h-6" />
+        </div>
+        <h3 className="text-base font-bold text-slate-800">Error loading document</h3>
+        <p className="text-xs text-slate-500 max-w-sm">
+          The requested land document could not be found or has been deleted.
+        </p>
+        <button
+          onClick={() => router.back()}
+          className="mt-2 px-5 py-2.5 bg-white border border-slate-200 text-slate-600 hover:bg-slate-50 font-bold rounded-xl text-xs transition"
         >
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-        </svg>
-        <h2 className="text-xl font-bold">Error loading document</h2>
-        <p className="mt-2 text-slate-500">The requested land document could not be found or there was an API error.</p>
-        <button onClick={() => router.back()} className="mt-6 px-5 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold rounded-xl transition">
           Go Back
         </button>
       </div>
@@ -54,7 +66,14 @@ export default function LandDocumentDetailsPage() {
 
   const getFullUrl = (url: string) => {
     if (!url) return "";
-    return url.startsWith("http") ? url : `http://localhost:8000${url}`;
+    return url.startsWith("http") ? url : `https://land-management-api.vercel.app${url}`;
+  };
+
+  const formatDate = (dateString: any) => {
+    if (!dateString) return "N/A";
+    const d = new Date(dateString);
+    if (isNaN(d.getTime())) return "N/A";
+    return d.toLocaleDateString("en-US", { year: 'numeric', month: 'long', day: 'numeric' });
   };
 
   const handleDownloadAll = async () => {
@@ -69,24 +88,29 @@ export default function LandDocumentDetailsPage() {
     if (documents?.otherRecord) {
       documents.otherRecord.forEach((record: any, index: number) => {
         if (record.url) {
-          filesToDownload.push({ title: (record.name || `Other_Record_${index + 1}`).replace(/\s+/g, '_'), url: getFullUrl(record.url) });
+          filesToDownload.push({ 
+            title: (record.name || `Other_Record_${index + 1}`).replace(/\s+/g, '_'), 
+            url: getFullUrl(record.url) 
+          });
         }
       });
     }
 
     if (filesToDownload.length === 0) {
-      alert("No files available to download.");
+      toast.warning("No files available to download.");
       return;
     }
 
-    // Function to fetch a file as a blob and download it
+    const toastId = toast.loading("Preparing files for download...");
+    let downloadedCount = 0;
+    let failedCount = 0;
+
     for (const file of filesToDownload) {
       try {
         const response = await fetch(file.url);
         if (!response.ok) throw new Error("Network response was not ok");
         const blob = await response.blob();
         
-        // Extract extension from url or mime type
         let extension = "pdf";
         if (blob.type.includes("image/jpeg")) extension = "jpg";
         else if (blob.type.includes("image/png")) extension = "png";
@@ -100,11 +124,20 @@ export default function LandDocumentDetailsPage() {
         document.body.removeChild(a);
         window.URL.revokeObjectURL(blobUrl);
         
-        // Small delay to allow the browser to process consecutive downloads
+        downloadedCount++;
         await new Promise(resolve => setTimeout(resolve, 500));
       } catch (error) {
         console.error("Failed to download file:", file.url, error);
+        failedCount++;
       }
+    }
+
+    if (failedCount === 0) {
+      toast.success(`Successfully downloaded all ${downloadedCount} files!`, { id: toastId });
+    } else if (downloadedCount > 0) {
+      toast.warning(`Downloaded ${downloadedCount} files, but ${failedCount} files failed.`, { id: toastId });
+    } else {
+      toast.error("Failed to download files.", { id: toastId });
     }
   };
 
@@ -115,6 +148,7 @@ export default function LandDocumentDetailsPage() {
 
     const handleSingleDownload = async (e: React.MouseEvent) => {
       e.preventDefault();
+      const toastId = toast.loading(`Downloading ${title}...`);
       try {
         const response = await fetch(fullUrl);
         if (!response.ok) throw new Error("Network response was not ok");
@@ -132,56 +166,57 @@ export default function LandDocumentDetailsPage() {
         a.click();
         document.body.removeChild(a);
         window.URL.revokeObjectURL(blobUrl);
+        toast.success(`${title} downloaded successfully!`, { id: toastId });
       } catch (error) {
         console.error("Failed to download file:", fullUrl, error);
-        alert("Failed to download the file. Please try viewing it instead.");
+        toast.error(`Failed to download ${title}.`, { id: toastId });
       }
     };
 
     return (
-      <div className="border border-slate-200/80 rounded-2xl overflow-hidden bg-white/70 backdrop-blur-md shadow-sm hover:shadow-md transition-all duration-300 flex flex-col">
-        <div className="p-4 bg-slate-50/55 border-b border-slate-200/60 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
-          <h4 className="font-semibold text-slate-700 truncate max-w-full sm:max-w-[50%]">{title}</h4>
+      <div className="group border border-slate-200/80 rounded-2xl overflow-hidden bg-white/70 backdrop-blur-md shadow-sm hover:shadow-md hover:border-emerald-500/20 transition-all duration-300 flex flex-col hover:-translate-y-0.5">
+        <div className="p-4 bg-slate-50/50 border-b border-slate-200/60 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
+          <h4 className="font-bold text-slate-700 truncate max-w-full sm:max-w-[45%] text-xs uppercase tracking-wider">{title}</h4>
           <div className="flex gap-2 w-full sm:w-auto">
             <button
               onClick={handleSingleDownload}
-              className="text-emerald-700 hover:text-emerald-855 text-sm font-semibold flex items-center gap-1 bg-emerald-50 hover:bg-emerald-100/80 px-3.5 py-1.5 rounded-full transition-colors w-full sm:w-auto justify-center"
+              className="text-emerald-700 hover:text-white text-xs font-bold flex items-center gap-1.5 bg-emerald-50 hover:bg-emerald-600 border border-emerald-100/50 hover:border-emerald-600 px-3.5 py-1.5 rounded-xl transition-all w-full sm:w-auto justify-center active:scale-95 shadow-sm"
             >
-              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
-              </svg>
+              <Download className="w-3.5 h-3.5" />
               <span>Download</span>
             </button>
             <a
               href={fullUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="text-teal-705 hover:text-teal-800 text-sm font-semibold flex items-center gap-1 bg-teal-50 hover:bg-teal-100/80 px-3.5 py-1.5 rounded-full transition-colors w-full sm:w-auto justify-center"
+              className="text-teal-700 hover:text-white text-xs font-bold flex items-center gap-1.5 bg-teal-50 hover:bg-teal-600 border border-teal-100/50 hover:border-teal-600 px-3.5 py-1.5 rounded-xl transition-all w-full sm:w-auto justify-center active:scale-95 shadow-sm"
             >
               <span>View</span>
-              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-              </svg>
+              <Eye className="w-3.5 h-3.5" />
             </a>
           </div>
         </div>
-        <div className="h-48 w-full bg-slate-50 flex items-center justify-center relative group">
+        
+        {/* Preview Container */}
+        <div className="h-44 w-full bg-slate-50/50 flex items-center justify-center relative overflow-hidden">
           {isImage ? (
-            // eslint-disable-next-line @next/next/no-img-element
-            <img src={fullUrl} alt={title} className="w-full h-full object-cover" />
+            /* eslint-disable-next-line @next/next/no-img-element */
+            <img 
+              src={fullUrl} 
+              alt={title} 
+              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" 
+            />
           ) : (
-            <div className="flex flex-col items-center justify-center text-slate-400">
-              <svg className="w-16 h-16 mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
-              </svg>
-              <span className="text-sm font-medium">Document PDF/File</span>
+            <div className="flex flex-col items-center justify-center text-slate-400 group-hover:text-emerald-600 transition-colors duration-300">
+              <FileText className="w-12 h-12 mb-2" />
+              <span className="text-[10px] font-bold uppercase tracking-wider">Document PDF/File</span>
             </div>
           )}
           <a
             href={fullUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="absolute inset-0 bg-black/0 group-hover:bg-black/5 transition-colors flex items-center justify-center"
+            className="absolute inset-0 bg-black/0 group-hover:bg-black/5 transition-colors"
           />
         </div>
       </div>
@@ -189,119 +224,156 @@ export default function LandDocumentDetailsPage() {
   };
 
   return (
-    <div className="w-full space-y-6">
-      {/* Header */}
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-white/70 backdrop-blur-xl p-6 rounded-3xl shadow-sm border border-slate-200/80">
-        <div className="flex items-center gap-4">
+    <div className="w-full space-y-6 py-4 sm:py-6 relative overflow-x-hidden">
+      {/* Background Radial Glow elements */}
+      <div className="absolute top-[-10%] right-[-5%] w-[400px] h-[400px] bg-emerald-400/5 rounded-full blur-[120px] -z-10 pointer-events-none" />
+      <div className="absolute bottom-[10%] left-[-5%] w-[350px] h-[350px] bg-teal-400/5 rounded-full blur-[110px] -z-10 pointer-events-none" />
+
+      {/* Header and Back Button */}
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 bg-white/60 backdrop-blur-xl p-6 rounded-3xl shadow-sm border border-white/90 group relative overflow-hidden">
+        {/* Ambient background decoration */}
+        <div className="absolute top-0 right-0 w-60 h-60 bg-gradient-to-br from-emerald-500/10 to-teal-500/0 rounded-full blur-2xl pointer-events-none" />
+        
+        <div className="flex items-center gap-4 relative z-10">
           <button
             onClick={() => router.back()}
-            className="p-2 text-slate-400 hover:text-slate-900 hover:bg-slate-100 rounded-full transition"
+            className="p-2.5 text-slate-400 hover:text-slate-700 bg-white/80 hover:bg-white border border-slate-200/50 hover:border-slate-200 rounded-xl transition shadow-sm active:scale-95 flex items-center justify-center shrink-0"
           >
-            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
-            </svg>
+            <ArrowLeft className="w-5 h-5" />
           </button>
           <div>
-            <h1 className="text-2xl font-bold text-slate-900 flex items-center gap-3">
+            <h1 className="text-xl md:text-2xl font-extrabold bg-gradient-to-r from-slate-900 via-slate-800 to-emerald-950 bg-clip-text text-transparent tracking-tight flex items-center gap-2.5 flex-wrap">
               Land Document
-              <span className="px-3 py-1 bg-emerald-50 text-emerald-800 border border-emerald-100 text-xs font-semibold rounded-full uppercase tracking-wider">
+              <span className="inline-flex items-center px-3 py-1 bg-emerald-50 text-emerald-800 border border-emerald-100 text-[10px] font-extrabold uppercase tracking-wider rounded-xl">
                 {landDetails?.landType || "Unknown Type"}
               </span>
             </h1>
-            <p className="text-sm text-slate-500 mt-1">
-              Registered on {new Date(createdAt).toLocaleDateString("en-US", { year: 'numeric', month: 'long', day: 'numeric' })}
+            <p className="text-[10px] text-slate-400 font-semibold tracking-wider uppercase mt-1 flex items-center gap-1.5">
+              <Calendar className="w-3.5 h-3.5 text-slate-400" />
+              Registered: {formatDate(createdAt)}
             </p>
           </div>
         </div>
+        
         <button
           onClick={handleDownloadAll}
-          className="px-4 py-2.5 bg-gradient-to-r from-emerald-600 to-teal-650 hover:from-emerald-700 hover:to-teal-750 text-white text-sm font-semibold rounded-xl flex items-center gap-2 shadow-md shadow-emerald-500/10 transition-colors"
+          className="relative z-10 w-full md:w-auto px-5 py-2.5 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white text-xs font-bold rounded-xl flex items-center justify-center gap-2 shadow-md shadow-emerald-500/10 hover:shadow-emerald-500/25 transition-all duration-300 active:scale-98"
         >
-          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
-          </svg>
+          <Download className="w-4 h-4 animate-pulse" />
           Download All Files
         </button>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Left Column: Details */}
+        
+        {/* Left Column: Details (Location & Identifiers) */}
         <div className="lg:col-span-1 space-y-6">
+          
           {/* Location Card */}
-          <div className="bg-white/80 backdrop-blur-xl border border-slate-200/80 p-6 rounded-3xl shadow-sm relative overflow-hidden">
-            <div className="absolute top-0 right-0 p-4 opacity-5">
-              <svg className="w-24 h-24" fill="currentColor" viewBox="0 0 24 24">
-                <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z" />
-              </svg>
+          <div className="bg-white/45 backdrop-blur-xl border border-white/85 p-6 rounded-3xl shadow-sm relative overflow-hidden group">
+            <div className="absolute top-0 right-0 p-4 opacity-[0.03] group-hover:scale-110 transition-transform duration-500 pointer-events-none">
+              <MapPin className="w-28 h-28 text-slate-800" />
             </div>
-            <h3 className="text-lg font-bold text-slate-800 mb-4 flex items-center gap-2">
-              <svg className="w-5 h-5 text-emerald-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-              </svg>
-              Location Info
+            
+            <h3 className="text-sm font-extrabold text-slate-800 mb-5 flex items-center gap-2 uppercase tracking-wider pb-2 border-b border-slate-100">
+              <MapPin className="w-4.5 h-4.5 text-emerald-600" />
+              Location Details
             </h3>
-            <div className="space-y-4 relative z-10">
-              <div>
-                <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider">Division</p>
-                <p className="text-base font-semibold text-slate-800">{location?.division}</p>
+            
+            <div className="grid grid-cols-2 gap-4 relative z-10">
+              
+              <div className="group/tile bg-white/40 border border-white/50 p-3 rounded-2xl transition-all duration-300 hover:bg-white/80 hover:border-emerald-500/10">
+                <div className="flex items-center gap-2 mb-1">
+                  <Map className="w-4 h-4 text-slate-400 group-hover/tile:text-emerald-600 transition-colors" />
+                  <span className="text-[9px] font-bold text-slate-400 uppercase tracking-wider">Division</span>
+                </div>
+                <p className="text-xs font-bold text-slate-700 truncate">{location?.division || "—"}</p>
               </div>
-              <div>
-                <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider">District</p>
-                <p className="text-base font-semibold text-slate-800">{location?.district}</p>
+
+              <div className="group/tile bg-white/40 border border-white/50 p-3 rounded-2xl transition-all duration-300 hover:bg-white/80 hover:border-emerald-500/10">
+                <div className="flex items-center gap-2 mb-1">
+                  <MapPin className="w-4 h-4 text-slate-400 group-hover/tile:text-emerald-600 transition-colors" />
+                  <span className="text-[9px] font-bold text-slate-400 uppercase tracking-wider">District</span>
+                </div>
+                <p className="text-xs font-bold text-slate-700 truncate">{location?.district || "—"}</p>
               </div>
-              <div>
-                <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider">Upazila</p>
-                <p className="text-base font-semibold text-slate-800">{location?.upazila}</p>
+
+              <div className="group/tile bg-white/40 border border-white/50 p-3 rounded-2xl transition-all duration-300 hover:bg-white/80 hover:border-emerald-500/10">
+                <div className="flex items-center gap-2 mb-1">
+                  <Navigation className="w-4 h-4 text-slate-400 group-hover/tile:text-emerald-600 transition-colors" />
+                  <span className="text-[9px] font-bold text-slate-400 uppercase tracking-wider">Upazila</span>
+                </div>
+                <p className="text-xs font-bold text-slate-700 truncate">{location?.upazila || "—"}</p>
               </div>
-              <div>
-                <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider">Mouza</p>
-                <p className="text-base font-semibold text-slate-800">{location?.mouza}</p>
+
+              <div className="group/tile bg-white/40 border border-white/50 p-3 rounded-2xl transition-all duration-300 hover:bg-white/80 hover:border-emerald-500/10">
+                <div className="flex items-center gap-2 mb-1">
+                  <Locate className="w-4 h-4 text-slate-400 group-hover/tile:text-emerald-600 transition-colors" />
+                  <span className="text-[9px] font-bold text-slate-400 uppercase tracking-wider">Mouza</span>
+                </div>
+                <p className="text-xs font-bold text-slate-700 truncate">{location?.mouza || "—"}</p>
               </div>
+
             </div>
           </div>
 
-          {/* Land Details Card */}
-          <div className="bg-white/80 backdrop-blur-xl border border-slate-200/80 p-6 rounded-3xl shadow-sm relative overflow-hidden">
-            <div className="absolute top-0 right-0 p-4 opacity-5">
-              <svg className="w-24 h-24" fill="currentColor" viewBox="0 0 24 24">
-                <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 9h-2V7h-2v5H6v2h2v5h2v-5h2v-2z" />
-              </svg>
+          {/* Land Identifiers Card */}
+          <div className="bg-white/45 backdrop-blur-xl border border-white/85 p-6 rounded-3xl shadow-sm relative overflow-hidden group">
+            <div className="absolute top-0 right-0 p-4 opacity-[0.03] group-hover:scale-110 transition-transform duration-500 pointer-events-none">
+              <FileText className="w-28 h-28 text-slate-800" />
             </div>
-            <h3 className="text-lg font-bold text-slate-800 mb-4 flex items-center gap-2">
-              <svg className="w-5 h-5 text-teal-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-              </svg>
+            
+            <h3 className="text-sm font-extrabold text-slate-800 mb-5 flex items-center gap-2 uppercase tracking-wider pb-2 border-b border-slate-100">
+              <Tag className="w-4.5 h-4.5 text-teal-600" style={{ color: "rgb(13, 148, 136)" }} />
               Land Identifiers
             </h3>
-            <div className="space-y-4 relative z-10">
-              <div className="flex justify-between items-center border-b border-slate-100 pb-2.5">
-                <p className="text-sm font-medium text-slate-500">Khatian No.</p>
-                <p className="text-base font-bold text-slate-850">{landDetails?.khatianNo}</p>
+            
+            <div className="space-y-3 relative z-10">
+              
+              <div className="group/tile bg-white/40 border border-white/55 p-3 rounded-2xl flex items-center justify-between gap-4 transition-all duration-300 hover:bg-white/80 hover:border-teal-500/10">
+                <div className="flex items-center gap-2.5">
+                  <div className="p-2 bg-slate-50 text-slate-400 group-hover/tile:text-teal-600 group-hover/tile:bg-teal-50 rounded-xl transition-colors shrink-0">
+                    <Layers className="w-4 h-4" />
+                  </div>
+                  <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Khatian No.</span>
+                </div>
+                <p className="text-sm font-extrabold text-slate-750">{landDetails?.khatianNo || "—"}</p>
               </div>
-              <div className="flex justify-between items-center border-b border-slate-100 pb-2.5">
-                <p className="text-sm font-medium text-slate-500">Dag No.</p>
-                <p className="text-base font-bold text-slate-850">{landDetails?.dagNo}</p>
+
+              <div className="group/tile bg-white/40 border border-white/55 p-3 rounded-2xl flex items-center justify-between gap-4 transition-all duration-300 hover:bg-white/80 hover:border-teal-500/10">
+                <div className="flex items-center gap-2.5">
+                  <div className="p-2 bg-slate-50 text-slate-400 group-hover/tile:text-teal-600 group-hover/tile:bg-teal-50 rounded-xl transition-colors shrink-0">
+                    <Grid className="w-4 h-4" />
+                  </div>
+                  <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Dag No.</span>
+                </div>
+                <p className="text-sm font-extrabold text-slate-750">{landDetails?.dagNo || "—"}</p>
               </div>
-              <div className="flex justify-between items-center">
-                <p className="text-sm font-medium text-slate-500">Kharij Case No.</p>
-                <p className="text-base font-bold text-slate-850">{landDetails?.kharijCaseNo}</p>
+
+              <div className="group/tile bg-white/40 border border-white/55 p-3 rounded-2xl flex items-center justify-between gap-4 transition-all duration-300 hover:bg-white/80 hover:border-teal-500/10">
+                <div className="flex items-center gap-2.5 flex-1 min-w-0">
+                  <div className="p-2 bg-slate-50 text-slate-400 group-hover/tile:text-teal-600 group-hover/tile:bg-teal-50 rounded-xl transition-colors shrink-0">
+                    <FileSpreadsheet className="w-4 h-4" />
+                  </div>
+                  <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider truncate">Kharij Case No.</span>
+                </div>
+                <p className="text-sm font-extrabold text-slate-750 truncate max-w-[50%]">{landDetails?.kharijCaseNo || "—"}</p>
               </div>
+
             </div>
           </div>
+
         </div>
 
         {/* Right Column: Documents Gallery */}
         <div className="lg:col-span-2">
-          <div className="bg-white/85 backdrop-blur-xl border border-slate-200/80 p-6 rounded-3xl shadow-sm h-full">
-            <h3 className="text-xl font-bold text-slate-800 mb-6 flex items-center gap-2 border-b border-slate-100 pb-4">
-              <svg className="w-6 h-6 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-              </svg>
+          <div className="bg-white/45 backdrop-blur-xl border border-white/85 p-6 rounded-3xl shadow-sm h-full flex flex-col">
+            <h3 className="text-sm font-extrabold text-slate-800 mb-6 flex items-center gap-2 uppercase tracking-wider pb-3 border-b border-slate-100 shrink-0">
+              <FolderOpen className="w-5 h-5 text-emerald-600" />
               Document Gallery
             </h3>
             
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 flex-1">
               {documents?.khatianCopyUrl && (
                 <DocumentCard title="Khatian Copy" url={documents.khatianCopyUrl} />
               )}
@@ -309,19 +381,24 @@ export default function LandDocumentDetailsPage() {
                 <DocumentCard title="Kharij Copy" url={documents.kharijCopyUrl} />
               )}
               
-              {/* Other Records */}
               {documents?.otherRecord && documents.otherRecord.map((record: any, index: number) => (
-                <DocumentCard key={index} title={record.name || `Other Record ${index + 1}`} url={record.url} />
+                <DocumentCard 
+                  key={index} 
+                  title={record.name || `Other Record ${index + 1}`} 
+                  url={record.url} 
+                />
               ))}
-            </div>
 
-            {!documents?.khatianCopyUrl && !documents?.kharijCopyUrl && (!documents?.otherRecord || documents?.otherRecord?.length === 0) && (
-              <div className="text-center py-12 bg-gray-50 rounded-lg border border-dashed border-gray-300">
-                <p className="text-gray-500">No documents attached to this record.</p>
-              </div>
-            )}
+              {!documents?.khatianCopyUrl && !documents?.kharijCopyUrl && (!documents?.otherRecord || documents?.otherRecord?.length === 0) && (
+                <div className="col-span-1 sm:col-span-2 text-center py-16 bg-slate-50/50 rounded-2xl border border-dashed border-slate-200 flex flex-col items-center justify-center gap-3">
+                  <FileText className="w-10 h-10 text-slate-350" />
+                  <p className="text-sm font-semibold text-slate-500">No documents attached to this record.</p>
+                </div>
+              )}
+            </div>
           </div>
         </div>
+
       </div>
     </div>
   );

@@ -8,8 +8,21 @@ import { setCredentials } from "@/redux/features/authSlice";
 import {
   useGetUserQuery,
   useUpdateUserMutation,
-  useUploadUserProfilePictureMutation,
 } from "@/redux/api/usersApiSlice";
+import { uploadImageToImgBB } from "@/utils/uploadImage";
+import { toast } from "sonner";
+import {
+  User,
+  Mail,
+  Phone,
+  Lock,
+  Hash,
+  Shield,
+  Camera,
+  AlertTriangle,
+  Save,
+  CheckCircle2
+} from "lucide-react";
 
 export default function ProfilePage() {
   const dispatch = useDispatch();
@@ -22,7 +35,6 @@ export default function ProfilePage() {
   });
 
   const [updateUser, { isLoading: isUpdating }] = useUpdateUserMutation();
-  const [uploadPicture, { isLoading: isUploading }] = useUploadUserProfilePictureMutation();
 
   const [formData, setFormData] = useState({
     name: "",
@@ -71,15 +83,14 @@ export default function ProfilePage() {
     e.preventDefault();
     if (!user?.id) return;
 
+    const toastId = toast.loading("Updating profile details...");
+
     try {
       let pictureUrl = user.picture;
 
       // Upload picture if a new one is selected
       if (file) {
-        const uploadData = new FormData();
-        uploadData.append("file", file);
-        const uploadRes = await uploadPicture(uploadData).unwrap();
-        pictureUrl = uploadRes?.data?.url || uploadRes?.url || "";
+        pictureUrl = await uploadImageToImgBB(file);
       }
 
       const payload: any = {
@@ -104,172 +115,213 @@ export default function ProfilePage() {
         dispatch(setCredentials({ user: res.data, token, role }));
       }
 
-      alert("Profile updated successfully!");
-      setFormData(prev => ({ ...prev, password: "" })); // Clear password field
+      toast.success("Profile updated successfully!", { id: toastId });
+      setFormData(prev => ({ ...prev, password: "" }));
       setFile(null);
     } catch (error: any) {
       console.error("Failed to update profile:", error);
-      alert(error?.data?.message || "Failed to update profile.");
+      toast.error(error?.data?.message || "Failed to update profile.", { id: toastId });
     }
   };
 
   if (!authUser) {
-    return <div className="p-6 text-center text-gray-500">Please log in to view your profile.</div>;
+    return (
+      <div className="w-full min-h-[40vh] flex flex-col items-center justify-center text-center gap-3">
+        <div className="w-12 h-12 rounded-full bg-red-50 text-red-500 flex items-center justify-center border border-red-100">
+          <AlertTriangle className="w-6 h-6" />
+        </div>
+        <h3 className="text-base font-bold text-slate-800">Authentication Required</h3>
+        <p className="text-xs text-slate-500 max-w-sm">Please log in to view your profile page.</p>
+      </div>
+    );
   }
 
   if (isFetching) {
-    return <div className="p-6 w-full animate-pulse flex space-x-4">Loading profile...</div>;
+    return (
+      <div className="w-full min-h-[60vh] flex flex-col items-center justify-center gap-4">
+        <span className="w-10 h-10 border-4 border-emerald-500/30 border-t-emerald-600 rounded-full animate-spin" />
+        <span className="text-sm font-semibold text-slate-500">Loading profile details...</span>
+      </div>
+    );
   }
 
   const profileImageUrl = user?.picture?.startsWith("http")
     ? user.picture
     : user?.picture
-    ? `http://localhost:8000${user.picture}`
+    ? `https://land-management-api.vercel.app${user.picture}`
     : "";
 
   return (
-    <div className="w-full p-4 md:p-6 mt-4">
-      <div className="bg-white/80 backdrop-blur-xl rounded-3xl shadow-sm border border-slate-200/80 overflow-hidden">
-        {/* Banner */}
-        <div className="h-32 bg-gradient-to-r from-emerald-500 via-teal-500 to-teal-650"></div>
+    <div className="w-full space-y-6 py-4 sm:py-6 relative overflow-x-hidden">
+      {/* Background Radial Glow elements */}
+      <div className="absolute top-[-10%] right-[-5%] w-[400px] h-[400px] bg-emerald-400/5 rounded-full blur-[120px] -z-10 pointer-events-none" />
+      <div className="absolute bottom-[10%] left-[-5%] w-[350px] h-[350px] bg-teal-400/5 rounded-full blur-[110px] -z-10 pointer-events-none" />
+
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
         
-        <div className="px-6 md:px-8 pb-8 relative">
-          <form onSubmit={handleSubmit}>
-            {/* Profile Picture Upload */}
-            <div className="flex flex-col sm:flex-row gap-6 items-end sm:items-center -mt-12 mb-8">
-              <div className="relative group">
-                <div className="w-28 h-28 rounded-full border-4 border-white shadow-md overflow-hidden bg-emerald-50 flex items-center justify-center text-emerald-600 text-3xl font-bold relative">
-                  {file ? (
-                    <Image src={URL.createObjectURL(file)} alt="Preview" layout="fill" objectFit="cover" />
-                  ) : profileImageUrl ? (
-                    <Image src={profileImageUrl} alt="Profile" layout="fill" objectFit="cover" />
-                  ) : (
-                    <span>{formData.name?.charAt(0)?.toUpperCase()}</span>
-                  )}
-                  
-                  {/* Hover Overlay for Upload */}
-                  <label className="absolute inset-0 bg-black/50 hidden group-hover:flex flex-col items-center justify-center text-white cursor-pointer transition-all">
-                    <svg className="w-6 h-6 mb-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" />
-                    </svg>
-                    <span className="text-xs font-medium">Change</span>
-                    <input type="file" accept="image/*" onChange={handleFileChange} className="hidden" />
-                  </label>
-                </div>
-              </div>
-              
-              <div className="flex-1 mt-4 sm:mt-12">
-                <h1 className="text-2xl font-bold text-slate-805">{user.name}</h1>
-                <span className="inline-block mt-1 px-3 py-1 bg-emerald-50 text-emerald-700 border border-emerald-100 text-xs font-semibold rounded-full uppercase tracking-wider">
-                  {user.role} Account
-                </span>
+        {/* Left Side: Profile Card */}
+        <div className="lg:col-span-1 bg-white/45 backdrop-blur-xl border border-white/85 rounded-3xl shadow-sm overflow-hidden group">
+          {/* Header Banner */}
+          <div className="h-28 bg-gradient-to-r from-emerald-500 via-teal-500 to-teal-600 relative">
+            <div className="absolute inset-0 bg-black/10" />
+          </div>
+          
+          <div className="px-6 pb-6 relative flex flex-col items-center">
+            {/* Avatar block */}
+            <div className="relative -mt-14 mb-4 group/avatar">
+              <div className="w-24 h-24 rounded-full border-4 border-white shadow-md overflow-hidden bg-emerald-50 flex items-center justify-center text-emerald-600 text-3xl font-bold relative">
+                {file ? (
+                  /* eslint-disable-next-line @next/next/no-img-element */
+                  <img src={URL.createObjectURL(file)} alt="Preview" className="w-full h-full object-cover" />
+                ) : profileImageUrl ? (
+                  /* eslint-disable-next-line @next/next/no-img-element */
+                  <img src={profileImageUrl} alt="Profile" className="w-full h-full object-cover" />
+                ) : (
+                  <span>{formData.name?.charAt(0)?.toUpperCase()}</span>
+                )}
+                
+                {/* Upload Hover Overlay */}
+                <label className="absolute inset-0 bg-slate-900/60 opacity-0 group-hover/avatar:opacity-100 flex flex-col items-center justify-center text-white cursor-pointer transition-all duration-300">
+                  <Camera className="w-5 h-5 mb-0.5" />
+                  <span className="text-[9px] font-bold uppercase tracking-wider">Change</span>
+                  <input type="file" accept="image/*" onChange={handleFileChange} className="hidden" />
+                </label>
               </div>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-              {/* Personal Information */}
-              <div className="space-y-6">
-                <h3 className="text-lg font-semibold text-slate-800 border-b border-slate-100 pb-2">Personal Information</h3>
-                
-                <div>
-                  <label className="block text-sm font-medium text-slate-700">Full Name</label>
+            {/* Profile Meta info */}
+            <div className="text-center space-y-1">
+              <h2 className="text-lg font-extrabold text-slate-800 tracking-tight">{user.name}</h2>
+              <span className="inline-flex items-center px-3 py-0.5 bg-emerald-50 text-emerald-800 border border-emerald-100 text-[10px] font-bold rounded-full uppercase tracking-wider">
+                {user.role} Account
+              </span>
+            </div>
+
+            {/* Readonly details */}
+            <div className="w-full mt-6 pt-5 border-t border-slate-100 space-y-4 text-left">
+              <div className="flex items-center gap-3 p-3 rounded-2xl bg-white/40 border border-white/50">
+                <div className="p-2 bg-slate-50 text-slate-400 rounded-xl">
+                  <Mail className="w-4 h-4" />
+                </div>
+                <div className="min-w-0">
+                  <p className="text-[9px] font-bold text-slate-400 uppercase tracking-wider">Email Address</p>
+                  <p className="text-xs font-bold text-slate-600 truncate">{user.email}</p>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-3 p-3 rounded-2xl bg-white/40 border border-white/50">
+                <div className="p-2 bg-slate-50 text-slate-400 rounded-xl">
+                  <Hash className="w-4 h-4" />
+                </div>
+                <div className="min-w-0">
+                  <p className="text-[9px] font-bold text-slate-400 uppercase tracking-wider">National ID (NID)</p>
+                  <p className="text-xs font-bold text-slate-600 truncate">{user.Nid || "—"}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Right Side: Account Settings Form */}
+        <div className="lg:col-span-2 bg-white/45 backdrop-blur-xl border border-white/85 p-6 md:p-8 rounded-3xl shadow-sm relative overflow-hidden group">
+          <div className="absolute top-0 right-0 w-60 h-60 bg-gradient-to-br from-emerald-500/5 to-teal-500/0 rounded-full blur-2xl pointer-events-none" />
+
+          <h3 className="text-sm font-extrabold text-slate-800 mb-6 flex items-center gap-2 uppercase tracking-wider pb-3 border-b border-slate-100">
+            <User className="w-4.5 h-4.5 text-emerald-600" />
+            Update Account Settings
+          </h3>
+
+          <form onSubmit={handleSubmit} className="space-y-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              
+              <div className="space-y-1.5 col-span-1 sm:col-span-2">
+                <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wider">Full Name *</label>
+                <div className="relative group/input">
+                  <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
+                    <User className="h-4.5 w-4.5 text-slate-400 group-focus-within/input:text-emerald-600 transition-colors" />
+                  </div>
                   <input
                     required
                     type="text"
                     name="name"
                     value={formData.name}
                     onChange={handleChange}
-                    className="mt-1 block w-full border border-slate-200/85 rounded-xl p-2.5 shadow-sm focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-500 focus:outline-none transition-all"
+                    className="w-full pl-10.5 pr-4 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition bg-white text-slate-800 text-sm font-medium"
                   />
                 </div>
+              </div>
 
-                <div>
-                  <label className="block text-sm font-medium text-slate-700">Email Address</label>
-                  <input
-                    required
-                    type="email"
-                    name="email"
-                    value={formData.email}
-                    onChange={handleChange}
-                    className="mt-1 block w-full border border-slate-200/85 rounded-xl p-2.5 shadow-sm bg-slate-50 text-slate-500 cursor-not-allowed"
-                    disabled
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-slate-700">Phone Number</label>
+              <div className="space-y-1.5 col-span-1 sm:col-span-2">
+                <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wider">Phone Number *</label>
+                <div className="relative group/input">
+                  <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
+                    <Phone className="h-4.5 w-4.5 text-slate-400 group-focus-within/input:text-emerald-600 transition-colors" />
+                  </div>
                   <input
                     required
                     type="text"
                     name="phone"
                     value={formData.phone}
                     onChange={handleChange}
-                    className="mt-1 block w-full border border-slate-200/85 rounded-xl p-2.5 shadow-sm focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-500 focus:outline-none transition-all"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-slate-700">National ID (NID)</label>
-                  <input
-                    required
-                    type="text"
-                    name="Nid"
-                    value={formData.Nid}
-                    onChange={handleChange}
-                    className="mt-1 block w-full border border-slate-200/85 rounded-xl p-2.5 shadow-sm bg-slate-50 text-slate-500 cursor-not-allowed"
-                    disabled
+                    className="w-full pl-10.5 pr-4 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition bg-white text-slate-800 text-sm font-medium"
                   />
                 </div>
               </div>
 
-              {/* Security & Password */}
-              <div className="space-y-6">
-                <h3 className="text-lg font-semibold text-slate-800 border-b border-slate-100 pb-2">Security</h3>
-                
-                <div className="bg-amber-50/70 border border-amber-200/60 rounded-2xl p-5">
-                  <h4 className="text-sm font-semibold text-amber-800 flex items-center gap-2">
-                    <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                      <path fillRule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clipRule="evenodd" />
-                    </svg>
-                    Update Password
-                  </h4>
-                  <p className="text-xs text-amber-700 mt-1 mb-4">
-                    Leave this field blank if you do not wish to change your password.
-                  </p>
+            </div>
+
+            {/* Password Section */}
+            <div className="pt-4 border-t border-slate-100 space-y-4">
+              <h4 className="text-xs font-bold text-emerald-800 uppercase tracking-wider flex items-center gap-1.5 bg-emerald-50 border border-emerald-100/50 p-3 rounded-2xl">
+                <Shield className="w-4 h-4 text-emerald-600 shrink-0" />
+                Change Password (Optional)
+              </h4>
+              <p className="text-[10px] text-slate-400 font-semibold leading-relaxed">
+                Leave this field empty if you do not want to change your current password.
+              </p>
+              
+              <div className="space-y-1.5">
+                <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wider">New Password</label>
+                <div className="relative group/input">
+                  <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
+                    <Lock className="h-4.5 w-4.5 text-slate-400 group-focus-within/input:text-emerald-600 transition-colors" />
+                  </div>
                   <input
                     type="password"
                     name="password"
                     value={formData.password}
                     onChange={handleChange}
-                    placeholder="Enter new password"
-                    className="block w-full border border-amber-200/85 rounded-xl p-2.5 shadow-sm focus:ring-4 focus:ring-amber-500/10 focus:border-amber-500 focus:outline-none transition-all bg-white"
+                    placeholder="••••••••"
+                    className="w-full pl-10.5 pr-4 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition bg-white text-slate-800 text-sm font-medium"
                   />
                 </div>
               </div>
             </div>
 
-            <div className="mt-10 flex justify-end border-t border-slate-100 pt-6">
+            {/* Action Trigger */}
+            <div className="pt-5 border-t border-slate-200/40 flex justify-end">
               <button
                 type="submit"
-                disabled={isUpdating || isUploading}
-                className="px-8 py-3 bg-gradient-to-r from-emerald-600 to-teal-600 text-white font-semibold rounded-xl hover:from-emerald-700 hover:to-teal-700 disabled:opacity-50 transition shadow-md shadow-emerald-500/10 flex items-center gap-2"
+                disabled={isUpdating}
+                className="w-full sm:w-auto px-6 py-3 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white font-bold rounded-xl text-xs transition shadow-md shadow-emerald-500/10 hover:shadow-emerald-500/25 disabled:opacity-50 active:scale-[0.98] flex items-center justify-center gap-2"
               >
-                {isUpdating || isUploading ? (
+                {isUpdating ? (
                   <>
-                    <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" fill="none" viewBox="0 0 24 24">
-                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
-                    </svg>
-                    Saving Changes...
+                    <span className="w-3.5 h-3.5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                    <span>Saving Changes...</span>
                   </>
                 ) : (
-                  "Save Changes"
+                  <>
+                    <Save className="w-4 h-4" />
+                    <span>Save Changes</span>
+                  </>
                 )}
               </button>
             </div>
+
           </form>
         </div>
+
       </div>
     </div>
   );
