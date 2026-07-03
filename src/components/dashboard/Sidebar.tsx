@@ -71,9 +71,9 @@ export default function Sidebar() {
           <Image
             src="/logo2.png"
             alt="LandSync Logo"
-            width={120}
-            height={32}
-            className="h-8 w-auto object-contain"
+            width={160}
+            height={44}
+            className="h-12 w-auto object-contain"
             priority
           />
         </Link>
@@ -171,9 +171,9 @@ export default function Sidebar() {
           <Image
             src="/logo2.png"
             alt="LandSync Logo"
-            width={110}
-            height={28}
-            className="h-7 w-auto object-contain"
+            width={140}
+            height={36}
+            className="h-10 w-auto object-contain"
             priority
           />
         </Link>

@@ -34,7 +34,7 @@ export default function DashboardLayout({
         <TopNavbar />
 
         {/* Dashboard children */}
-        <main className="flex-grow p-6 pb-24 md:p-8 overflow-y-auto bg-slate-50">
+        <main className="flex-grow px-3 py-4 pb-24 sm:px-5 sm:py-5 md:p-8 overflow-y-auto bg-slate-50">
           {children}
         </main>
       </div>

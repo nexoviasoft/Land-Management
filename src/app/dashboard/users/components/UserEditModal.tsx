@@ -5,6 +5,7 @@ import {
   useUpdateUserMutation,
 } from "@/redux/api/usersApiSlice";
 import { uploadImageToImgBB } from "@/utils/uploadImage";
+import { toast } from "sonner";
 import {
   User as UserIcon,
   Mail,
@@ -93,6 +94,7 @@ export default function UserEditModal({
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsUploadingImage(true);
+    const toastId = toast.loading("Updating user details...");
     try {
       let pictureUrl = user.picture;
 
@@ -120,12 +122,12 @@ export default function UserEditModal({
       }
 
       await updateUser({ id: user.id, data: payload }).unwrap();
-      alert("User updated successfully!");
+      toast.success("User updated successfully!", { id: toastId });
       handleClose();
     } catch (error: any) {
       setIsUploadingImage(false);
       console.error("Failed to update user:", error);
-      alert(error?.data?.message || "Failed to update user");
+      toast.error(error?.data?.message || "Failed to update user.", { id: toastId });
     }
   };
 
