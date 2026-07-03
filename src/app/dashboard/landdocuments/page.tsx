@@ -35,11 +35,11 @@ function DeleteConfirmModal({ isOpen, onClose, onConfirm, itemName }: DeleteConf
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
       {/* Backdrop */}
-      <div 
+      <div
         className="absolute inset-0 bg-slate-900/40 backdrop-blur-sm transition-opacity"
         onClick={onClose}
       />
-      
+
       {/* Modal Content */}
       <div className="bg-white/95 backdrop-blur-xl border border-white rounded-3xl shadow-xl w-full max-w-md p-6 relative hover:scale-[1.005] transition-transform duration-300 z-10">
         <button
@@ -101,11 +101,11 @@ export default function LandDocumentsPage() {
 
   // Filter land documents: partners can only see their own uploaded documents
   const docs = role === "partner" && user?.id
-    ? allDocs.filter((doc: any) => 
-        doc.userId === user.id || 
-        doc.user === user.id || 
-        (doc.user && typeof doc.user === "object" && (doc.user.id === user.id || doc.user._id === user.id))
-      )
+    ? allDocs.filter((doc: any) =>
+      doc.userId === user.id ||
+      doc.user === user.id ||
+      (doc.user && typeof doc.user === "object" && (doc.user.id === user.id || doc.user._id === user.id))
+    )
     : allDocs;
 
   const handleConfirmDelete = async () => {
@@ -149,7 +149,7 @@ export default function LandDocumentsPage() {
       </div>
     );
   }
-
+  // oiuuwhjefu9hwe9ufghe9hj9i
   return (
     <div className="w-full space-y-8 py-4 sm:py-6 relative overflow-x-hidden">
       {/* Background Radial Glow elements */}
@@ -161,7 +161,7 @@ export default function LandDocumentsPage() {
         {/* Ambient background decoration */}
         <div className="absolute top-0 right-0 w-64 h-64 bg-gradient-to-br from-brand-orange/10 to-orange-500/0 rounded-full blur-3xl pointer-events-none group-hover:scale-110 transition-transform duration-700" />
         <div className="absolute -left-12 -bottom-12 w-48 h-48 bg-gradient-to-tr from-amber-500/5 to-brand-orange/0 rounded-full blur-2xl pointer-events-none" />
-        
+
         <div className="flex items-center gap-4 relative z-10 w-full sm:w-auto">
           <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-brand-orange to-orange-500 flex items-center justify-center text-white shadow-md shadow-brand-orange/10 shrink-0">
             <FileText className="w-6 h-6" />
@@ -198,12 +198,12 @@ export default function LandDocumentsPage() {
           >
             {/* Hover color glow layer */}
             <div className={`absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 ${stat.glow} pointer-events-none`} />
-            
+
             <div className="space-y-0.5 sm:space-y-1 relative z-10 min-w-0">
               <span className="text-[9px] sm:text-[10px] font-bold text-slate-400 uppercase tracking-wider block truncate">{stat.label}</span>
               <p className="text-xl sm:text-2xl font-extrabold text-slate-800">{stat.value}</p>
             </div>
-            
+
             <div className={`relative z-10 w-9 h-9 sm:w-11 sm:h-11 rounded-xl sm:rounded-2xl bg-gradient-to-br ${stat.color} text-white flex items-center justify-center shadow-md shadow-slate-200/50 group-hover:shadow-lg group-hover:scale-105 group-hover:rotate-3 transition-all duration-300 shrink-0`}>
               <stat.icon className="w-4.5 h-4.5 sm:w-5.5 sm:h-5.5" />
             </div>
@@ -213,7 +213,7 @@ export default function LandDocumentsPage() {
 
       {/* Main Container */}
       <div className="bg-white/45 backdrop-blur-xl rounded-3xl border border-white/85 shadow-[0_12px_40px_-12px_rgba(148,163,184,0.08)] overflow-hidden">
-        
+
         {/* Desktop View Table */}
         <div className="hidden md:block overflow-x-auto">
           <table className="w-full text-left border-collapse">
@@ -237,7 +237,7 @@ export default function LandDocumentsPage() {
                       <p className="text-sm font-semibold text-slate-800">No land documents found</p>
                       <p className="text-xs text-slate-500">Get started by creating your first document.</p>
                     </div>
-                    <button 
+                    <button
                       onClick={() => router.push("/dashboard/landdocuments/create")}
                       className="px-4 py-2 bg-orange-50 text-brand-orange border border-orange-100 hover:bg-orange-100/70 font-bold text-xs rounded-xl transition"
                     >
@@ -319,7 +319,7 @@ export default function LandDocumentsPage() {
                 <p className="text-sm font-semibold text-slate-800">No land documents found</p>
                 <p className="text-xs text-slate-500">Get started by creating your first document.</p>
               </div>
-              <button 
+              <button
                 onClick={() => router.push("/dashboard/landdocuments/create")}
                 className="px-4 py-2 bg-orange-50 text-brand-orange border border-orange-100 hover:bg-orange-100/70 font-bold text-xs rounded-xl transition"
               >
@@ -335,7 +335,7 @@ export default function LandDocumentsPage() {
               else if (doc.landDetails?.landType === "Industrial") badgeStyles = "bg-orange-100 text-brand-orange border-orange-200";
 
               return (
-                <div 
+                <div
                   key={doc.id}
                   className="bg-white/50 backdrop-blur-md rounded-2xl border border-white/80 p-4.5 space-y-4.5 shadow-[0_2px_8px_rgba(15,23,42,0.01)] hover:-translate-y-1 hover:shadow-md hover:border-brand-orange/20 transition-all duration-300 relative overflow-hidden group"
                 >
