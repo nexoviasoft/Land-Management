@@ -120,7 +120,7 @@ function BanConfirmModal({
         </button>
         <div className="flex flex-col items-center text-center space-y-4">
           <div className={`w-12 h-12 rounded-2xl flex items-center justify-center shadow-inner ${
-            isBanned ? "bg-emerald-50 text-emerald-600" : "bg-amber-50 text-amber-600"
+            isBanned ? "bg-orange-50 text-brand-orange" : "bg-amber-50 text-amber-600"
           }`}>
             {isBanned ? <UserCheck className="w-6 h-6" /> : <Ban className="w-6 h-6" />}
           </div>
@@ -147,7 +147,7 @@ function BanConfirmModal({
               onClick={onConfirm}
               className={`flex-1 py-2.5 text-white font-bold rounded-xl text-xs transition-all shadow-md active:scale-95 ${
                 isBanned
-                  ? "bg-emerald-600 hover:bg-emerald-700 shadow-emerald-500/10"
+                  ? "bg-brand-orange hover:bg-orange-600 shadow-orange-500/10"
                   : "bg-amber-600 hover:bg-amber-700 shadow-amber-500/10"
               }`}
             >
@@ -211,7 +211,7 @@ export default function UsersPage() {
   if (isLoading) {
     return (
       <div className="w-full min-h-[60vh] flex flex-col items-center justify-center gap-4">
-        <span className="w-10 h-10 border-4 border-emerald-500/30 border-t-emerald-600 rounded-full animate-spin" />
+        <span className="w-10 h-10 border-4 border-brand-orange/30 border-t-brand-orange rounded-full animate-spin" />
         <span className="text-sm font-semibold text-slate-500">Loading users...</span>
       </div>
     );
@@ -234,26 +234,31 @@ export default function UsersPage() {
   return (
     <div className="w-full space-y-8 py-4 sm:py-6 relative overflow-x-hidden">
       {/* Background Radial Glow elements */}
-      <div className="absolute top-[-10%] right-[-5%] w-[400px] h-[400px] bg-emerald-400/5 rounded-full blur-[120px] -z-10 pointer-events-none" />
-      <div className="absolute bottom-[10%] left-[-5%] w-[350px] h-[350px] bg-teal-400/5 rounded-full blur-[110px] -z-10 pointer-events-none" />
+      <div className="absolute top-[-10%] right-[-5%] w-[400px] h-[400px] bg-brand-orange/5 rounded-full blur-[120px] -z-10 pointer-events-none" />
+      <div className="absolute bottom-[10%] left-[-5%] w-[350px] h-[350px] bg-amber-400/5 rounded-full blur-[110px] -z-10 pointer-events-none" />
 
       {/* Header Panel */}
-      <div className="relative overflow-hidden bg-white/60 backdrop-blur-xl border border-white/90 p-6 md:p-8 rounded-3xl flex flex-col sm:flex-row justify-between items-start sm:items-center gap-6 shadow-[0_20px_50px_rgba(0,0,0,0.02)] hover:shadow-[0_20px_50px_rgba(16,185,129,0.04)] transition-all duration-500 group">
+      <div className="relative overflow-hidden bg-white/60 backdrop-blur-xl border border-white/90 p-5 sm:p-6 md:p-8 rounded-3xl flex flex-col sm:flex-row justify-between items-start sm:items-center gap-6 shadow-[0_20px_50px_rgba(0,0,0,0.02)] hover:shadow-[0_20px_50px_rgba(255,96,20,0.04)] transition-all duration-500 group">
         {/* Ambient background decoration */}
-        <div className="absolute top-0 right-0 w-64 h-64 bg-gradient-to-br from-emerald-500/10 to-teal-500/0 rounded-full blur-3xl pointer-events-none group-hover:scale-110 transition-transform duration-700" />
-        <div className="absolute -left-12 -bottom-12 w-48 h-48 bg-gradient-to-tr from-teal-500/5 to-emerald-500/0 rounded-full blur-2xl pointer-events-none" />
+        <div className="absolute top-0 right-0 w-64 h-64 bg-gradient-to-br from-brand-orange/10 to-orange-500/0 rounded-full blur-3xl pointer-events-none group-hover:scale-110 transition-transform duration-700" />
+        <div className="absolute -left-12 -bottom-12 w-48 h-48 bg-gradient-to-tr from-orange-500/5 to-brand-orange/0 rounded-full blur-2xl pointer-events-none" />
         
-        <div className="relative space-y-1">
-          <h1 className="text-2xl md:text-3xl font-extrabold bg-gradient-to-r from-slate-900 via-slate-800 to-emerald-950 bg-clip-text text-transparent tracking-tight">
-            Users Management
-          </h1>
-          <p className="text-xs text-slate-500 font-semibold mt-0.5">
-            Manage, audit, and configure user profiles and dashboard authorities
-          </p>
+        <div className="flex items-center gap-4 relative z-10 w-full sm:w-auto">
+          <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-brand-orange to-orange-500 flex items-center justify-center text-white shadow-md shadow-brand-orange/10 shrink-0">
+            <Users className="w-6 h-6" />
+          </div>
+          <div>
+            <h1 className="text-xl sm:text-2xl md:text-3xl font-extrabold bg-gradient-to-r from-slate-900 via-slate-800 to-orange-950 bg-clip-text text-transparent tracking-tight">
+              Users Management
+            </h1>
+            <p className="text-xs text-slate-500 font-semibold mt-0.5">
+              Manage, audit, and configure user profiles and dashboard authorities
+            </p>
+          </div>
         </div>
         <button
           onClick={() => setIsCreateModalOpen(true)}
-          className="relative z-10 px-6 py-3 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white font-bold rounded-xl text-sm transition-all duration-300 shadow-md shadow-emerald-500/10 hover:shadow-emerald-500/25 hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98] flex items-center gap-2"
+          className="relative z-10 w-full sm:w-auto px-6 py-3 bg-gradient-to-r from-brand-orange to-orange-500 hover:from-orange-600 hover:to-orange-400 text-white font-bold rounded-xl text-xs sm:text-sm transition-all duration-300 shadow-md shadow-brand-orange/10 hover:shadow-brand-orange/25 hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98] flex items-center justify-center gap-2 shrink-0"
         >
           <Plus className="w-4.5 h-4.5 animate-pulse" />
           Add New User
@@ -263,10 +268,10 @@ export default function UsersPage() {
       {/* Statistics Row */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         {[
-          { label: "Total Users", value: totalUsers, icon: Users, color: "from-emerald-500 to-teal-500", glow: "group-hover:bg-emerald-500/5", border: "hover:border-emerald-500/20" },
-          { label: "Active Users", value: activeUsers, icon: ShieldCheck, color: "from-teal-500 to-emerald-500", glow: "group-hover:bg-teal-500/5", border: "hover:border-teal-500/20" },
+          { label: "Total Users", value: totalUsers, icon: Users, color: "from-brand-orange to-orange-500", glow: "group-hover:bg-brand-orange/5", border: "hover:border-brand-orange/20" },
+          { label: "Active Users", value: activeUsers, icon: ShieldCheck, color: "from-orange-500 to-amber-500", glow: "group-hover:bg-orange-500/5", border: "hover:border-orange-500/20" },
           { label: "Banned Users", value: bannedUsers, icon: Ban, color: "from-rose-500 to-red-600", glow: "group-hover:bg-rose-500/5", border: "hover:border-rose-500/20" },
-          { label: "Admins", value: adminUsers, icon: ShieldAlert, color: "from-slate-700 to-slate-800", glow: "group-hover:bg-slate-700/5", border: "hover:border-slate-700/20" },
+          { label: "Admins", value: adminUsers, icon: ShieldAlert, color: "from-orange-600 to-amber-600", glow: "group-hover:bg-orange-600/5", border: "hover:border-orange-600/20" },
         ].map((stat, i) => (
           <div
             key={i}
@@ -324,7 +329,7 @@ export default function UsersPage() {
                           />
                         </div>
                       ) : (
-                        <div className="w-10 h-10 rounded-full bg-gradient-to-tr from-emerald-500 to-teal-500 flex items-center justify-center text-white font-extrabold text-xs shadow-sm shrink-0">
+                        <div className="w-10 h-10 rounded-full bg-gradient-to-tr from-brand-orange to-orange-500 flex items-center justify-center text-white font-extrabold text-xs shadow-sm shrink-0">
                           {user.name.charAt(0).toUpperCase()}
                         </div>
                       )}
@@ -346,8 +351,8 @@ export default function UsersPage() {
                     <td className="py-4 px-6">
                       <span className={`inline-flex items-center px-2.5 py-0.5 rounded-lg text-[10px] font-bold uppercase tracking-wider border ${
                         user.role === "admin"
-                          ? "bg-teal-50 text-teal-700 border-teal-100"
-                          : "bg-emerald-50 text-emerald-700 border-emerald-100"
+                          ? "bg-orange-50 text-brand-orange border-orange-100"
+                          : "bg-amber-50 text-amber-700 border-amber-100"
                       }`}>
                         {user.role}
                       </span>
@@ -356,9 +361,9 @@ export default function UsersPage() {
                       <span className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider border ${
                         user.isBanned
                           ? "bg-red-50 text-red-700 border-red-100"
-                          : "bg-emerald-50 text-emerald-700 border-emerald-100"
+                          : "bg-orange-50 text-brand-orange border-orange-100"
                       }`}>
-                        <span className={`w-1.5 h-1.5 rounded-full ${user.isBanned ? "bg-red-500 animate-pulse" : "bg-emerald-500"}`} />
+                        <span className={`w-1.5 h-1.5 rounded-full ${user.isBanned ? "bg-red-500 animate-pulse" : "bg-brand-orange"}`} />
                         {user.isBanned ? "Banned" : "Active"}
                       </span>
                     </td>
@@ -373,7 +378,7 @@ export default function UsersPage() {
                         </button>
                         <button
                           onClick={() => setEditingUser(user)}
-                          className="px-3 py-1.5 text-xs font-bold rounded-xl bg-emerald-50/40 text-emerald-800 border border-emerald-200/50 hover:bg-emerald-100/70 transition shadow-sm flex items-center gap-1 active:scale-95"
+                          className="px-3 py-1.5 text-xs font-bold rounded-xl bg-orange-50/40 text-brand-orange border border-orange-200/50 hover:bg-orange-100/70 transition shadow-sm flex items-center gap-1 active:scale-95"
                         >
                           <Edit className="w-3.5 h-3.5" />
                           Edit
@@ -382,7 +387,7 @@ export default function UsersPage() {
                           onClick={() => setBanTarget(user)}
                           className={`px-3 py-1.5 text-xs font-bold rounded-xl border transition shadow-sm flex items-center gap-1 active:scale-95 ${
                             user.isBanned
-                              ? "bg-emerald-600 text-white hover:bg-emerald-700 border-transparent"
+                              ? "bg-brand-orange text-white hover:bg-orange-600 border-transparent"
                               : "bg-amber-50 text-amber-700 border-amber-200 hover:bg-amber-100/70"
                           }`}
                         >
@@ -415,7 +420,7 @@ export default function UsersPage() {
             users.map((user) => (
               <div
                 key={user.id}
-                className="bg-white/50 backdrop-blur-md border border-white/60 p-5 rounded-2xl space-y-4 shadow-sm relative hover:border-emerald-500/20 transition-all duration-300"
+                className="bg-white/50 backdrop-blur-md border border-white/60 p-5 rounded-2xl space-y-4 shadow-sm relative hover:border-brand-orange/20 transition-all duration-300"
               >
                 <div className="flex items-center gap-3">
                   {user.picture ? (
@@ -428,7 +433,7 @@ export default function UsersPage() {
                       />
                     </div>
                   ) : (
-                    <div className="w-12 h-12 rounded-full bg-gradient-to-tr from-emerald-500 to-teal-500 flex items-center justify-center text-white font-extrabold text-sm shadow-sm shrink-0">
+                    <div className="w-12 h-12 rounded-full bg-gradient-to-tr from-brand-orange to-orange-500 flex items-center justify-center text-white font-extrabold text-sm shadow-sm shrink-0">
                       {user.name.charAt(0).toUpperCase()}
                     </div>
                   )}
@@ -437,17 +442,17 @@ export default function UsersPage() {
                     <div className="flex items-center gap-2 mt-1">
                       <span className={`inline-block px-2 py-0.5 rounded-lg text-[9px] font-bold uppercase tracking-wider border ${
                         user.role === "admin"
-                          ? "bg-teal-50 text-teal-700 border-teal-100"
-                          : "bg-emerald-50 text-emerald-700 border-emerald-100"
+                          ? "bg-orange-50 text-brand-orange border-orange-100"
+                          : "bg-amber-50 text-amber-700 border-amber-100"
                       }`}>
                         {user.role}
                       </span>
                       <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[9px] font-bold uppercase tracking-wider border ${
                         user.isBanned
                           ? "bg-red-50 text-red-700 border-red-100"
-                          : "bg-emerald-50 text-emerald-700 border-emerald-100"
+                          : "bg-orange-50 text-brand-orange border-orange-100"
                       }`}>
-                        <span className={`w-1.5 h-1.5 rounded-full ${user.isBanned ? "bg-red-500" : "bg-emerald-500"}`} />
+                        <span className={`w-1.5 h-1.5 rounded-full ${user.isBanned ? "bg-red-500" : "bg-brand-orange"}`} />
                         {user.isBanned ? "Banned" : "Active"}
                       </span>
                     </div>
@@ -484,7 +489,7 @@ export default function UsersPage() {
                   </button>
                   <button
                     onClick={() => setEditingUser(user)}
-                    className="py-2.5 text-xs font-bold rounded-xl bg-emerald-50/40 text-emerald-800 border border-emerald-200/50 hover:bg-emerald-100/70 transition shadow-sm flex items-center justify-center gap-1 active:scale-95"
+                    className="py-2.5 text-xs font-bold rounded-xl bg-orange-50/40 text-brand-orange border border-orange-200/50 hover:bg-orange-100/70 transition shadow-sm flex items-center justify-center gap-1 active:scale-95"
                   >
                     <Edit className="w-3.5 h-3.5" />
                     Edit User
@@ -493,7 +498,7 @@ export default function UsersPage() {
                     onClick={() => setBanTarget(user)}
                     className={`py-2.5 text-xs font-bold rounded-xl border transition shadow-sm flex items-center justify-center gap-1 active:scale-95 ${
                       user.isBanned
-                        ? "bg-emerald-600 text-white hover:bg-emerald-700 border-transparent col-span-2"
+                        ? "bg-brand-orange text-white hover:bg-orange-600 border-transparent col-span-2"
                         : "bg-amber-50 text-amber-700 border-amber-200 hover:bg-amber-100/70"
                     }`}
                   >

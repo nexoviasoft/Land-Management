@@ -34,16 +34,16 @@ const customSelectStyles = {
   control: (provided: any, state: any) => ({
     ...provided,
     backgroundColor: "rgba(255, 255, 255, 0.45)",
-    borderColor: state.isFocused ? "#10b981" : "#e2e8f0",
+    borderColor: state.isFocused ? "#FF6014" : "#e2e8f0",
     borderRadius: "0.75rem",
     padding: "3px 4px",
     paddingLeft: "30px",
     fontSize: "0.875rem",
     fontWeight: "500",
-    boxShadow: state.isFocused ? "0 0 0 2px rgba(16, 185, 129, 0.2)" : "none",
+    boxShadow: state.isFocused ? "0 0 0 2px rgba(255, 96, 20, 0.2)" : "none",
     transition: "all 0.2s",
     "&:hover": {
-      borderColor: state.isFocused ? "#10b981" : "#cbd5e1",
+      borderColor: state.isFocused ? "#FF6014" : "#cbd5e1",
     },
   }),
   menu: (provided: any) => ({
@@ -58,15 +58,15 @@ const customSelectStyles = {
   option: (provided: any, state: any) => ({
     ...provided,
     backgroundColor: state.isSelected
-      ? "#10b981"
+      ? "#FF6014"
       : state.isFocused
-      ? "rgba(16, 185, 129, 0.08)"
-      : "transparent",
+        ? "rgba(255, 96, 20, 0.08)"
+        : "transparent",
     color: state.isSelected ? "#ffffff" : "#334155",
     fontSize: "0.875rem",
     fontWeight: "500",
     "&:active": {
-      backgroundColor: "#10b981",
+      backgroundColor: "#FF6014",
       color: "#ffffff",
     },
   }),
@@ -258,10 +258,10 @@ export default function CreateLandDocPage() {
   return (
     <div className="w-full min-h-screen py-4 sm:py-6 relative overflow-x-hidden">
       {/* Background Radial Glow elements */}
-      <div className="absolute top-[-10%] right-[-5%] w-[400px] h-[400px] bg-emerald-400/8 rounded-full blur-[120px] -z-10 pointer-events-none" />
-      <div className="absolute bottom-[10%] left-[-5%] w-[350px] h-[350px] bg-teal-400/8 rounded-full blur-[110px] -z-10 pointer-events-none" />
+      <div className="absolute top-[-10%] right-[-5%] w-[400px] h-[400px] bg-brand-orange/8 rounded-full blur-[120px] -z-10 pointer-events-none" />
+      <div className="absolute bottom-[10%] left-[-5%] w-[350px] h-[350px] bg-amber-400/8 rounded-full blur-[110px] -z-10 pointer-events-none" />
 
-      <div className="bg-white/45 backdrop-blur-xl border border-white/85 p-6 md:p-8 lg:p-10 rounded-3xl shadow-[0_12px_40px_-12px_rgba(148,163,184,0.12)] relative hover:border-emerald-500/20 transition-all duration-500">
+      <div className="bg-white/45 backdrop-blur-xl border border-white/85 p-6 md:p-8 lg:p-10 rounded-3xl shadow-[0_12px_40px_-12px_rgba(148,163,184,0.12)] relative hover:border-brand-orange/20 transition-all duration-500">
         <button
           onClick={() => router.back()}
           className="absolute top-6 right-6 w-10 h-10 flex items-center justify-center text-slate-400 hover:text-slate-700 hover:bg-slate-100/70 rounded-full transition-all duration-300 shadow-sm border border-slate-200/40 active:scale-90"
@@ -271,11 +271,11 @@ export default function CreateLandDocPage() {
 
         {/* Page Title Header */}
         <div className="flex items-center gap-4 mb-8">
-          <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-emerald-500 to-teal-600 flex items-center justify-center text-white shadow-md shadow-emerald-500/10">
+          <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-brand-orange to-orange-500 flex items-center justify-center text-white shadow-md shadow-brand-orange/10">
             <FilePlus className="w-6 h-6" />
           </div>
           <div>
-            <h2 className="text-2xl font-extrabold bg-gradient-to-r from-slate-900 via-slate-800 to-emerald-950 bg-clip-text text-transparent tracking-tight">
+            <h2 className="text-2xl font-extrabold bg-gradient-to-r from-slate-900 via-slate-800 to-orange-950 bg-clip-text text-transparent tracking-tight">
               Add New Land Document
             </h2>
             <p className="text-xs text-slate-500 font-semibold tracking-wide mt-0.5">
@@ -288,26 +288,26 @@ export default function CreateLandDocPage() {
           {/* Location Section */}
           <div className="space-y-6">
             <div className="flex items-center gap-2.5 border-b border-slate-100 pb-2.5">
-              <div className="p-1.5 bg-emerald-50 text-emerald-600 rounded-lg">
+              <div className="p-1.5 bg-orange-50 text-brand-orange rounded-lg">
                 <Compass className="w-5 h-5" />
               </div>
               <h3 className="text-lg font-bold text-slate-800">Location Details</h3>
             </div>
-            
+
             <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
               <div className="space-y-1.5">
                 <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wider">Division *</label>
                 <div className="relative group">
                   <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none z-10">
-                    <Map className="h-4 w-4 text-slate-400 group-focus-within:text-emerald-600 transition-colors" />
+                    <Map className="h-4 w-4 text-slate-400 group-focus-within:text-brand-orange transition-colors" />
                   </div>
                   <Select
                     options={divisions.map((div) => ({ value: div.division, label: div.division }))}
                     value={formData.location.division ? { value: formData.location.division, label: formData.location.division } : null}
                     onChange={(option: any) => setFormData({
                       ...formData,
-                      location: { 
-                        ...formData.location, 
+                      location: {
+                        ...formData.location,
                         division: option?.value || "",
                         district: "",
                         upazila: "",
@@ -325,15 +325,15 @@ export default function CreateLandDocPage() {
                 <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wider">District *</label>
                 <div className="relative group">
                   <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none z-10">
-                    <MapPin className="h-4 w-4 text-slate-400 group-focus-within:text-emerald-600 transition-colors" />
+                    <MapPin className="h-4 w-4 text-slate-400 group-focus-within:text-brand-orange transition-colors" />
                   </div>
                   <Select
                     options={districts.map((dist) => ({ value: dist.district, label: dist.district }))}
                     value={formData.location.district ? { value: formData.location.district, label: formData.location.district } : null}
                     onChange={(option: any) => setFormData({
                       ...formData,
-                      location: { 
-                        ...formData.location, 
+                      location: {
+                        ...formData.location,
                         district: option?.value || "",
                         upazila: "",
                         mouza: ""
@@ -351,15 +351,15 @@ export default function CreateLandDocPage() {
                 <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wider">Upazila *</label>
                 <div className="relative group">
                   <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none z-10">
-                    <Navigation className="h-4 w-4 text-slate-400 group-focus-within:text-emerald-600 transition-colors" />
+                    <Navigation className="h-4 w-4 text-slate-400 group-focus-within:text-brand-orange transition-colors" />
                   </div>
                   <Select
                     options={upazilas.map((upa) => ({ value: upa, label: upa }))}
                     value={formData.location.upazila ? { value: formData.location.upazila, label: formData.location.upazila } : null}
                     onChange={(option: any) => setFormData({
                       ...formData,
-                      location: { 
-                        ...formData.location, 
+                      location: {
+                        ...formData.location,
                         upazila: option?.value || "",
                         mouza: ""
                       }
@@ -376,26 +376,26 @@ export default function CreateLandDocPage() {
                 <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wider">Mouza *</label>
                 <div className="relative group">
                   <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none z-10">
-                    <Locate className="h-4 w-4 text-slate-400 group-focus-within:text-emerald-600 transition-colors" />
+                    <Locate className="h-4 w-4 text-slate-400 group-focus-within:text-brand-orange transition-colors" />
                   </div>
-                  <input 
-                    required 
-                    type="text" 
-                    name="mouza" 
-                    list="mouza-options" 
+                  <input
+                    required
+                    type="text"
+                    name="mouza"
+                    list="mouza-options"
                     placeholder="Enter Mouza"
-                    value={formData.location.mouza} 
+                    value={formData.location.mouza}
                     onChange={(e) => setFormData({
                       ...formData,
                       location: { ...formData.location, mouza: e.target.value }
                     })}
-                    className="w-full pl-10.5 pr-4 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition bg-white text-slate-800 text-sm font-medium" 
+                    className="w-full pl-10.5 pr-4 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-brand-orange/20 focus:border-brand-orange transition bg-white text-slate-800 text-sm font-medium"
                   />
                   <datalist id="mouza-options">
-                    {(formData.location.upazila === "Mithapukur" || formData.location.upazila === "মিঠাপুকুর") 
+                    {(formData.location.upazila === "Mithapukur" || formData.location.upazila === "মিঠাপুকুর")
                       && MOCK_MOUZAS.map((mouza) => (
-                          <option key={mouza.MOUZA_NAME} value={mouza.MOUZA_NAME} />
-                        ))
+                        <option key={mouza.MOUZA_NAME} value={mouza.MOUZA_NAME} />
+                      ))
                     }
                   </datalist>
                 </div>
@@ -406,18 +406,18 @@ export default function CreateLandDocPage() {
           {/* Land Details Section */}
           <div className="space-y-6">
             <div className="flex items-center gap-2.5 border-b border-slate-100 pb-2.5">
-              <div className="p-1.5 bg-emerald-50 text-emerald-600 rounded-lg">
+              <div className="p-1.5 bg-orange-50 text-brand-orange rounded-lg">
                 <Layers className="w-5 h-5" />
               </div>
               <h3 className="text-lg font-bold text-slate-800">Land Details</h3>
             </div>
-            
+
             <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
               <div className="space-y-1.5">
                 <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wider">Khatian No *</label>
                 <div className="relative group">
                   <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
-                    <FileSpreadsheet className="h-4.5 w-4.5 text-slate-400 group-focus-within:text-emerald-600 transition-colors" />
+                    <FileSpreadsheet className="h-4.5 w-4.5 text-slate-400 group-focus-within:text-brand-orange transition-colors" />
                   </div>
                   <input
                     required
@@ -426,7 +426,7 @@ export default function CreateLandDocPage() {
                     value={formData.landDetails.khatianNo}
                     onChange={handleDetailsChange}
                     placeholder="Enter Khatian Number"
-                    className="w-full pl-10.5 pr-4 py-3 bg-white/50 border border-slate-200 rounded-xl text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all text-sm font-medium"
+                    className="w-full pl-10.5 pr-4 py-3 bg-white/50 border border-slate-200 rounded-xl text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-brand-orange/20 focus:border-brand-orange transition-all text-sm font-medium"
                   />
                 </div>
               </div>
@@ -434,7 +434,7 @@ export default function CreateLandDocPage() {
                 <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wider">Dag No *</label>
                 <div className="relative group">
                   <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
-                    <Grid className="h-4.5 w-4.5 text-slate-400 group-focus-within:text-emerald-600 transition-colors" />
+                    <Grid className="h-4.5 w-4.5 text-slate-400 group-focus-within:text-brand-orange transition-colors" />
                   </div>
                   <input
                     required
@@ -443,7 +443,7 @@ export default function CreateLandDocPage() {
                     value={formData.landDetails.dagNo}
                     onChange={handleDetailsChange}
                     placeholder="Enter Dag Number"
-                    className="w-full pl-10.5 pr-4 py-3 bg-white/50 border border-slate-200 rounded-xl text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all text-sm font-medium"
+                    className="w-full pl-10.5 pr-4 py-3 bg-white/50 border border-slate-200 rounded-xl text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-brand-orange/20 focus:border-brand-orange transition-all text-sm font-medium"
                   />
                 </div>
               </div>
@@ -451,7 +451,7 @@ export default function CreateLandDocPage() {
                 <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wider">Kharij Case No *</label>
                 <div className="relative group">
                   <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
-                    <Hash className="h-4.5 w-4.5 text-slate-400 group-focus-within:text-emerald-600 transition-colors" />
+                    <Hash className="h-4.5 w-4.5 text-slate-400 group-focus-within:text-brand-orange transition-colors" />
                   </div>
                   <input
                     required
@@ -460,7 +460,7 @@ export default function CreateLandDocPage() {
                     value={formData.landDetails.kharijCaseNo}
                     onChange={handleDetailsChange}
                     placeholder="Enter Kharij Case Number"
-                    className="w-full pl-10.5 pr-4 py-3 bg-white/50 border border-slate-200 rounded-xl text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all text-sm font-medium"
+                    className="w-full pl-10.5 pr-4 py-3 bg-white/50 border border-slate-200 rounded-xl text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-brand-orange/20 focus:border-brand-orange transition-all text-sm font-medium"
                   />
                 </div>
               </div>
@@ -468,7 +468,7 @@ export default function CreateLandDocPage() {
                 <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wider">Land Type *</label>
                 <div className="relative group">
                   <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none z-10">
-                    <Tag className="h-4 w-4 text-slate-400 group-focus-within:text-emerald-600 transition-colors" />
+                    <Tag className="h-4 w-4 text-slate-400 group-focus-within:text-brand-orange transition-colors" />
                   </div>
                   <Select
                     options={[
@@ -496,23 +496,22 @@ export default function CreateLandDocPage() {
           {/* Required Documents */}
           <div className="space-y-6">
             <div className="flex items-center gap-2.5 border-b border-slate-100 pb-2.5">
-              <div className="p-1.5 bg-emerald-50 text-emerald-600 rounded-lg">
+              <div className="p-1.5 bg-orange-50 text-brand-orange rounded-lg">
                 <FileCheck className="w-5 h-5" />
               </div>
               <h3 className="text-lg font-bold text-slate-800">Required Documents</h3>
             </div>
-            
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="space-y-2">
                 <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wider">Khatian Copy *</label>
-                <div className="border border-dashed border-slate-200 hover:border-emerald-500/50 bg-white/40 hover:bg-emerald-50/10 rounded-2xl p-6 transition-all duration-300 relative group flex flex-col items-center justify-center text-center min-h-[180px]">
+                <div className="border border-dashed border-slate-200 hover:border-brand-orange/50 bg-white/40 hover:bg-orange-50/10 rounded-2xl p-6 transition-all duration-300 relative group flex flex-col items-center justify-center text-center min-h-[180px]">
                   {khatianPreview ? (
                     <div className="relative w-24 h-24 mb-2 rounded-xl overflow-hidden border border-slate-200 shadow-sm">
                       {/* eslint-disable-next-line @next/next/no-img-element */}
                       <img src={khatianPreview} alt="Khatian Preview" className="w-full h-full object-cover" />
                     </div>
                   ) : (
-                    <Upload className="w-8 h-8 text-slate-400 group-hover:text-emerald-600 transition-colors mb-2" />
+                    <Upload className="w-8 h-8 text-slate-400 group-hover:text-brand-orange transition-colors mb-2" />
                   )}
                   <span className="text-xs font-semibold text-slate-650 max-w-[220px] truncate">
                     {khatianFile ? khatianFile.name : "Select Khatian Copy file"}
@@ -530,14 +529,14 @@ export default function CreateLandDocPage() {
 
               <div className="space-y-2">
                 <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wider">Kharij Copy *</label>
-                <div className="border border-dashed border-slate-200 hover:border-emerald-500/50 bg-white/40 hover:bg-emerald-50/10 rounded-2xl p-6 transition-all duration-300 relative group flex flex-col items-center justify-center text-center min-h-[180px]">
+                <div className="border border-dashed border-slate-200 hover:border-brand-orange/50 bg-white/40 hover:bg-orange-50/10 rounded-2xl p-6 transition-all duration-300 relative group flex flex-col items-center justify-center text-center min-h-[180px]">
                   {kharijPreview ? (
                     <div className="relative w-24 h-24 mb-2 rounded-xl overflow-hidden border border-slate-200 shadow-sm">
                       {/* eslint-disable-next-line @next/next/no-img-element */}
                       <img src={kharijPreview} alt="Kharij Preview" className="w-full h-full object-cover" />
                     </div>
                   ) : (
-                    <Upload className="w-8 h-8 text-slate-400 group-hover:text-emerald-600 transition-colors mb-2" />
+                    <Upload className="w-8 h-8 text-slate-400 group-hover:text-brand-orange transition-colors mb-2" />
                   )}
                   <span className="text-xs font-semibold text-slate-650 max-w-[220px] truncate">
                     {kharijFile ? kharijFile.name : "Select Kharij Copy file"}
@@ -559,7 +558,7 @@ export default function CreateLandDocPage() {
           <div className="space-y-6">
             <div className="flex justify-between items-center border-b border-slate-100 pb-2.5">
               <div className="flex items-center gap-2.5">
-                <div className="p-1.5 bg-emerald-50 text-emerald-600 rounded-lg">
+                <div className="p-1.5 bg-orange-50 text-brand-orange rounded-lg">
                   <FolderHeart className="w-5 h-5" />
                 </div>
                 <h3 className="text-lg font-bold text-slate-800">Other Records (Optional)</h3>
@@ -567,7 +566,7 @@ export default function CreateLandDocPage() {
               <button
                 type="button"
                 onClick={addOtherRecord}
-                className="text-xs bg-emerald-50 hover:bg-emerald-100 text-emerald-700 font-bold px-4 py-2 rounded-xl transition-all shadow-sm hover:shadow-emerald-500/5 border border-emerald-200/50 flex items-center gap-1 active:scale-95"
+                className="text-xs bg-orange-50 hover:bg-orange-100 text-brand-orange font-bold px-4 py-2 rounded-xl transition-all shadow-sm hover:shadow-brand-orange/5 border border-orange-200/50 flex items-center gap-1 active:scale-95"
               >
                 <Plus className="w-4 h-4" />
                 Add Record
@@ -576,7 +575,7 @@ export default function CreateLandDocPage() {
 
             <div className="space-y-4">
               {otherRecords.map((record, index) => (
-                <div key={index} className="flex flex-col sm:flex-row gap-4 items-stretch sm:items-end bg-slate-50/40 border border-slate-200/60 p-5 rounded-2xl relative group/row hover:border-emerald-500/10 transition-all duration-300">
+                <div key={index} className="flex flex-col sm:flex-row gap-4 items-stretch sm:items-end bg-slate-50/40 border border-slate-200/60 p-5 rounded-2xl relative group/row hover:border-brand-orange/10 transition-all duration-300">
                   <div className="flex-grow space-y-1.5">
                     <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wider">Document Name</label>
                     <input
@@ -584,13 +583,13 @@ export default function CreateLandDocPage() {
                       type="text"
                       value={record.name}
                       onChange={(e) => updateOtherRecord(index, "name", e.target.value)}
-                      className="w-full px-4 py-3 bg-white border border-slate-200 rounded-xl text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition text-sm font-medium"
+                      className="w-full px-4 py-3 bg-white border border-slate-200 rounded-xl text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-brand-orange/20 focus:border-brand-orange transition text-sm font-medium"
                       placeholder="e.g. Deed Copy"
                     />
                   </div>
                   <div className="flex-grow space-y-1.5">
                     <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wider">File</label>
-                    <div className="border border-dashed border-slate-200 hover:border-emerald-500/50 bg-white rounded-xl py-3.5 px-4 transition-all duration-300 relative flex items-center justify-center gap-2 cursor-pointer text-sm font-medium text-slate-600 min-h-[50px]">
+                    <div className="border border-dashed border-slate-200 hover:border-brand-orange/50 bg-white rounded-xl py-3.5 px-4 transition-all duration-300 relative flex items-center justify-center gap-2 cursor-pointer text-sm font-medium text-slate-600 min-h-[50px]">
                       {record.preview ? (
                         <div className="w-6 h-6 rounded-md overflow-hidden border border-slate-200 shadow-sm shrink-0">
                           {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -636,7 +635,7 @@ export default function CreateLandDocPage() {
             <button
               type="submit"
               disabled={isCreating || isUploading}
-              className="px-8 py-3 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white font-bold rounded-xl disabled:opacity-50 transition-all shadow-md shadow-emerald-500/10 hover:shadow-emerald-500/25 active:scale-[0.98] flex items-center gap-2"
+              className="px-8 py-3 bg-gradient-to-r from-brand-orange to-orange-500 hover:from-brand-orange-hover hover:to-orange-400 text-white font-bold rounded-xl disabled:opacity-50 transition-all shadow-md shadow-brand-orange/10 hover:shadow-brand-orange/25 active:scale-[0.98] flex items-center gap-2"
             >
               {isCreating || isUploading ? (
                 <>

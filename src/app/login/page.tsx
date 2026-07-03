@@ -29,7 +29,7 @@ const DEFAULT_SLIDES = [
     title: "Secure Ledger Records",
     description: "Access, verify, and track authentic land deeds and ledger khatians with cryptographically secured records.",
     icon: "ShieldCheck",
-    color: "from-emerald-500 to-teal-600",
+    color: "from-brand-orange to-orange-650",
     badge: "Security Verified",
     image: "https://images.unsplash.com/photo-1500382017468-9049fed747ef?q=80&w=1600&auto=format&fit=crop"
   },
@@ -37,7 +37,7 @@ const DEFAULT_SLIDES = [
     title: "Smart Mutation (Namjari)",
     description: "Submit mutation applications online, track progress in real-time, and get automatic digital approvals.",
     icon: "Layers",
-    color: "from-teal-500 to-cyan-600",
+    color: "from-orange-600 to-amber-600",
     badge: "Digital Automation",
     image: "https://images.unsplash.com/photo-1500937386664-56d1dfef3854?q=80&w=1600&auto=format&fit=crop"
   },
@@ -45,7 +45,7 @@ const DEFAULT_SLIDES = [
     title: "GIS & Digital Mapping",
     description: "Interact with advanced georeferenced maps, check plots, zoning data, and land boundaries instantly.",
     icon: "Map",
-    color: "from-emerald-600 to-emerald-800",
+    color: "from-brand-orange to-amber-750",
     badge: "GIS Integrated",
     image: "https://images.unsplash.com/photo-1500534623283-312aade485b7?q=80&w=1600&auto=format&fit=crop"
   }
@@ -120,17 +120,7 @@ export default function LoginPage() {
     }
   };
 
-  const handleQuickFill = (role: "admin" | "partner") => {
-    if (role === "admin") {
-      setEmail("admin@landsync.gov.bd");
-      setPassword("123456");
-      toast.success("Filled Admin testing credentials");
-    } else {
-      setEmail("partner@landsync.gov.bd");
-      setPassword("123456");
-      toast.success("Filled Partner testing credentials");
-    }
-  };
+
 
   const currentSlideSafe = currentSlide % activeSlides.length;
   const activeSlide = activeSlides[currentSlideSafe] || activeSlides[0];
@@ -163,20 +153,19 @@ export default function LoginPage() {
 
           {/* Dark Overlay */}
           <div className="absolute inset-0 bg-gradient-to-b from-slate-950/80 via-slate-950/60 to-slate-950/90" />
-          <div className="absolute inset-0 bg-gradient-to-tr from-emerald-950/30 via-transparent to-teal-950/20" />
+          <div className="absolute inset-0 bg-gradient-to-tr from-brand-orange/20 via-transparent to-amber-950/10" />
         </div>
 
         {/* Top Branding */}
         <div className="relative z-10 flex items-center gap-3">
-          <div className="p-2.5 bg-white/10 backdrop-blur-md rounded-xl shadow-lg border border-white/20 flex items-center justify-center">
-            <Landmark className="w-6 h-6 text-white" />
-          </div>
-          <div>
-            <h1 className="text-xl font-bold text-white tracking-tight">LandSync</h1>
-            <p className="text-[10px] text-emerald-200/80 tracking-wider uppercase font-semibold">
-              Ministry of Land Services
-            </p>
-          </div>
+          <Image
+            src="/logo2.png"
+            alt="LandSync Logo"
+            width={140}
+            height={36}
+            className="h-9 w-auto object-contain brightness-0 invert"
+            priority
+          />
         </div>
 
         {/* Feature Content */}
@@ -190,7 +179,7 @@ export default function LoginPage() {
               transition={{ duration: 0.5, ease: "easeInOut" }}
               className="space-y-6"
             >
-              <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-white/10 backdrop-blur-md border border-white/20 text-emerald-200 text-xs font-semibold rounded-full">
+              <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-white/10 backdrop-blur-md border border-white/20 text-orange-200 text-xs font-semibold rounded-full">
                 <Sparkles className="w-3.5 h-3.5" />
                 <span>{activeSlide.badge}</span>
               </div>
@@ -224,7 +213,7 @@ export default function LoginPage() {
               <button
                 key={idx}
                 onClick={() => setCurrentSlide(idx)}
-                className={`h-1.5 rounded-full transition-all duration-300 ${currentSlideSafe === idx ? "w-8 bg-emerald-400" : "w-2 bg-white/30 hover:bg-white/50"}`}
+                className={`h-1.5 rounded-full transition-all duration-300 ${currentSlideSafe === idx ? "w-8 bg-brand-orange" : "w-2 bg-white/30 hover:bg-white/50"}`}
                 aria-label={`Go to slide ${idx + 1}`}
               />
             ))}
@@ -250,31 +239,31 @@ export default function LoginPage() {
 
       {/* RIGHT PANEL: Login Form */}
       <div className="w-full lg:w-1/2 relative flex items-center justify-center p-6 sm:p-12 md:p-16 bg-white">
-        <div className="absolute top-[20%] right-[-10%] w-[70%] h-[70%] bg-teal-100/40 rounded-full blur-[110px] pointer-events-none" />
-        <div className="absolute bottom-[10%] left-[-10%] w-[50%] h-[50%] bg-emerald-100/40 rounded-full blur-[90px] pointer-events-none" />
-
-        {/* Mobile Header */}
-        <div className="absolute top-8 left-8 z-10 flex lg:hidden items-center gap-2.5">
-          <div className="p-2 bg-gradient-to-tr from-emerald-500 to-teal-500 rounded-lg shadow-md flex items-center justify-center">
-            <Landmark className="w-5 h-5 text-white" />
-          </div>
-          <span className="text-lg font-bold text-slate-900 tracking-tight">LandSync</span>
-        </div>
+        <div className="absolute top-[20%] right-[-10%] w-[70%] h-[70%] bg-orange-100/30 rounded-full blur-[110px] pointer-events-none" />
+        <div className="absolute bottom-[10%] left-[-10%] w-[50%] h-[50%] bg-amber-100/25 rounded-full blur-[90px] pointer-events-none" />
 
         <motion.div
           initial={{ opacity: 0, y: 15 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, ease: "easeOut" }}
-          className="w-full max-w-md bg-white border border-slate-200 rounded-3xl p-8 shadow-2xl shadow-slate-200/60 relative z-10"
+          className="w-full max-w-md bg-white border border-slate-200 rounded-3xl p-6 sm:p-8 shadow-2xl shadow-slate-200/60 relative z-10"
         >
-          <div className="text-center md:text-left mb-8">
-            <div className="inline-flex lg:hidden mb-4 p-2.5 bg-emerald-50 border border-emerald-200 text-emerald-600 rounded-2xl justify-center items-center">
-              <Landmark className="w-6 h-6" />
+          <div className="text-center mb-8 flex flex-col items-center">
+            <div className="inline-flex mb-4 justify-center items-center">
+              <Image
+                src="/logo2.png"
+                alt="LandSync Logo"
+                width={160}
+                height={42}
+                className="h-10 w-auto object-contain"
+                priority
+              />
             </div>
-            <h2 className="text-2xl font-extrabold text-slate-900 tracking-tight">
-              Sign In to Portal
+            <h2 className="text-2xl font-extrabold text-slate-900 tracking-tight mt-1 flex items-center justify-center gap-2">
+              <ShieldCheck className="w-6 h-6 text-brand-orange shrink-0" />
+              <span>Sign In to <span className="text-brand-orange">Portal</span></span>
             </h2>
-            <p className="text-slate-500 text-sm mt-1.5">
+            <p className="text-slate-500 text-sm mt-1.5 max-w-sm">
               Enter your credentials to access the LandSync dashboard.
             </p>
           </div>
@@ -298,14 +287,14 @@ export default function LoginPage() {
               </label>
               <div className="relative group">
                 <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
-                  <Mail className="h-4.5 w-4.5 text-slate-400 group-focus-within:text-emerald-600 transition-colors" />
+                  <Mail className="h-4.5 w-4.5 text-slate-400 group-focus-within:text-brand-orange transition-colors" />
                 </div>
                 <input
                   type="email"
                   required
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="block w-full pl-10.5 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 focus:bg-white transition-all text-sm font-medium"
+                  className="block w-full pl-10.5 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-brand-orange/20 focus:border-brand-orange focus:bg-white transition-all text-sm font-medium"
                   placeholder="admin@landsync.gov.bd"
                 />
               </div>
@@ -325,7 +314,7 @@ export default function LoginPage() {
                     e.preventDefault();
                     toast.info("Password reset must be initiated by an administrator.");
                   }}
-                  className="text-xs font-semibold text-emerald-600 hover:text-emerald-700 transition-colors"
+                  className="text-xs font-semibold text-brand-orange hover:text-brand-orange-hover transition-colors"
                 >
                   Forgot password?
                 </a>
@@ -333,14 +322,14 @@ export default function LoginPage() {
 
               <div className="relative group">
                 <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
-                  <Lock className="h-4.5 w-4.5 text-slate-400 group-focus-within:text-emerald-600 transition-colors" />
+                  <Lock className="h-4.5 w-4.5 text-slate-400 group-focus-within:text-brand-orange transition-colors" />
                 </div>
                 <input
                   type={showPassword ? "text" : "password"}
                   required
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="block w-full pl-10.5 pr-11 py-3 bg-slate-50 border border-slate-200 rounded-xl text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 focus:bg-white transition-all text-sm font-medium"
+                  className="block w-full pl-10.5 pr-11 py-3 bg-slate-50 border border-slate-200 rounded-xl text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-brand-orange/20 focus:border-brand-orange focus:bg-white transition-all text-sm font-medium"
                   placeholder="••••••••"
                 />
                 <button
@@ -358,7 +347,7 @@ export default function LoginPage() {
               <input
                 id="remember-me"
                 type="checkbox"
-                className="h-4 w-4 rounded border-slate-300 bg-white text-emerald-600 focus:ring-emerald-500/30 accent-emerald-600 transition-colors cursor-pointer"
+                className="h-4 w-4 rounded border-slate-300 bg-white text-brand-orange focus:ring-brand-orange/30 accent-brand-orange transition-colors cursor-pointer"
               />
               <label htmlFor="remember-me" className="ml-2.5 block text-xs font-medium text-slate-600 cursor-pointer select-none">
                 Remember my session on this device
@@ -369,7 +358,7 @@ export default function LoginPage() {
             <button
               type="submit"
               disabled={isLoading}
-              className="w-full bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-bold py-3 rounded-xl transition-all duration-300 shadow-lg shadow-emerald-600/20 hover:shadow-emerald-500/30 flex items-center justify-center gap-2 group disabled:opacity-50 disabled:cursor-not-allowed mt-2"
+              className="w-full bg-gradient-to-r from-brand-orange to-amber-600 hover:from-brand-orange-hover hover:to-amber-500 text-white font-bold py-3 rounded-xl transition-all duration-300 shadow-lg shadow-brand-orange/20 hover:shadow-brand-orange-hover/30 flex items-center justify-center gap-2 group disabled:opacity-50 disabled:cursor-not-allowed mt-2"
             >
               {isLoading ? (
                 <>
@@ -385,34 +374,7 @@ export default function LoginPage() {
             </button>
           </form>
 
-          {/* Quick Fill */}
-          <div className="mt-8 pt-6 border-t border-slate-200">
-            <div className="bg-slate-50 border border-slate-200 rounded-2xl p-4.5 space-y-3">
-              <div className="flex items-center gap-2 text-xs font-bold text-slate-500 uppercase tracking-wider">
-                <Database className="w-3.5 h-3.5 text-teal-500" />
-                <span>Quick Test Logins</span>
-              </div>
-              <p className="text-[11px] text-slate-500">
-                Click a role below to auto-fill mock credentials for fast developer testing.
-              </p>
-              <div className="flex gap-2">
-                <button
-                  type="button"
-                  onClick={() => handleQuickFill("admin")}
-                  className="flex-1 bg-white hover:bg-emerald-50 border border-slate-200 hover:border-emerald-300 text-[11px] font-bold py-2 px-3 rounded-lg text-emerald-600 hover:text-emerald-700 transition-colors shadow-sm"
-                >
-                  Super Admin
-                </button>
-                <button
-                  type="button"
-                  onClick={() => handleQuickFill("partner")}
-                  className="flex-1 bg-white hover:bg-teal-50 border border-slate-200 hover:border-teal-300 text-[11px] font-bold py-2 px-3 rounded-lg text-teal-600 hover:text-teal-700 transition-colors shadow-sm"
-                >
-                  Test Partner
-                </button>
-              </div>
-            </div>
-          </div>
+
         </motion.div>
       </div>
     </div>

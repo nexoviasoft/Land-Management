@@ -28,7 +28,7 @@ export default function UserDetailsPage() {
   if (isLoading) {
     return (
       <div className="w-full min-h-[60vh] flex flex-col items-center justify-center gap-4">
-        <span className="w-10 h-10 border-4 border-emerald-500/30 border-t-emerald-600 rounded-full animate-spin" />
+        <span className="w-10 h-10 border-4 border-brand-orange/30 border-t-brand-orange rounded-full animate-spin" />
         <span className="text-sm font-semibold text-slate-500">Loading user details...</span>
       </div>
     );
@@ -55,8 +55,8 @@ export default function UserDetailsPage() {
   return (
     <div className="w-full space-y-6 py-4 sm:py-6 relative overflow-x-hidden">
       {/* Background Radial Glow elements */}
-      <div className="absolute top-[-10%] right-[-5%] w-[400px] h-[400px] bg-emerald-400/5 rounded-full blur-[120px] -z-10 pointer-events-none" />
-      <div className="absolute bottom-[10%] left-[-5%] w-[350px] h-[350px] bg-teal-400/5 rounded-full blur-[110px] -z-10 pointer-events-none" />
+      <div className="absolute top-[-10%] right-[-5%] w-[400px] h-[400px] bg-brand-orange/5 rounded-full blur-[120px] -z-10 pointer-events-none" />
+      <div className="absolute bottom-[10%] left-[-5%] w-[350px] h-[350px] bg-amber-400/5 rounded-full blur-[110px] -z-10 pointer-events-none" />
 
       {/* Back Button and Title */}
       <div className="flex items-center gap-4">
@@ -67,7 +67,7 @@ export default function UserDetailsPage() {
           <ArrowLeft className="w-5 h-5" />
         </button>
         <div>
-          <h1 className="text-xl md:text-2xl font-extrabold bg-gradient-to-r from-slate-900 via-slate-800 to-emerald-950 bg-clip-text text-transparent tracking-tight">
+          <h1 className="text-xl md:text-2xl font-extrabold bg-gradient-to-r from-slate-900 via-slate-800 to-orange-950 bg-clip-text text-transparent tracking-tight">
             User Profile
           </h1>
           <p className="text-[10px] text-slate-400 font-semibold tracking-wider uppercase mt-0.5">
@@ -79,7 +79,7 @@ export default function UserDetailsPage() {
       {/* Main Glass Profile Card */}
       <div className="bg-white/45 backdrop-blur-xl rounded-3xl border border-white/85 shadow-[0_12px_40px_-12px_rgba(148,163,184,0.08)] overflow-hidden">
         {/* Banner Graphic */}
-        <div className="bg-gradient-to-r from-emerald-500 via-teal-500 to-teal-600 h-36 relative">
+        <div className="bg-gradient-to-r from-brand-orange via-orange-500 to-amber-600 h-36 relative">
           <div className="absolute inset-0 opacity-15 bg-[radial-gradient(#fff_1.5px,transparent_1.5px)] [background-size:16px_16px]" />
         </div>
 
@@ -96,7 +96,7 @@ export default function UserDetailsPage() {
                 />
               </div>
             ) : (
-              <div className="w-28 h-28 sm:w-36 sm:h-36 rounded-full border-4 border-white shadow-md bg-gradient-to-br from-emerald-400 to-teal-600 flex items-center justify-center text-4xl text-white font-extrabold">
+              <div className="w-28 h-28 sm:w-36 sm:h-36 rounded-full border-4 border-white shadow-md bg-gradient-to-br from-brand-orange to-orange-500 flex items-center justify-center text-4xl text-white font-extrabold">
                 {user.name.charAt(0).toUpperCase()}
               </div>
             )}
@@ -107,7 +107,7 @@ export default function UserDetailsPage() {
             <div className="space-y-1">
               <h2 className="text-2xl font-extrabold text-slate-800 tracking-tight">{user.name}</h2>
               <div className="flex flex-wrap items-center justify-center sm:justify-start gap-2 pt-1">
-                <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-teal-50 text-teal-800 border border-teal-100 rounded-xl text-[10px] font-extrabold uppercase tracking-wider">
+                <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-orange-50 text-brand-orange border border-orange-100 rounded-xl text-[10px] font-extrabold uppercase tracking-wider">
                   <Shield className="w-3 h-3" />
                   {user.role}
                 </span>
@@ -115,7 +115,7 @@ export default function UserDetailsPage() {
                   className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-xl text-[10px] font-extrabold uppercase tracking-wider border ${
                     user.isBanned
                       ? "bg-rose-50 text-rose-800 border-rose-100"
-                      : "bg-emerald-50 text-emerald-800 border-emerald-100"
+                      : "bg-orange-50 text-brand-orange border-orange-100"
                   }`}
                 >
                   <Activity className="w-3 h-3" />
@@ -129,8 +129,8 @@ export default function UserDetailsPage() {
           <div className="mt-8 grid grid-cols-1 sm:grid-cols-2 gap-4 border-t border-slate-200/35 pt-8">
             
             {/* Email card tile */}
-            <div className="group bg-white/40 hover:bg-white/80 backdrop-blur-md border border-white/60 hover:border-emerald-500/20 p-4 rounded-2xl shadow-[0_2px_8px_rgba(15,23,42,0.01)] hover:shadow-[0_8px_20px_rgba(16,185,129,0.04)] transition-all duration-300 flex items-start gap-4 hover:-translate-y-0.5">
-              <div className="p-3 bg-slate-50 text-slate-500 rounded-xl border border-slate-100 group-hover:bg-emerald-50 group-hover:text-emerald-600 transition-colors duration-300 shrink-0">
+            <div className="group bg-white/40 hover:bg-white/80 backdrop-blur-md border border-white/60 hover:border-brand-orange/20 p-4 rounded-2xl shadow-[0_2px_8px_rgba(15,23,42,0.01)] hover:shadow-[0_8px_20px_rgba(255,96,20,0.04)] transition-all duration-300 flex items-start gap-4 hover:-translate-y-0.5">
+              <div className="p-3 bg-slate-50 text-slate-500 rounded-xl border border-slate-100 group-hover:bg-orange-50 group-hover:text-brand-orange transition-colors duration-300 shrink-0">
                 <Mail className="w-5 h-5" />
               </div>
               <div className="space-y-0.5 text-left min-w-0">
@@ -140,8 +140,8 @@ export default function UserDetailsPage() {
             </div>
 
             {/* Phone card tile */}
-            <div className="group bg-white/40 hover:bg-white/80 backdrop-blur-md border border-white/60 hover:border-emerald-500/20 p-4 rounded-2xl shadow-[0_2px_8px_rgba(15,23,42,0.01)] hover:shadow-[0_8px_20px_rgba(16,185,129,0.04)] transition-all duration-300 flex items-start gap-4 hover:-translate-y-0.5">
-              <div className="p-3 bg-slate-50 text-slate-500 rounded-xl border border-slate-100 group-hover:bg-emerald-50 group-hover:text-emerald-600 transition-colors duration-300 shrink-0">
+            <div className="group bg-white/40 hover:bg-white/80 backdrop-blur-md border border-white/60 hover:border-brand-orange/20 p-4 rounded-2xl shadow-[0_2px_8px_rgba(15,23,42,0.01)] hover:shadow-[0_8px_20px_rgba(255,96,20,0.04)] transition-all duration-300 flex items-start gap-4 hover:-translate-y-0.5">
+              <div className="p-3 bg-slate-50 text-slate-500 rounded-xl border border-slate-100 group-hover:bg-orange-50 group-hover:text-brand-orange transition-colors duration-300 shrink-0">
                 <Phone className="w-5 h-5" />
               </div>
               <div className="space-y-0.5 text-left min-w-0">
@@ -151,8 +151,8 @@ export default function UserDetailsPage() {
             </div>
 
             {/* NID card tile */}
-            <div className="group bg-white/40 hover:bg-white/80 backdrop-blur-md border border-white/60 hover:border-emerald-500/20 p-4 rounded-2xl shadow-[0_2px_8px_rgba(15,23,42,0.01)] hover:shadow-[0_8px_20px_rgba(16,185,129,0.04)] transition-all duration-300 flex items-start gap-4 hover:-translate-y-0.5">
-              <div className="p-3 bg-slate-50 text-slate-500 rounded-xl border border-slate-100 group-hover:bg-emerald-50 group-hover:text-emerald-600 transition-colors duration-300 shrink-0">
+            <div className="group bg-white/40 hover:bg-white/80 backdrop-blur-md border border-white/60 hover:border-brand-orange/20 p-4 rounded-2xl shadow-[0_2px_8px_rgba(15,23,42,0.01)] hover:shadow-[0_8px_20px_rgba(255,96,20,0.04)] transition-all duration-300 flex items-start gap-4 hover:-translate-y-0.5">
+              <div className="p-3 bg-slate-50 text-slate-500 rounded-xl border border-slate-100 group-hover:bg-orange-50 group-hover:text-brand-orange transition-colors duration-300 shrink-0">
                 <FileText className="w-5 h-5" />
               </div>
               <div className="space-y-0.5 text-left min-w-0">
@@ -162,8 +162,8 @@ export default function UserDetailsPage() {
             </div>
 
             {/* Registration Date card tile */}
-            <div className="group bg-white/40 hover:bg-white/80 backdrop-blur-md border border-white/60 hover:border-emerald-500/20 p-4 rounded-2xl shadow-[0_2px_8px_rgba(15,23,42,0.01)] hover:shadow-[0_8px_20px_rgba(16,185,129,0.04)] transition-all duration-300 flex items-start gap-4 hover:-translate-y-0.5">
-              <div className="p-3 bg-slate-50 text-slate-500 rounded-xl border border-slate-100 group-hover:bg-emerald-50 group-hover:text-emerald-600 transition-colors duration-300 shrink-0">
+            <div className="group bg-white/40 hover:bg-white/80 backdrop-blur-md border border-white/60 hover:border-brand-orange/20 p-4 rounded-2xl shadow-[0_2px_8px_rgba(15,23,42,0.01)] hover:shadow-[0_8px_20px_rgba(255,96,20,0.04)] transition-all duration-300 flex items-start gap-4 hover:-translate-y-0.5">
+              <div className="p-3 bg-slate-50 text-slate-500 rounded-xl border border-slate-100 group-hover:bg-orange-50 group-hover:text-brand-orange transition-colors duration-300 shrink-0">
                 <Calendar className="w-5 h-5" />
               </div>
               <div className="space-y-0.5 text-left min-w-0">

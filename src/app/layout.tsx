@@ -20,6 +20,11 @@ export const metadata: Metadata = {
   },
   description:
     "Integrated Land Management Information System. Verify deeds, manage land records, apply for mutations, and pay land development taxes online.",
+  icons: {
+    icon: "/logo2.png",
+    shortcut: "/logo2.png",
+    apple: "/logo2.png",
+  },
   keywords: [
     "LandSync",
     "Land Management",

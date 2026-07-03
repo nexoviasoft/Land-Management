@@ -139,7 +139,7 @@ export default function ProfilePage() {
   if (isFetching) {
     return (
       <div className="w-full min-h-[60vh] flex flex-col items-center justify-center gap-4">
-        <span className="w-10 h-10 border-4 border-emerald-500/30 border-t-emerald-600 rounded-full animate-spin" />
+        <span className="w-10 h-10 border-4 border-brand-orange/30 border-t-brand-orange rounded-full animate-spin" />
         <span className="text-sm font-semibold text-slate-500">Loading profile details...</span>
       </div>
     );
@@ -154,22 +154,37 @@ export default function ProfilePage() {
   return (
     <div className="w-full space-y-6 py-4 sm:py-6 relative overflow-x-hidden">
       {/* Background Radial Glow elements */}
-      <div className="absolute top-[-10%] right-[-5%] w-[400px] h-[400px] bg-emerald-400/5 rounded-full blur-[120px] -z-10 pointer-events-none" />
-      <div className="absolute bottom-[10%] left-[-5%] w-[350px] h-[350px] bg-teal-400/5 rounded-full blur-[110px] -z-10 pointer-events-none" />
+      <div className="absolute top-[-10%] right-[-5%] w-[400px] h-[400px] bg-brand-orange/5 rounded-full blur-[120px] -z-10 pointer-events-none" />
+      <div className="absolute bottom-[10%] left-[-5%] w-[350px] h-[350px] bg-amber-400/5 rounded-full blur-[110px] -z-10 pointer-events-none" />
+
+      {/* Page Title Header */}
+      <div className="flex items-center gap-4 mb-4 sm:mb-6">
+        <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-brand-orange to-orange-500 flex items-center justify-center text-white shadow-md shadow-brand-orange/10">
+          <User className="w-6 h-6" />
+        </div>
+        <div>
+          <h2 className="text-2xl font-extrabold bg-gradient-to-r from-slate-900 via-slate-800 to-orange-950 bg-clip-text text-transparent tracking-tight">
+            User Account Profile
+          </h2>
+          <p className="text-xs text-slate-500 font-semibold tracking-wide mt-0.5">
+            Manage your personal credentials, contact details, and secure login settings
+          </p>
+        </div>
+      </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
         
         {/* Left Side: Profile Card */}
         <div className="lg:col-span-1 bg-white/45 backdrop-blur-xl border border-white/85 rounded-3xl shadow-sm overflow-hidden group">
           {/* Header Banner */}
-          <div className="h-28 bg-gradient-to-r from-emerald-500 via-teal-500 to-teal-600 relative">
+          <div className="h-28 bg-gradient-to-r from-brand-orange via-orange-500 to-amber-500 relative">
             <div className="absolute inset-0 bg-black/10" />
           </div>
           
           <div className="px-6 pb-6 relative flex flex-col items-center">
             {/* Avatar block */}
             <div className="relative -mt-14 mb-4 group/avatar">
-              <div className="w-24 h-24 rounded-full border-4 border-white shadow-md overflow-hidden bg-emerald-50 flex items-center justify-center text-emerald-600 text-3xl font-bold relative">
+              <div className="w-24 h-24 rounded-full border-4 border-white shadow-md overflow-hidden bg-orange-50 flex items-center justify-center text-brand-orange text-3xl font-bold relative">
                 {file ? (
                   /* eslint-disable-next-line @next/next/no-img-element */
                   <img src={URL.createObjectURL(file)} alt="Preview" className="w-full h-full object-cover" />
@@ -192,7 +207,7 @@ export default function ProfilePage() {
             {/* Profile Meta info */}
             <div className="text-center space-y-1">
               <h2 className="text-lg font-extrabold text-slate-800 tracking-tight">{user.name}</h2>
-              <span className="inline-flex items-center px-3 py-0.5 bg-emerald-50 text-emerald-800 border border-emerald-100 text-[10px] font-bold rounded-full uppercase tracking-wider">
+              <span className="inline-flex items-center px-3 py-0.5 bg-orange-50 text-brand-orange border border-orange-100 text-[10px] font-bold rounded-full uppercase tracking-wider">
                 {user.role} Account
               </span>
             </div>
@@ -224,10 +239,10 @@ export default function ProfilePage() {
 
         {/* Right Side: Account Settings Form */}
         <div className="lg:col-span-2 bg-white/45 backdrop-blur-xl border border-white/85 p-6 md:p-8 rounded-3xl shadow-sm relative overflow-hidden group">
-          <div className="absolute top-0 right-0 w-60 h-60 bg-gradient-to-br from-emerald-500/5 to-teal-500/0 rounded-full blur-2xl pointer-events-none" />
+          <div className="absolute top-0 right-0 w-60 h-60 bg-gradient-to-br from-brand-orange/5 to-orange-500/0 rounded-full blur-2xl pointer-events-none" />
 
           <h3 className="text-sm font-extrabold text-slate-800 mb-6 flex items-center gap-2 uppercase tracking-wider pb-3 border-b border-slate-100">
-            <User className="w-4.5 h-4.5 text-emerald-600" />
+            <User className="w-4.5 h-4.5 text-brand-orange" />
             Update Account Settings
           </h3>
 
@@ -238,7 +253,7 @@ export default function ProfilePage() {
                 <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wider">Full Name *</label>
                 <div className="relative group/input">
                   <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
-                    <User className="h-4.5 w-4.5 text-slate-400 group-focus-within/input:text-emerald-600 transition-colors" />
+                    <User className="h-4.5 w-4.5 text-slate-400 group-focus-within/input:text-brand-orange transition-colors" />
                   </div>
                   <input
                     required
@@ -246,7 +261,7 @@ export default function ProfilePage() {
                     name="name"
                     value={formData.name}
                     onChange={handleChange}
-                    className="w-full pl-10.5 pr-4 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition bg-white text-slate-800 text-sm font-medium"
+                    className="w-full pl-10.5 pr-4 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-brand-orange/20 focus:border-brand-orange transition bg-white text-slate-800 text-sm font-medium"
                   />
                 </div>
               </div>
@@ -255,7 +270,7 @@ export default function ProfilePage() {
                 <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wider">Phone Number *</label>
                 <div className="relative group/input">
                   <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
-                    <Phone className="h-4.5 w-4.5 text-slate-400 group-focus-within/input:text-emerald-600 transition-colors" />
+                    <Phone className="h-4.5 w-4.5 text-slate-400 group-focus-within/input:text-brand-orange transition-colors" />
                   </div>
                   <input
                     required
@@ -263,7 +278,7 @@ export default function ProfilePage() {
                     name="phone"
                     value={formData.phone}
                     onChange={handleChange}
-                    className="w-full pl-10.5 pr-4 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition bg-white text-slate-800 text-sm font-medium"
+                    className="w-full pl-10.5 pr-4 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-brand-orange/20 focus:border-brand-orange transition bg-white text-slate-800 text-sm font-medium"
                   />
                 </div>
               </div>
@@ -272,8 +287,8 @@ export default function ProfilePage() {
 
             {/* Password Section */}
             <div className="pt-4 border-t border-slate-100 space-y-4">
-              <h4 className="text-xs font-bold text-emerald-800 uppercase tracking-wider flex items-center gap-1.5 bg-emerald-50 border border-emerald-100/50 p-3 rounded-2xl">
-                <Shield className="w-4 h-4 text-emerald-600 shrink-0" />
+              <h4 className="text-xs font-bold text-brand-orange uppercase tracking-wider flex items-center gap-1.5 bg-orange-50 border border-orange-100/50 p-3 rounded-2xl">
+                <Shield className="w-4 h-4 text-brand-orange shrink-0" />
                 Change Password (Optional)
               </h4>
               <p className="text-[10px] text-slate-400 font-semibold leading-relaxed">
@@ -284,7 +299,7 @@ export default function ProfilePage() {
                 <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wider">New Password</label>
                 <div className="relative group/input">
                   <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
-                    <Lock className="h-4.5 w-4.5 text-slate-400 group-focus-within/input:text-emerald-600 transition-colors" />
+                    <Lock className="h-4.5 w-4.5 text-slate-400 group-focus-within/input:text-brand-orange transition-colors" />
                   </div>
                   <input
                     type="password"
@@ -292,7 +307,7 @@ export default function ProfilePage() {
                     value={formData.password}
                     onChange={handleChange}
                     placeholder="••••••••"
-                    className="w-full pl-10.5 pr-4 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition bg-white text-slate-800 text-sm font-medium"
+                    className="w-full pl-10.5 pr-4 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-brand-orange/20 focus:border-brand-orange transition bg-white text-slate-800 text-sm font-medium"
                   />
                 </div>
               </div>
@@ -303,7 +318,7 @@ export default function ProfilePage() {
               <button
                 type="submit"
                 disabled={isUpdating}
-                className="w-full sm:w-auto px-6 py-3 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white font-bold rounded-xl text-xs transition shadow-md shadow-emerald-500/10 hover:shadow-emerald-500/25 disabled:opacity-50 active:scale-[0.98] flex items-center justify-center gap-2"
+                className="w-full sm:w-auto px-6 py-3 bg-gradient-to-r from-brand-orange to-orange-500 hover:from-orange-600 hover:to-orange-400 text-white font-bold rounded-xl text-xs transition shadow-md shadow-brand-orange/10 hover:shadow-brand-orange/25 disabled:opacity-50 active:scale-[0.98] flex items-center justify-center gap-2"
               >
                 {isUpdating ? (
                   <>

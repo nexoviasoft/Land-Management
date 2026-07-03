@@ -125,7 +125,7 @@ export default function UserCreateModal({
 
         {/* Title Header */}
         <div className="flex items-center gap-3 mb-6">
-          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-500 to-teal-600 flex items-center justify-center text-white shadow-sm">
+          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-brand-orange to-orange-500 flex items-center justify-center text-white shadow-sm">
             <UserPlus className="w-5 h-5" />
           </div>
           <div>
@@ -144,7 +144,7 @@ export default function UserCreateModal({
             </label>
             <div className="relative group">
               <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
-                <User className="h-4.5 w-4.5 text-slate-400 group-focus-within:text-emerald-600 transition-colors" />
+                <User className="h-4.5 w-4.5 text-slate-400 group-focus-within:text-brand-orange transition-colors" />
               </div>
               <input
                 required
@@ -153,7 +153,7 @@ export default function UserCreateModal({
                 value={formData.name}
                 onChange={handleChange}
                 placeholder="Enter full name"
-                className="w-full pl-10.5 pr-4 py-2.5 bg-white border border-slate-200 rounded-xl text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition text-sm font-medium"
+                className="w-full pl-10.5 pr-4 py-2.5 bg-white border border-slate-200 rounded-xl text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-brand-orange/20 focus:border-brand-orange transition text-sm font-medium"
               />
             </div>
           </div>
@@ -165,7 +165,7 @@ export default function UserCreateModal({
             </label>
             <div className="relative group">
               <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
-                <Mail className="h-4.5 w-4.5 text-slate-400 group-focus-within:text-emerald-600 transition-colors" />
+                <Mail className="h-4.5 w-4.5 text-slate-400 group-focus-within:text-brand-orange transition-colors" />
               </div>
               <input
                 required
@@ -174,7 +174,7 @@ export default function UserCreateModal({
                 value={formData.email}
                 onChange={handleChange}
                 placeholder="email@example.com"
-                className="w-full pl-10.5 pr-4 py-2.5 bg-white border border-slate-200 rounded-xl text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition text-sm font-medium"
+                className="w-full pl-10.5 pr-4 py-2.5 bg-white border border-slate-200 rounded-xl text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-brand-orange/20 focus:border-brand-orange transition text-sm font-medium"
               />
             </div>
           </div>
@@ -186,7 +186,7 @@ export default function UserCreateModal({
             </label>
             <div className="relative group">
               <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
-                <Phone className="h-4.5 w-4.5 text-slate-400 group-focus-within:text-emerald-600 transition-colors" />
+                <Phone className="h-4.5 w-4.5 text-slate-400 group-focus-within:text-brand-orange transition-colors" />
               </div>
               <input
                 required
@@ -195,7 +195,7 @@ export default function UserCreateModal({
                 value={formData.phone}
                 onChange={handleChange}
                 placeholder="e.g. +8801700000000"
-                className="w-full pl-10.5 pr-4 py-2.5 bg-white border border-slate-200 rounded-xl text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition text-sm font-medium"
+                className="w-full pl-10.5 pr-4 py-2.5 bg-white border border-slate-200 rounded-xl text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-brand-orange/20 focus:border-brand-orange transition text-sm font-medium"
               />
             </div>
           </div>
@@ -207,7 +207,7 @@ export default function UserCreateModal({
             </label>
             <div className="relative group">
               <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
-                <Hash className="h-4.5 w-4.5 text-slate-400 group-focus-within:text-emerald-600 transition-colors" />
+                <Hash className="h-4.5 w-4.5 text-slate-400 group-focus-within:text-brand-orange transition-colors" />
               </div>
               <input
                 required
@@ -216,7 +216,7 @@ export default function UserCreateModal({
                 value={formData.Nid}
                 onChange={handleChange}
                 placeholder="Enter National ID"
-                className="w-full pl-10.5 pr-4 py-2.5 bg-white border border-slate-200 rounded-xl text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition text-sm font-medium"
+                className="w-full pl-10.5 pr-4 py-2.5 bg-white border border-slate-200 rounded-xl text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-brand-orange/20 focus:border-brand-orange transition text-sm font-medium"
               />
             </div>
           </div>
@@ -228,7 +228,7 @@ export default function UserCreateModal({
             </label>
             <div className="relative group">
               <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
-                <Lock className="h-4.5 w-4.5 text-slate-400 group-focus-within:text-emerald-600 transition-colors" />
+                <Lock className="h-4.5 w-4.5 text-slate-400 group-focus-within:text-brand-orange transition-colors" />
               </div>
               <input
                 required
@@ -237,7 +237,7 @@ export default function UserCreateModal({
                 value={formData.password}
                 onChange={handleChange}
                 placeholder="••••••••"
-                className="w-full pl-10.5 pr-11 py-2.5 bg-white border border-slate-200 rounded-xl text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition text-sm font-medium"
+                className="w-full pl-10.5 pr-11 py-2.5 bg-white border border-slate-200 rounded-xl text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-brand-orange/20 focus:border-brand-orange transition text-sm font-medium"
               />
               <button
                 type="button"
@@ -260,13 +260,13 @@ export default function UserCreateModal({
             </label>
             <div className="relative group">
               <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
-                <Shield className="h-4.5 w-4.5 text-slate-400 group-focus-within:text-emerald-600 transition-colors" />
+                <Shield className="h-4.5 w-4.5 text-slate-400 group-focus-within:text-brand-orange transition-colors" />
               </div>
               <select
                 name="role"
                 value={formData.role}
                 onChange={handleChange}
-                className="w-full pl-10.5 pr-4 py-2.5 bg-white border border-slate-200 rounded-xl text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition text-sm font-medium appearance-none cursor-pointer"
+                className="w-full pl-10.5 pr-4 py-2.5 bg-white border border-slate-200 rounded-xl text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-brand-orange/20 focus:border-brand-orange transition text-sm font-medium appearance-none cursor-pointer"
               >
                 <option value="partner">Partner (অংশীদার)</option>
                 <option value="admin">Admin (প্রশাসক)</option>
@@ -279,14 +279,14 @@ export default function UserCreateModal({
             <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wider">
               Profile Picture
             </label>
-            <div className="border border-dashed border-slate-200 hover:border-emerald-500/50 bg-white/40 hover:bg-emerald-50/10 rounded-2xl p-4 transition-all duration-300 relative group flex items-center justify-center gap-3 text-center cursor-pointer min-h-[80px]">
+            <div className="border border-dashed border-slate-200 hover:border-brand-orange/50 bg-white/40 hover:bg-orange-50/10 rounded-2xl p-4 transition-all duration-300 relative group flex items-center justify-center gap-3 text-center cursor-pointer min-h-[80px]">
               {preview ? (
                 <div className="w-12 h-12 rounded-full overflow-hidden border border-slate-200 shadow-sm shrink-0">
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img src={preview} alt="Profile Preview" className="w-full h-full object-cover" />
                 </div>
               ) : (
-                <Upload className="w-6 h-6 text-slate-400 group-hover:text-emerald-600 transition-colors shrink-0" />
+                <Upload className="w-6 h-6 text-slate-400 group-hover:text-brand-orange transition-colors shrink-0" />
               )}
               <div className="text-left">
                 <p className="text-xs font-semibold text-slate-600 max-w-[200px] truncate">
@@ -315,7 +315,7 @@ export default function UserCreateModal({
             <button
               type="submit"
               disabled={isCreating || isUploadingImage}
-              className="px-6 py-2.5 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white font-bold rounded-xl text-xs transition shadow-md shadow-emerald-500/10 hover:shadow-emerald-500/25 disabled:opacity-50 active:scale-[0.98] flex items-center gap-2"
+              className="px-6 py-2.5 bg-gradient-to-r from-brand-orange to-orange-500 hover:from-orange-600 hover:to-orange-400 text-white font-bold rounded-xl text-xs transition shadow-md shadow-brand-orange/10 hover:shadow-brand-orange/25 disabled:opacity-50 active:scale-[0.98] flex items-center gap-2"
             >
               {isUploadingImage ? (
                 <>

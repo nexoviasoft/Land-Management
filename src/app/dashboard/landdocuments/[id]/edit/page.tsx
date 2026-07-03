@@ -176,7 +176,7 @@ export default function EditLandDocPage() {
   if (isFetching) {
     return (
       <div className="w-full min-h-[60vh] flex flex-col items-center justify-center gap-4">
-        <span className="w-10 h-10 border-4 border-emerald-500/30 border-t-emerald-600 rounded-full animate-spin" />
+        <span className="w-10 h-10 border-4 border-brand-orange/30 border-t-brand-orange rounded-full animate-spin" />
         <span className="text-sm font-semibold text-slate-500">Loading document details...</span>
       </div>
     );
@@ -205,8 +205,8 @@ export default function EditLandDocPage() {
   return (
     <div className="w-full space-y-6 py-4 sm:py-6 relative overflow-x-hidden">
       {/* Background Radial Glow elements */}
-      <div className="absolute top-[-10%] right-[-5%] w-[400px] h-[400px] bg-emerald-400/5 rounded-full blur-[120px] -z-10 pointer-events-none" />
-      <div className="absolute bottom-[10%] left-[-5%] w-[350px] h-[350px] bg-teal-400/5 rounded-full blur-[110px] -z-10 pointer-events-none" />
+      <div className="absolute top-[-10%] right-[-5%] w-[400px] h-[400px] bg-brand-orange/5 rounded-full blur-[120px] -z-10 pointer-events-none" />
+      <div className="absolute bottom-[10%] left-[-5%] w-[350px] h-[350px] bg-amber-400/5 rounded-full blur-[110px] -z-10 pointer-events-none" />
 
       {/* Main Glass Form Card */}
       <div className="bg-white/45 backdrop-blur-xl border border-white/85 p-6 md:p-8 rounded-3xl shadow-[0_12px_40px_-12px_rgba(148,163,184,0.08)] relative overflow-hidden group">
@@ -220,7 +220,7 @@ export default function EditLandDocPage() {
         </button>
 
         <div className="flex items-center gap-3 mb-8">
-          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-500 to-teal-600 flex items-center justify-center text-white shadow-sm shrink-0">
+          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-brand-orange to-orange-500 flex items-center justify-center text-white shadow-sm shrink-0">
             <Tag className="w-5 h-5" />
           </div>
           <div>
@@ -236,7 +236,7 @@ export default function EditLandDocPage() {
           {/* Location Section */}
           <div className="space-y-4">
             <h3 className="text-sm font-extrabold text-slate-700 flex items-center gap-2 uppercase tracking-wider pb-2 border-b border-slate-100">
-              <MapPin className="w-4.5 h-4.5 text-emerald-600" />
+              <MapPin className="w-4.5 h-4.5 text-brand-orange" />
               Location Details
             </h3>
             
@@ -246,7 +246,7 @@ export default function EditLandDocPage() {
                 <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wider">Division *</label>
                 <div className="relative group/input">
                   <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
-                    <Map className="h-4.5 w-4.5 text-slate-400 group-focus-within/input:text-emerald-600 transition-colors" />
+                    <Map className="h-4.5 w-4.5 text-slate-400 group-focus-within/input:text-brand-orange transition-colors" />
                   </div>
                   <input 
                     required 
@@ -254,7 +254,7 @@ export default function EditLandDocPage() {
                     name="division" 
                     value={formData.location.division} 
                     onChange={handleLocationChange} 
-                    className="w-full pl-10.5 pr-4 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition bg-white text-slate-800 text-sm font-medium" 
+                    className="w-full pl-10.5 pr-4 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-brand-orange/20 focus:border-brand-orange transition bg-white text-slate-800 text-sm font-medium" 
                   />
                 </div>
               </div>
@@ -263,7 +263,7 @@ export default function EditLandDocPage() {
                 <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wider">District *</label>
                 <div className="relative group/input">
                   <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
-                    <MapPin className="h-4.5 w-4.5 text-slate-400 group-focus-within/input:text-emerald-600 transition-colors" />
+                    <MapPin className="h-4.5 w-4.5 text-slate-400 group-focus-within/input:text-brand-orange transition-colors" />
                   </div>
                   <input 
                     required 
@@ -271,7 +271,7 @@ export default function EditLandDocPage() {
                     name="district" 
                     value={formData.location.district} 
                     onChange={handleLocationChange} 
-                    className="w-full pl-10.5 pr-4 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition bg-white text-slate-800 text-sm font-medium" 
+                    className="w-full pl-10.5 pr-4 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-brand-orange/20 focus:border-brand-orange transition bg-white text-slate-800 text-sm font-medium" 
                   />
                 </div>
               </div>
@@ -280,7 +280,7 @@ export default function EditLandDocPage() {
                 <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wider">Upazila *</label>
                 <div className="relative group/input">
                   <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
-                    <Navigation className="h-4.5 w-4.5 text-slate-400 group-focus-within/input:text-emerald-600 transition-colors" />
+                    <Navigation className="h-4.5 w-4.5 text-slate-400 group-focus-within/input:text-brand-orange transition-colors" />
                   </div>
                   <input 
                     required 
@@ -288,7 +288,7 @@ export default function EditLandDocPage() {
                     name="upazila" 
                     value={formData.location.upazila} 
                     onChange={handleLocationChange} 
-                    className="w-full pl-10.5 pr-4 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition bg-white text-slate-800 text-sm font-medium" 
+                    className="w-full pl-10.5 pr-4 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-brand-orange/20 focus:border-brand-orange transition bg-white text-slate-800 text-sm font-medium" 
                   />
                 </div>
               </div>
@@ -297,7 +297,7 @@ export default function EditLandDocPage() {
                 <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wider">Mouza *</label>
                 <div className="relative group/input">
                   <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
-                    <Locate className="h-4.5 w-4.5 text-slate-400 group-focus-within/input:text-emerald-600 transition-colors" />
+                    <Locate className="h-4.5 w-4.5 text-slate-400 group-focus-within/input:text-brand-orange transition-colors" />
                   </div>
                   <input 
                     required 
@@ -306,7 +306,7 @@ export default function EditLandDocPage() {
                     list="mouza-options" 
                     value={formData.location.mouza} 
                     onChange={handleLocationChange} 
-                    className="w-full pl-10.5 pr-4 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition bg-white text-slate-800 text-sm font-medium" 
+                    className="w-full pl-10.5 pr-4 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-brand-orange/20 focus:border-brand-orange transition bg-white text-slate-800 text-sm font-medium" 
                   />
                   <datalist id="mouza-options">
                     {(formData.location.upazila === "Mithapukur" || formData.location.upazila === "মিঠাপুকুর") 
@@ -324,7 +324,7 @@ export default function EditLandDocPage() {
           {/* Land Details Section */}
           <div className="space-y-4">
             <h3 className="text-sm font-extrabold text-slate-700 flex items-center gap-2 uppercase tracking-wider pb-2 border-b border-slate-100">
-              <Tag className="w-4.5 h-4.5 text-teal-600" />
+              <Tag className="w-4.5 h-4.5 text-brand-orange" />
               Land Details
             </h3>
             
@@ -334,7 +334,7 @@ export default function EditLandDocPage() {
                 <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wider">Khatian No *</label>
                 <div className="relative group/input">
                   <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
-                    <Layers className="h-4.5 w-4.5 text-slate-400 group-focus-within/input:text-emerald-600 transition-colors" />
+                    <Layers className="h-4.5 w-4.5 text-slate-400 group-focus-within/input:text-brand-orange transition-colors" />
                   </div>
                   <input 
                     required 
@@ -342,7 +342,7 @@ export default function EditLandDocPage() {
                     name="khatianNo" 
                     value={formData.landDetails.khatianNo} 
                     onChange={handleDetailsChange} 
-                    className="w-full pl-10.5 pr-4 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition bg-white text-slate-800 text-sm font-medium" 
+                    className="w-full pl-10.5 pr-4 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-brand-orange/20 focus:border-brand-orange transition bg-white text-slate-800 text-sm font-medium" 
                   />
                 </div>
               </div>
@@ -351,7 +351,7 @@ export default function EditLandDocPage() {
                 <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wider">Dag No *</label>
                 <div className="relative group/input">
                   <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
-                    <Grid className="h-4.5 w-4.5 text-slate-400 group-focus-within/input:text-emerald-600 transition-colors" />
+                    <Grid className="h-4.5 w-4.5 text-slate-400 group-focus-within/input:text-brand-orange transition-colors" />
                   </div>
                   <input 
                     required 
@@ -359,7 +359,7 @@ export default function EditLandDocPage() {
                     name="dagNo" 
                     value={formData.landDetails.dagNo} 
                     onChange={handleDetailsChange} 
-                    className="w-full pl-10.5 pr-4 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition bg-white text-slate-800 text-sm font-medium" 
+                    className="w-full pl-10.5 pr-4 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-brand-orange/20 focus:border-brand-orange transition bg-white text-slate-800 text-sm font-medium" 
                   />
                 </div>
               </div>
@@ -368,7 +368,7 @@ export default function EditLandDocPage() {
                 <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wider">Kharij Case No *</label>
                 <div className="relative group/input">
                   <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
-                    <FileSpreadsheet className="h-4.5 w-4.5 text-slate-400 group-focus-within/input:text-emerald-600 transition-colors" />
+                    <FileSpreadsheet className="h-4.5 w-4.5 text-slate-400 group-focus-within/input:text-brand-orange transition-colors" />
                   </div>
                   <input 
                     required 
@@ -376,7 +376,7 @@ export default function EditLandDocPage() {
                     name="kharijCaseNo" 
                     value={formData.landDetails.kharijCaseNo} 
                     onChange={handleDetailsChange} 
-                    className="w-full pl-10.5 pr-4 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition bg-white text-slate-800 text-sm font-medium" 
+                    className="w-full pl-10.5 pr-4 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-brand-orange/20 focus:border-brand-orange transition bg-white text-slate-800 text-sm font-medium" 
                   />
                 </div>
               </div>
@@ -385,7 +385,7 @@ export default function EditLandDocPage() {
                 <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wider">Land Type *</label>
                 <div className="relative group/input">
                   <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
-                    <Tag className="h-4.5 w-4.5 text-slate-400 group-focus-within/input:text-emerald-600 transition-colors" />
+                    <Tag className="h-4.5 w-4.5 text-slate-400 group-focus-within/input:text-brand-orange transition-colors" />
                   </div>
                   <input 
                     required 
@@ -393,7 +393,7 @@ export default function EditLandDocPage() {
                     name="landType" 
                     value={formData.landDetails.landType} 
                     onChange={handleDetailsChange} 
-                    className="w-full pl-10.5 pr-4 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition bg-white text-slate-800 text-sm font-medium" 
+                    className="w-full pl-10.5 pr-4 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-brand-orange/20 focus:border-brand-orange transition bg-white text-slate-800 text-sm font-medium" 
                   />
                 </div>
               </div>
@@ -404,7 +404,7 @@ export default function EditLandDocPage() {
           {/* Required Documents */}
           <div className="space-y-4">
             <h3 className="text-sm font-extrabold text-slate-700 flex items-center gap-2 uppercase tracking-wider pb-2 border-b border-slate-100">
-              <FileText className="w-4.5 h-4.5 text-emerald-600" />
+              <FileText className="w-4.5 h-4.5 text-brand-orange" />
               Required Documents
             </h3>
             
@@ -414,13 +414,13 @@ export default function EditLandDocPage() {
               <div className="space-y-1.5">
                 <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wider">Khatian Copy</label>
                 {documentsState.khatianCopyUrl && !khatianFile && (
-                  <div className="text-[10px] text-teal-700 bg-teal-50 border border-teal-100 px-3 py-1.5 rounded-xl mb-2.5 inline-block truncate max-w-full font-bold uppercase tracking-wider">
-                    Current: <a href={documentsState.khatianCopyUrl.startsWith("http") ? documentsState.khatianCopyUrl : `https://land-management-api.vercel.app${documentsState.khatianCopyUrl}`} target="_blank" rel="noreferrer" className="underline hover:text-teal-900">View File</a>
+                  <div className="text-[10px] text-brand-orange bg-orange-50 border border-orange-100 px-3 py-1.5 rounded-xl mb-2.5 inline-block truncate max-w-full font-bold uppercase tracking-wider">
+                    Current: <a href={documentsState.khatianCopyUrl.startsWith("http") ? documentsState.khatianCopyUrl : `https://land-management-api.vercel.app${documentsState.khatianCopyUrl}`} target="_blank" rel="noreferrer" className="underline hover:text-brand-orange-hover">View File</a>
                   </div>
                 )}
                 
-                <div className="border border-dashed border-slate-200 hover:border-emerald-500/50 bg-white/40 hover:bg-emerald-50/10 rounded-2xl p-4 transition-all duration-300 relative group/drop flex items-center gap-3 cursor-pointer min-h-[80px]">
-                  <Upload className="w-6 h-6 text-slate-400 group-hover/drop:text-emerald-600 transition-colors shrink-0" />
+                <div className="border border-dashed border-slate-200 hover:border-brand-orange/50 bg-white/40 hover:bg-orange-50/10 rounded-2xl p-4 transition-all duration-300 relative group/drop flex items-center gap-3 cursor-pointer min-h-[80px]">
+                  <Upload className="w-6 h-6 text-slate-400 group-hover/drop:text-brand-orange transition-colors shrink-0" />
                   <div className="text-left">
                     <p className="text-xs font-bold text-slate-600 max-w-[200px] truncate">
                       {khatianFile ? khatianFile.name : "Choose Khatian file"}
@@ -440,13 +440,13 @@ export default function EditLandDocPage() {
               <div className="space-y-1.5">
                 <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wider">Kharij Copy</label>
                 {documentsState.kharijCopyUrl && !kharijFile && (
-                  <div className="text-[10px] text-teal-700 bg-teal-50 border border-teal-100 px-3 py-1.5 rounded-xl mb-2.5 inline-block truncate max-w-full font-bold uppercase tracking-wider">
-                    Current: <a href={documentsState.kharijCopyUrl.startsWith("http") ? documentsState.kharijCopyUrl : `https://land-management-api.vercel.app${documentsState.kharijCopyUrl}`} target="_blank" rel="noreferrer" className="underline hover:text-teal-900">View File</a>
+                  <div className="text-[10px] text-brand-orange bg-orange-50 border border-orange-100 px-3 py-1.5 rounded-xl mb-2.5 inline-block truncate max-w-full font-bold uppercase tracking-wider">
+                    Current: <a href={documentsState.kharijCopyUrl.startsWith("http") ? documentsState.kharijCopyUrl : `https://land-management-api.vercel.app${documentsState.kharijCopyUrl}`} target="_blank" rel="noreferrer" className="underline hover:text-brand-orange-hover">View File</a>
                   </div>
                 )}
                 
-                <div className="border border-dashed border-slate-200 hover:border-emerald-500/50 bg-white/40 hover:bg-emerald-50/10 rounded-2xl p-4 transition-all duration-300 relative group/drop flex items-center gap-3 cursor-pointer min-h-[80px]">
-                  <Upload className="w-6 h-6 text-slate-400 group-hover/drop:text-emerald-600 transition-colors shrink-0" />
+                <div className="border border-dashed border-slate-200 hover:border-brand-orange/50 bg-white/40 hover:bg-orange-50/10 rounded-2xl p-4 transition-all duration-300 relative group/drop flex items-center gap-3 cursor-pointer min-h-[80px]">
+                  <Upload className="w-6 h-6 text-slate-400 group-hover/drop:text-brand-orange transition-colors shrink-0" />
                   <div className="text-left">
                     <p className="text-xs font-bold text-slate-600 max-w-[200px] truncate">
                       {kharijFile ? kharijFile.name : "Choose Kharij file"}
@@ -469,13 +469,13 @@ export default function EditLandDocPage() {
           <div className="space-y-4">
             <div className="flex justify-between items-center border-b border-slate-100 pb-2.5">
               <h3 className="text-sm font-extrabold text-slate-700 flex items-center gap-2 uppercase tracking-wider">
-                <FolderOpen className="w-4.5 h-4.5 text-emerald-600" />
+                <FolderOpen className="w-4.5 h-4.5 text-brand-orange" />
                 Other Records (Optional)
               </h3>
               <button 
                 type="button" 
                 onClick={addOtherRecord} 
-                className="px-3 py-1.5 text-xs font-bold bg-emerald-50 text-emerald-700 hover:bg-emerald-600 hover:text-white border border-emerald-100/50 hover:border-emerald-600 rounded-xl transition-colors flex items-center gap-1 active:scale-95 shadow-sm"
+                className="px-3 py-1.5 text-xs font-bold bg-orange-50 text-brand-orange hover:bg-brand-orange hover:text-white border border-orange-100/55 hover:border-brand-orange rounded-xl transition-colors flex items-center gap-1 active:scale-95 shadow-sm"
               >
                 <Plus className="w-3.5 h-3.5" />
                 Add Record
@@ -485,7 +485,7 @@ export default function EditLandDocPage() {
             {otherRecords.map((record, index) => (
               <div 
                 key={index} 
-                className="flex flex-col gap-4 bg-white/40 border border-slate-200/80 p-4.5 rounded-2xl relative group/item hover:border-emerald-500/20 hover:-translate-y-0.5 transition-all duration-300"
+                className="flex flex-col gap-4 bg-white/40 border border-slate-200/80 p-4.5 rounded-2xl relative group/item hover:border-brand-orange/20 hover:-translate-y-0.5 transition-all duration-300"
               >
                 <button 
                   type="button" 
@@ -503,7 +503,7 @@ export default function EditLandDocPage() {
                       type="text" 
                       value={record.name} 
                       onChange={(e) => updateOtherRecord(index, "name", e.target.value)} 
-                      className="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition bg-white text-slate-800 text-sm font-medium" 
+                      className="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-brand-orange/20 focus:border-brand-orange transition bg-white text-slate-800 text-sm font-medium" 
                       placeholder="e.g. Deed Copy" 
                     />
                   </div>
@@ -511,13 +511,13 @@ export default function EditLandDocPage() {
                   <div className="space-y-1.5">
                     <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wider">File</label>
                     {record.url && !record.file && (
-                      <div className="text-[10px] text-teal-700 bg-teal-50 border border-teal-100 px-3 py-1 rounded-xl mb-1.5 inline-block truncate max-w-full font-bold uppercase tracking-wider">
-                        Current: <a href={record.url.startsWith("http") ? record.url : `https://land-management-api.vercel.app${record.url}`} target="_blank" rel="noreferrer" className="underline hover:text-teal-900">View File</a>
+                      <div className="text-[10px] text-brand-orange bg-orange-50 border border-orange-100 px-3 py-1 rounded-xl mb-1.5 inline-block truncate max-w-full font-bold uppercase tracking-wider">
+                        Current: <a href={record.url.startsWith("http") ? record.url : `https://land-management-api.vercel.app${record.url}`} target="_blank" rel="noreferrer" className="underline hover:text-brand-orange-hover">View File</a>
                       </div>
                     )}
                     
-                    <div className="border border-dashed border-slate-200 hover:border-emerald-500/50 bg-white/40 hover:bg-emerald-50/10 rounded-xl p-3.5 transition-all duration-300 relative group/filedrop flex items-center gap-2 cursor-pointer">
-                      <Upload className="w-4.5 h-4.5 text-slate-400 group-hover/filedrop:text-emerald-600 transition-colors shrink-0" />
+                    <div className="border border-dashed border-slate-200 hover:border-brand-orange/50 bg-white/40 hover:bg-orange-50/10 rounded-xl p-3.5 transition-all duration-300 relative group/filedrop flex items-center gap-2 cursor-pointer">
+                      <Upload className="w-4.5 h-4.5 text-slate-400 group-hover/filedrop:text-brand-orange transition-colors shrink-0" />
                       <div className="text-left min-w-0">
                         <p className="text-[11px] font-bold text-slate-600 truncate max-w-[150px]">
                           {record.file ? record.file.name : "Choose file"}
@@ -548,7 +548,7 @@ export default function EditLandDocPage() {
             <button 
               type="submit" 
               disabled={isUpdating || isUploading} 
-              className="px-6 py-2.5 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white font-bold rounded-xl text-xs transition shadow-md shadow-emerald-500/10 hover:shadow-emerald-500/25 disabled:opacity-50 active:scale-[0.98] flex items-center gap-2"
+              className="px-6 py-2.5 bg-gradient-to-r from-brand-orange to-orange-500 hover:from-brand-orange-hover hover:to-orange-400 text-white font-bold rounded-xl text-xs transition shadow-md shadow-brand-orange/10 hover:shadow-brand-orange/25 disabled:opacity-50 active:scale-[0.98] flex items-center gap-2"
             >
               {isUpdating || isUploading ? (
                 <>

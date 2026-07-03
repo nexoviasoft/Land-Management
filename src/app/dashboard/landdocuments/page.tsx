@@ -2,8 +2,9 @@
 
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
+import { useSelector } from "react-redux";
+import { RootState } from "@/redux/store";
 import { useGetLanddocsQuery, useDeleteLanddocMutation } from "@/redux/api/landdocApiSlice";
-import { useGetPromotionsQuery } from "@/redux/api/promotionsApiSlice";
 import {
   Plus,
   Trash2,
@@ -17,7 +18,8 @@ import {
   Building,
   Home,
   CheckCircle2,
-  Sparkles
+  Clock,
+  CheckCircle
 } from "lucide-react";
 
 interface DeleteConfirmModalProps {
@@ -88,14 +90,23 @@ function DeleteConfirmModal({ isOpen, onClose, onConfirm, itemName }: DeleteConf
 
 export default function LandDocumentsPage() {
   const router = useRouter();
+  const role = useSelector((state: RootState) => state.auth.role);
+  const user = useSelector((state: RootState) => state.auth.user);
 
   const { data: responseData, isLoading, error } = useGetLanddocsQuery({});
-  const { data: promotionsResponse } = useGetPromotionsQuery();
   const [deleteLanddoc] = useDeleteLanddocMutation();
   const [deleteTarget, setDeleteTarget] = useState<any | null>(null);
 
-  const docs = responseData?.data || [];
-  const promotions = promotionsResponse?.data || [];
+  const allDocs = responseData?.data || [];
+
+  // Filter land documents: partners can only see their own uploaded documents
+  const docs = role === "partner" && user?.id
+    ? allDocs.filter((doc: any) => 
+        doc.userId === user.id || 
+        doc.user === user.id || 
+        (doc.user && typeof doc.user === "object" && (doc.user.id === user.id || doc.user._id === user.id))
+      )
+    : allDocs;
 
   const handleConfirmDelete = async () => {
     if (!deleteTarget) return;
@@ -119,7 +130,7 @@ export default function LandDocumentsPage() {
   if (isLoading) {
     return (
       <div className="w-full min-h-[60vh] flex flex-col items-center justify-center gap-4">
-        <span className="w-10 h-10 border-4 border-emerald-500/30 border-t-emerald-600 rounded-full animate-spin" />
+        <span className="w-10 h-10 border-4 border-brand-orange/30 border-t-brand-orange rounded-full animate-spin" />
         <span className="text-sm font-semibold text-slate-500">Loading land documents...</span>
       </div>
     );
@@ -142,85 +153,44 @@ export default function LandDocumentsPage() {
   return (
     <div className="w-full space-y-8 py-4 sm:py-6 relative overflow-x-hidden">
       {/* Background Radial Glow elements */}
-      <div className="absolute top-[-10%] right-[-5%] w-[400px] h-[400px] bg-emerald-400/5 rounded-full blur-[120px] -z-10 pointer-events-none" />
-      <div className="absolute bottom-[10%] left-[-5%] w-[350px] h-[350px] bg-teal-400/5 rounded-full blur-[110px] -z-10 pointer-events-none" />
+      <div className="absolute top-[-10%] right-[-5%] w-[400px] h-[400px] bg-brand-orange/5 rounded-full blur-[120px] -z-10 pointer-events-none" />
+      <div className="absolute bottom-[10%] left-[-5%] w-[350px] h-[350px] bg-amber-400/5 rounded-full blur-[110px] -z-10 pointer-events-none" />
 
       {/* Header Panel */}
-      <div className="relative overflow-hidden bg-white/60 backdrop-blur-xl border border-white/90 p-6 md:p-8 rounded-3xl flex flex-col sm:flex-row justify-between items-start sm:items-center gap-6 shadow-[0_20px_50px_rgba(0,0,0,0.02)] hover:shadow-[0_20px_50px_rgba(16,185,129,0.04)] transition-all duration-500 group">
+      <div className="relative overflow-hidden bg-white/60 backdrop-blur-xl border border-white/90 p-5 sm:p-6 md:p-8 rounded-3xl flex flex-col sm:flex-row justify-between items-start sm:items-center gap-6 shadow-[0_20px_50px_rgba(0,0,0,0.02)] hover:shadow-[0_20px_50px_rgba(255,96,20,0.04)] transition-all duration-500 group">
         {/* Ambient background decoration */}
-        <div className="absolute top-0 right-0 w-64 h-64 bg-gradient-to-br from-emerald-500/10 to-teal-500/0 rounded-full blur-3xl pointer-events-none group-hover:scale-110 transition-transform duration-700" />
-        <div className="absolute -left-12 -bottom-12 w-48 h-48 bg-gradient-to-tr from-teal-500/5 to-emerald-500/0 rounded-full blur-2xl pointer-events-none" />
+        <div className="absolute top-0 right-0 w-64 h-64 bg-gradient-to-br from-brand-orange/10 to-orange-500/0 rounded-full blur-3xl pointer-events-none group-hover:scale-110 transition-transform duration-700" />
+        <div className="absolute -left-12 -bottom-12 w-48 h-48 bg-gradient-to-tr from-amber-500/5 to-brand-orange/0 rounded-full blur-2xl pointer-events-none" />
         
-        <div className="relative space-y-1">
-          <h1 className="text-2xl md:text-3xl font-extrabold bg-gradient-to-r from-slate-900 via-slate-800 to-emerald-950 bg-clip-text text-transparent tracking-tight">
-            Land Documents
-          </h1>
-          <p className="text-xs text-slate-500 font-semibold mt-0.5">
-            Manage and audit registered land records and mutation titles
-          </p>
+        <div className="flex items-center gap-4 relative z-10 w-full sm:w-auto">
+          <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-brand-orange to-orange-500 flex items-center justify-center text-white shadow-md shadow-brand-orange/10 shrink-0">
+            <FileText className="w-6 h-6" />
+          </div>
+          <div>
+            <h1 className="text-xl sm:text-2xl md:text-3xl font-extrabold bg-gradient-to-r from-slate-900 via-slate-800 to-orange-950 bg-clip-text text-transparent tracking-tight">
+              Land Documents
+            </h1>
+            <p className="text-xs text-slate-500 font-semibold mt-0.5">
+              Manage and audit registered land records and mutation titles
+            </p>
+          </div>
         </div>
         <button
           onClick={() => router.push("/dashboard/landdocuments/create")}
-          className="relative z-10 px-6 py-3 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white font-bold rounded-xl text-sm transition-all duration-300 shadow-md shadow-emerald-500/10 hover:shadow-emerald-500/25 hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98] flex items-center gap-2"
+          className="relative z-10 w-full sm:w-auto px-6 py-3 bg-gradient-to-r from-brand-orange to-orange-500 hover:from-brand-orange-hover hover:to-orange-400 text-white font-bold rounded-xl text-xs sm:text-sm transition-all duration-300 shadow-md shadow-brand-orange/10 hover:shadow-brand-orange/25 hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98] flex items-center justify-center gap-2 group/btn shrink-0"
         >
-          <Plus className="w-4.5 h-4.5 animate-pulse" />
+          <Plus className="w-4.5 h-4.5 transition-transform duration-300 group-hover/btn:rotate-90" />
           Add New Title
         </button>
       </div>
 
-      {/* Promotions Section */}
-      {promotions && promotions.length > 0 && (
-        <div className="relative overflow-hidden bg-gradient-to-r from-emerald-600 to-teal-700 p-6 sm:p-8 rounded-3xl text-white shadow-xl shadow-emerald-950/10 flex flex-col md:flex-row justify-between items-center gap-6 group">
-          {/* Ambient animations */}
-          <div className="absolute top-[-50%] right-[-20%] w-[350px] h-[350px] bg-white/10 rounded-full blur-[80px] pointer-events-none group-hover:scale-110 transition-transform duration-700" />
-          <div className="absolute bottom-[-50%] left-[-10%] w-[250px] h-[250px] bg-emerald-400/20 rounded-full blur-[60px] pointer-events-none" />
-
-          <div className="space-y-4 max-w-2xl relative z-10 text-center md:text-left">
-            <div className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-white/10 border border-white/20 text-emerald-100 text-xs font-bold rounded-full shadow-sm">
-              <Sparkles className="w-3.5 h-3.5 text-amber-300 animate-spin" style={{ animationDuration: '3s' }} />
-              <span>Special Promotion Active</span>
-            </div>
-            
-            <div className="space-y-2">
-              <h2 className="text-xl sm:text-2xl font-extrabold tracking-tight">
-                {promotions[0].title}
-              </h2>
-              <p className="text-emerald-100 text-xs sm:text-sm leading-relaxed font-medium">
-                {promotions[0].description}
-              </p>
-            </div>
-
-            <div className="flex flex-wrap items-center justify-center md:justify-start gap-4">
-              <div className="bg-white/15 px-3.5 py-1.5 rounded-xl border border-white/10">
-                <p className="text-[10px] text-emerald-200 font-bold uppercase tracking-wider">Use Promo Code</p>
-                <p className="text-sm font-black text-white tracking-widest">{promotions[0].code}</p>
-              </div>
-              <div className="bg-amber-400 text-emerald-950 px-4 py-2 rounded-xl shadow-md border border-amber-300">
-                <p className="text-[10px] font-bold uppercase tracking-wider leading-none">Discount</p>
-                <p className="text-base font-black leading-tight">{promotions[0].discountPercentage}% OFF</p>
-              </div>
-            </div>
-          </div>
-
-          {promotions[0].bannerUrl && (
-            <div className="relative w-full md:w-60 h-36 rounded-2xl overflow-hidden shadow-lg border border-white/20 shrink-0">
-              <img
-                src={promotions[0].bannerUrl}
-                alt={promotions[0].title}
-                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-              />
-            </div>
-          )}
-        </div>
-      )}
-
       {/* Statistics Row */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         {[
-          { label: "Total Documents", value: totalDocs, icon: FileText, color: "from-emerald-500 to-teal-500", glow: "group-hover:bg-emerald-500/5", border: "hover:border-emerald-500/20" },
-          { label: "Agricultural Land", value: agriDocs, icon: Tag, color: "from-teal-500 to-emerald-500", glow: "group-hover:bg-teal-500/5", border: "hover:border-teal-500/20" },
-          { label: "Commercial/Industrial", value: commIndDocs, icon: Building, color: "from-indigo-500 to-slate-700", glow: "group-hover:bg-indigo-500/5", border: "hover:border-indigo-500/20" },
-          { label: "Residential", value: resDocs, icon: Home, color: "from-slate-700 to-slate-800", glow: "group-hover:bg-slate-700/5", border: "hover:border-slate-700/20" },
+          { label: "Total Documents", value: totalDocs, icon: FileText, color: "from-brand-orange to-orange-500", glow: "group-hover:bg-brand-orange/5", border: "hover:border-brand-orange/20" },
+          { label: "Agricultural Land", value: agriDocs, icon: Tag, color: "from-orange-500 to-amber-500", glow: "group-hover:bg-orange-500/5", border: "hover:border-orange-500/20" },
+          { label: "Commercial/Industrial", value: commIndDocs, icon: Building, color: "from-orange-600 to-brand-orange", glow: "group-hover:bg-brand-orange/5", border: "hover:border-brand-orange/20" },
+          { label: "Residential", value: resDocs, icon: Home, color: "from-amber-600 to-brand-orange", glow: "group-hover:bg-brand-orange/5", border: "hover:border-brand-orange/20" },
         ].map((stat, i) => (
           <div
             key={i}
@@ -269,7 +239,7 @@ export default function LandDocumentsPage() {
                     </div>
                     <button 
                       onClick={() => router.push("/dashboard/landdocuments/create")}
-                      className="px-4 py-2 bg-emerald-50 text-emerald-800 border border-emerald-100 hover:bg-emerald-100/70 font-bold text-xs rounded-xl transition"
+                      className="px-4 py-2 bg-orange-50 text-brand-orange border border-orange-100 hover:bg-orange-100/70 font-bold text-xs rounded-xl transition"
                     >
                       Create first record
                     </button>
@@ -277,17 +247,17 @@ export default function LandDocumentsPage() {
                 </tr>
               ) : (
                 docs.map((doc: any) => {
-                  let badgeStyles = "bg-slate-50 text-slate-700 border-slate-100";
-                  if (doc.landDetails?.landType === "Agricultural") badgeStyles = "bg-emerald-50 text-emerald-700 border-emerald-100";
-                  else if (doc.landDetails?.landType === "Residential") badgeStyles = "bg-blue-50 text-blue-700 border-blue-100";
-                  else if (doc.landDetails?.landType === "Commercial") badgeStyles = "bg-amber-50 text-amber-700 border-amber-100";
-                  else if (doc.landDetails?.landType === "Industrial") badgeStyles = "bg-purple-50 text-purple-700 border-purple-100";
+                  let badgeStyles = "bg-slate-50 text-slate-600 border-slate-200";
+                  if (doc.landDetails?.landType === "Agricultural") badgeStyles = "bg-orange-50 text-brand-orange border-orange-100";
+                  else if (doc.landDetails?.landType === "Residential") badgeStyles = "bg-amber-50 text-amber-700 border-amber-100";
+                  else if (doc.landDetails?.landType === "Commercial") badgeStyles = "bg-yellow-50 text-yellow-700 border-yellow-100";
+                  else if (doc.landDetails?.landType === "Industrial") badgeStyles = "bg-orange-100 text-brand-orange border-orange-200";
 
                   return (
                     <tr key={doc.id} className="hover:bg-white/60 transition-colors group">
                       <td className="py-4 px-6">
                         <div className="font-semibold text-slate-800 flex items-center gap-1.5">
-                          <MapPin className="w-3.5 h-3.5 text-slate-400 group-hover:text-emerald-600 transition-colors" />
+                          <MapPin className="w-3.5 h-3.5 text-slate-400 group-hover:text-brand-orange transition-colors" />
                           {doc.location?.mouza || 'N/A'}
                         </div>
                         <div className="text-xs text-slate-400 pl-5 mt-0.5">
@@ -316,7 +286,7 @@ export default function LandDocumentsPage() {
                           </button>
                           <button
                             onClick={() => router.push(`/dashboard/landdocuments/${doc.id}/edit`)}
-                            className="px-3 py-1.5 text-xs font-bold rounded-xl bg-emerald-50/40 text-emerald-800 border border-emerald-200/50 hover:bg-emerald-100/70 transition shadow-sm flex items-center gap-1 active:scale-95"
+                            className="px-3 py-1.5 text-xs font-bold rounded-xl bg-orange-50/40 text-brand-orange border border-orange-200/50 hover:bg-orange-100/70 transition shadow-sm flex items-center gap-1 active:scale-95"
                           >
                             <Edit className="w-3.5 h-3.5" />
                             Edit
@@ -351,29 +321,29 @@ export default function LandDocumentsPage() {
               </div>
               <button 
                 onClick={() => router.push("/dashboard/landdocuments/create")}
-                className="px-4 py-2 bg-emerald-50 text-emerald-800 border border-emerald-100 hover:bg-emerald-100/70 font-bold text-xs rounded-xl transition"
+                className="px-4 py-2 bg-orange-50 text-brand-orange border border-orange-100 hover:bg-orange-100/70 font-bold text-xs rounded-xl transition"
               >
                 Create first record
               </button>
             </div>
           ) : (
             docs.map((doc: any) => {
-              let badgeStyles = "bg-slate-50 text-slate-700 border-slate-100";
-              if (doc.landDetails?.landType === "Agricultural") badgeStyles = "bg-emerald-50 text-emerald-700 border-emerald-100";
-              else if (doc.landDetails?.landType === "Residential") badgeStyles = "bg-blue-50 text-blue-700 border-blue-100";
-              else if (doc.landDetails?.landType === "Commercial") badgeStyles = "bg-amber-50 text-amber-700 border-amber-100";
-              else if (doc.landDetails?.landType === "Industrial") badgeStyles = "bg-purple-50 text-purple-700 border-purple-100";
+              let badgeStyles = "bg-slate-50 text-slate-600 border-slate-200";
+              if (doc.landDetails?.landType === "Agricultural") badgeStyles = "bg-orange-50 text-brand-orange border-orange-100";
+              else if (doc.landDetails?.landType === "Residential") badgeStyles = "bg-amber-50 text-amber-700 border-amber-100";
+              else if (doc.landDetails?.landType === "Commercial") badgeStyles = "bg-yellow-50 text-yellow-700 border-yellow-100";
+              else if (doc.landDetails?.landType === "Industrial") badgeStyles = "bg-orange-100 text-brand-orange border-orange-200";
 
               return (
                 <div 
                   key={doc.id}
-                  className="bg-white/50 backdrop-blur-md rounded-2xl border border-white/80 p-4.5 space-y-4.5 shadow-[0_2px_8px_rgba(15,23,42,0.01)] hover:-translate-y-1 hover:shadow-md hover:border-emerald-500/20 transition-all duration-300 relative overflow-hidden group"
+                  className="bg-white/50 backdrop-blur-md rounded-2xl border border-white/80 p-4.5 space-y-4.5 shadow-[0_2px_8px_rgba(15,23,42,0.01)] hover:-translate-y-1 hover:shadow-md hover:border-brand-orange/20 transition-all duration-300 relative overflow-hidden group"
                 >
                   {/* Location and Badge */}
                   <div className="flex justify-between items-start gap-4">
                     <div className="space-y-0.5">
                       <div className="font-bold text-slate-800 flex items-center gap-1.5">
-                        <MapPin className="w-4 h-4 text-emerald-600" />
+                        <MapPin className="w-4 h-4 text-brand-orange" />
                         {doc.location?.mouza || 'N/A'}
                       </div>
                       <div className="text-xs text-slate-400 pl-5.5">
@@ -408,7 +378,7 @@ export default function LandDocumentsPage() {
                     </button>
                     <button
                       onClick={() => router.push(`/dashboard/landdocuments/${doc.id}/edit`)}
-                      className="py-2 text-xs font-bold rounded-xl bg-emerald-50/40 text-emerald-800 border border-emerald-200/50 hover:bg-emerald-100/70 transition shadow-sm flex items-center justify-center gap-1 active:scale-95"
+                      className="py-2 text-xs font-bold rounded-xl bg-orange-50/40 text-brand-orange border border-orange-200/50 hover:bg-orange-100/70 transition shadow-sm flex items-center justify-center gap-1 active:scale-95"
                     >
                       <Edit className="w-3.5 h-3.5" />
                       Edit
