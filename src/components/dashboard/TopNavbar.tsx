@@ -125,9 +125,8 @@ export default function TopNavbar() {
           >
             <Bell size={17} />
             {unreadCount > 0 && (
-              <span className="absolute top-1.5 right-1.5 flex h-2 w-2">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-orange-400 opacity-75"></span>
-                <span className="relative inline-flex rounded-full h-2 w-2 bg-brand-orange ring-2 ring-white" />
+              <span className="absolute -top-1 -right-1 flex h-4 min-w-[16px] items-center justify-center rounded-full bg-brand-orange px-1 text-[10px] font-bold text-white ring-2 ring-white shadow-sm">
+                {unreadCount > 99 ? '99+' : unreadCount}
               </span>
             )}
           </button>
