@@ -65,7 +65,7 @@ export default function TopNavbar() {
   };
 
   const { data: noticeData } = useGetActiveNoticeQuery(undefined, { pollingInterval: 10000 });
-  const activeNotice = noticeData?.data?.title || null;
+  const activeNotice = noticeData?.data || null;
 
   const handleNotificationClick = (message: string) => {
     const idMatch = message.match(/ID:([a-zA-Z0-9-]+)/);
@@ -85,8 +85,11 @@ export default function TopNavbar() {
         </div>
         <div className="w-full overflow-hidden ml-8">
           {activeNotice ? (
-            <span className="text-xs font-semibold text-orange-800 animate-marquee whitespace-nowrap">
-              {activeNotice}
+            <span 
+              onClick={() => router.push(`/dashboard/notices/${activeNotice.id}`)}
+              className="text-xs font-semibold text-orange-800 animate-marquee whitespace-nowrap cursor-pointer hover:underline"
+            >
+              {activeNotice.title}
             </span>
           ) : (
             <span className="text-xs font-medium text-slate-400 pl-3">No active notice</span>

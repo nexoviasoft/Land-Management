@@ -23,7 +23,9 @@ import {
   Clock,
   CheckCircle,
   Search,
-  Filter
+  Filter,
+  User,
+  Download
 } from "lucide-react";
 
 interface DeleteConfirmModalProps {
@@ -170,6 +172,54 @@ export default function LandDocumentsPage() {
     }
   };
 
+  const exportToCSV = () => {
+    if (!docs || docs.length === 0) {
+      toast.error("No documents to export");
+      return;
+    }
+
+    const headers = [
+      "Division", "District", "Upazila", "Mouza", 
+      "Land Type", "Khatian No", "Dag No", "Kharij Case",
+      "Submitted By Name", "Submitted By Email", "Status", "Date Registered"
+    ];
+
+    const rows = docs.map((doc: any) => {
+      const creator = usersList.find((u: any) => String(u.id) === String(doc.userId) || String(u._id) === String(doc.userId) || String(u.id) === String(doc.user) || String(u._id) === String(doc.user));
+      const creatorName = creator ? (creator.name || creator.fullName || "Unknown User") : "Unknown User";
+      const creatorEmail = creator?.email || "";
+
+      return [
+        doc.location?.division || "",
+        doc.location?.district || "",
+        doc.location?.upazila || "",
+        doc.location?.mouza || "",
+        doc.landDetails?.landType || "",
+        doc.landDetails?.khatianNo || "",
+        doc.landDetails?.dagNo || "",
+        doc.landDetails?.kharijCaseNo || "",
+        creatorName,
+        creatorEmail,
+        doc.status || "",
+        new Date(doc.createdAt).toLocaleDateString() || ""
+      ];
+    });
+
+    const csvContent = [
+      headers.join(","),
+      ...rows.map((r: any[]) => r.map((cell: any) => `"${String(cell).replace(/"/g, '""')}"`).join(","))
+    ].join("\n");
+
+    const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.setAttribute("href", url);
+    link.setAttribute("download", `Land_Documents_${new Date().toISOString().split("T")[0]}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
   // Stat calculations
   const totalDocs = docs.length;
   const agriDocs = docs.filter((doc: any) => doc.landDetails?.landType === "Agricultural").length;
@@ -226,13 +276,22 @@ export default function LandDocumentsPage() {
             </p>
           </div>
         </div>
-        <button
-          onClick={() => router.push("/dashboard/landdocuments/create")}
-          className="relative z-10 w-full sm:w-auto px-6 py-3 bg-gradient-to-r from-brand-orange to-orange-500 hover:from-brand-orange-hover hover:to-orange-400 text-white font-bold rounded-xl text-xs sm:text-sm transition-all duration-300 shadow-md shadow-brand-orange/10 hover:shadow-brand-orange/25 hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98] flex items-center justify-center gap-2 group/btn shrink-0"
-        >
-          <Plus className="w-4.5 h-4.5 transition-transform duration-300 group-hover/btn:rotate-90" />
-          Add New Land
-        </button>
+        <div className="flex items-center gap-3 w-full sm:w-auto relative z-10 flex-col sm:flex-row mt-4 sm:mt-0">
+          <button
+            onClick={exportToCSV}
+            className="w-full sm:w-auto px-5 py-3 bg-white text-slate-700 font-bold rounded-xl text-xs sm:text-sm transition-all duration-300 shadow-sm border border-slate-200 hover:bg-slate-50 hover:border-slate-300 flex items-center justify-center gap-2 group/btn shrink-0"
+          >
+            <Download className="w-4 h-4 text-slate-400 group-hover/btn:text-brand-orange transition-colors" />
+            Export to Excel
+          </button>
+          <button
+            onClick={() => router.push("/dashboard/landdocuments/create")}
+            className="w-full sm:w-auto px-6 py-3 bg-gradient-to-r from-brand-orange to-orange-500 hover:from-brand-orange-hover hover:to-orange-400 text-white font-bold rounded-xl text-xs sm:text-sm transition-all duration-300 shadow-md shadow-brand-orange/10 hover:shadow-brand-orange/25 hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98] flex items-center justify-center gap-2 group/btn shrink-0"
+          >
+            <Plus className="w-4.5 h-4.5 transition-transform duration-300 group-hover/btn:rotate-90" />
+            Add New Land
+          </button>
+        </div>
       </div>
 
       {/* Statistics Row */}
@@ -338,6 +397,7 @@ export default function LandDocumentsPage() {
                 <th className="py-4.5 px-6">Land Details</th>
                 <th className="py-4.5 px-6">Khatian No</th>
                 <th className="py-4.5 px-6">Dag No</th>
+                <th className="py-4.5 px-6">Submitted By</th>
                 <th className="py-4.5 px-6">Status</th>
                 <th className="py-4.5 px-6 text-center">Actions</th>
               </tr>
@@ -374,6 +434,9 @@ export default function LandDocumentsPage() {
                   else if (doc.status === "pending") statusStyles = "bg-amber-50 text-amber-700 border-amber-100";
                   else if (doc.status === "rejected") statusStyles = "bg-rose-50 text-rose-700 border-rose-100";
 
+                  const creator = usersList.find((u: any) => String(u.id) === String(doc.userId) || String(u._id) === String(doc.userId) || String(u.id) === String(doc.user) || String(u._id) === String(doc.user));
+                  const creatorName = creator ? (creator.name || creator.fullName || creator.email) : "Unknown User";
+
                   return (
                     <tr key={doc.id} className="hover:bg-white/60 transition-colors group">
                       <td className="py-4 px-6">
@@ -395,6 +458,12 @@ export default function LandDocumentsPage() {
                       </td>
                       <td className="py-4 px-6 text-slate-600 font-semibold">
                         {doc.landDetails?.dagNo || 'N/A'}
+                      </td>
+                      <td className="py-4 px-6">
+                        <div className="flex items-center gap-1.5 font-semibold text-slate-700">
+                          <User className="w-3.5 h-3.5 text-slate-400" />
+                          <span className="truncate max-w-[120px]">{creatorName}</span>
+                        </div>
                       </td>
                       <td className="py-4 px-6">
                         <span className={`inline-flex items-center px-2.5 py-0.5 rounded-lg text-[10px] font-bold uppercase tracking-wider border ${statusStyles}`}>
@@ -465,6 +534,9 @@ export default function LandDocumentsPage() {
               else if (doc.status === "pending") statusStyles = "bg-amber-50 text-amber-700 border-amber-100";
               else if (doc.status === "rejected") statusStyles = "bg-rose-50 text-rose-700 border-rose-100";
 
+              const creator = usersList.find((u: any) => String(u.id) === String(doc.userId) || String(u._id) === String(doc.userId) || String(u.id) === String(doc.user) || String(u._id) === String(doc.user));
+              const creatorName = creator ? (creator.name || creator.fullName || creator.email) : "Unknown User";
+
               return (
                 <div
                   key={doc.id}
@@ -500,6 +572,10 @@ export default function LandDocumentsPage() {
                     <div className="space-y-0.5">
                       <span className="text-[9px] font-bold text-slate-400 uppercase tracking-wider">Dag No</span>
                       <p className="text-xs font-bold text-slate-700">{doc.landDetails?.dagNo || '—'}</p>
+                    </div>
+                    <div className="col-span-2 border-t border-slate-200/60 pt-2.5 mt-0.5 flex items-center gap-1.5">
+                      <span className="text-[9px] font-bold text-slate-400 uppercase tracking-wider">Submitted By:</span>
+                      <p className="text-xs font-bold text-slate-700 truncate">{creatorName}</p>
                     </div>
                   </div>
 

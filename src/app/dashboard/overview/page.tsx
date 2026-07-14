@@ -228,7 +228,7 @@ export default function OverviewPage() {
           </div>
 
           <div className="divide-y divide-slate-100/70">
-            {recentRequests.map((req, idx) => (
+            {recentRequests.map((req: any, idx: number) => (
               <div
                 key={idx}
                 className="py-4.5 first:pt-0 last:pb-0 flex flex-wrap sm:flex-nowrap items-center justify-between gap-3.5 group/item transition-all duration-300"

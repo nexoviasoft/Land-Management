@@ -4,6 +4,7 @@ import { useState } from "react";
 import dynamic from "next/dynamic";
 import { Megaphone, Plus, FileText, CheckCircle2 } from "lucide-react";
 import { useGetNoticesQuery, useCreateNoticeMutation } from "@/redux/api/noticeApiSlice";
+import Link from "next/link";
 import "react-quill-new/dist/quill.snow.css";
 
 const ReactQuill = dynamic(() => import("react-quill-new"), { ssr: false });
@@ -97,16 +98,17 @@ export default function AdminNoticesPage() {
                 <th className="py-4 px-6 text-xs font-bold text-slate-500 uppercase tracking-wider">Status</th>
                 <th className="py-4 px-6 text-xs font-bold text-slate-500 uppercase tracking-wider">Title</th>
                 <th className="py-4 px-6 text-xs font-bold text-slate-500 uppercase tracking-wider">Date Posted</th>
+                <th className="py-4 px-6 text-xs font-bold text-slate-500 uppercase tracking-wider text-right">Actions</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100">
               {isLoading ? (
                 <tr>
-                  <td colSpan={3} className="py-12 text-center text-slate-400">Loading notices...</td>
+                  <td colSpan={4} className="py-12 text-center text-slate-400">Loading notices...</td>
                 </tr>
               ) : notices.length === 0 ? (
                 <tr>
-                  <td colSpan={3} className="py-12 text-center text-slate-400 flex flex-col items-center">
+                  <td colSpan={4} className="py-12 text-center text-slate-400 flex flex-col items-center">
                     <FileText className="w-8 h-8 mb-2 text-slate-300" />
                     No notices published yet
                   </td>
@@ -131,6 +133,14 @@ export default function AdminNoticesPage() {
                     </td>
                     <td className="py-4 px-6 text-sm text-slate-500">
                       {new Date(notice.createdAt).toLocaleString()}
+                    </td>
+                    <td className="py-4 px-6 text-right">
+                      <Link 
+                        href={`/dashboard/notices/${notice.id}`}
+                        className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-slate-100 hover:bg-brand-orange hover:text-white text-slate-600 font-semibold text-xs rounded-lg transition-colors"
+                      >
+                        View Details
+                      </Link>
                     </td>
                   </tr>
                 ))

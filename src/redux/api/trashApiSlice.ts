@@ -35,6 +35,27 @@ export const trashApiSlice = apiSlice.injectEndpoints({
       }),
       invalidatesTags: ["Trash", "LandDocuments"],
     }),
+    permanentlyDeleteUser: builder.mutation({
+      query: (id) => ({
+        url: `/trash/users/${id}`,
+        method: "DELETE",
+      }),
+      invalidatesTags: ["Trash", "Users"],
+    }),
+    permanentlyDeleteNotice: builder.mutation({
+      query: (id) => ({
+        url: `/trash/notices/${id}`,
+        method: "DELETE",
+      }),
+      invalidatesTags: ["Trash", "Notices"],
+    }),
+    permanentlyDeleteLandDoc: builder.mutation({
+      query: (id) => ({
+        url: `/trash/landdocs/${id}`,
+        method: "DELETE",
+      }),
+      invalidatesTags: ["Trash", "LandDocuments"],
+    }),
   }),
 });
 
@@ -45,4 +66,7 @@ export const {
   useRecoverUserMutation,
   useRecoverNoticeMutation,
   useRecoverLandDocMutation,
+  usePermanentlyDeleteUserMutation,
+  usePermanentlyDeleteNoticeMutation,
+  usePermanentlyDeleteLandDocMutation,
 } = trashApiSlice;

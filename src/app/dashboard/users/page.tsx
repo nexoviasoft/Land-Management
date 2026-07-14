@@ -27,7 +27,8 @@ import {
   FileSpreadsheet,
   UserCheck,
   Search,
-  Filter
+  Filter,
+  Download
 } from "lucide-react";
 
 type UserRole = "partner" | "admin";
@@ -121,9 +122,8 @@ function BanConfirmModal({
           <X className="w-5 h-5" />
         </button>
         <div className="flex flex-col items-center text-center space-y-4">
-          <div className={`w-12 h-12 rounded-2xl flex items-center justify-center shadow-inner ${
-            isBanned ? "bg-orange-50 text-brand-orange" : "bg-amber-50 text-amber-600"
-          }`}>
+          <div className={`w-12 h-12 rounded-2xl flex items-center justify-center shadow-inner ${isBanned ? "bg-orange-50 text-brand-orange" : "bg-amber-50 text-amber-600"
+            }`}>
             {isBanned ? <UserCheck className="w-6 h-6" /> : <Ban className="w-6 h-6" />}
           </div>
           <div className="space-y-2">
@@ -147,11 +147,10 @@ function BanConfirmModal({
             </button>
             <button
               onClick={onConfirm}
-              className={`flex-1 py-2.5 text-white font-bold rounded-xl text-xs transition-all shadow-md active:scale-95 ${
-                isBanned
+              className={`flex-1 py-2.5 text-white font-bold rounded-xl text-xs transition-all shadow-md active:scale-95 ${isBanned
                   ? "bg-brand-orange hover:bg-orange-600 shadow-orange-500/10"
                   : "bg-amber-600 hover:bg-amber-700 shadow-amber-500/10"
-              }`}
+                }`}
             >
               {isBanned ? "Unban" : "Ban"}
             </button>
@@ -183,12 +182,12 @@ export default function UsersPage() {
   const [statusFilter, setStatusFilter] = useState("all");
 
   const filteredUsers = users.filter((u) => {
-    const matchesSearch = searchTerm === "" || 
-      u.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
-      u.email.toLowerCase().includes(searchTerm.toLowerCase()) || 
+    const matchesSearch = searchTerm === "" ||
+      u.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      u.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
       (u.Nid && u.Nid.toLowerCase().includes(searchTerm.toLowerCase())) ||
       (u.phone && u.phone.includes(searchTerm));
-    
+
     const matchesRole = roleFilter === "all" || u.role === roleFilter;
     const matchesStatus = statusFilter === "all" || (statusFilter === "banned" ? u.isBanned : !u.isBanned);
 
@@ -227,6 +226,43 @@ export default function UsersPage() {
     }
   };
 
+  const exportToCSV = () => {
+    if (!filteredUsers || filteredUsers.length === 0) {
+      alert("No users to export");
+      return;
+    }
+
+    const headers = [
+      "Name", "Email", "Phone", "NID", "Role", "Status", "Date Created"
+    ];
+
+    const rows = filteredUsers.map((u) => {
+      return [
+        u.name || "",
+        u.email || "",
+        u.phone || "",
+        u.Nid || "",
+        u.role || "",
+        u.isBanned ? "Banned" : "Active",
+        new Date(u.createdAt).toLocaleDateString() || ""
+      ];
+    });
+
+    const csvContent = [
+      headers.join(","),
+      ...rows.map((r: any[]) => r.map((cell: any) => `"${String(cell).replace(/"/g, '""')}"`).join(","))
+    ].join("\n");
+
+    const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.setAttribute("href", url);
+    link.setAttribute("download", `Users_${new Date().toISOString().split("T")[0]}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
   if (isLoading) {
     return (
       <div className="w-full min-h-[60vh] flex flex-col items-center justify-center gap-4">
@@ -261,7 +297,7 @@ export default function UsersPage() {
         {/* Ambient background decoration */}
         <div className="absolute top-0 right-0 w-64 h-64 bg-gradient-to-br from-brand-orange/10 to-orange-500/0 rounded-full blur-3xl pointer-events-none group-hover:scale-110 transition-transform duration-700" />
         <div className="absolute -left-12 -bottom-12 w-48 h-48 bg-gradient-to-tr from-orange-500/5 to-brand-orange/0 rounded-full blur-2xl pointer-events-none" />
-        
+
         <div className="flex items-center gap-4 relative z-10 w-full sm:w-auto">
           <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-brand-orange to-orange-500 flex items-center justify-center text-white shadow-md shadow-brand-orange/10 shrink-0">
             <Users className="w-6 h-6" />
@@ -275,13 +311,22 @@ export default function UsersPage() {
             </p>
           </div>
         </div>
-        <button
-          onClick={() => setIsCreateModalOpen(true)}
-          className="relative z-10 w-full sm:w-auto px-6 py-3 bg-gradient-to-r from-brand-orange to-orange-500 hover:from-orange-600 hover:to-orange-400 text-white font-bold rounded-xl text-xs sm:text-sm transition-all duration-300 shadow-md shadow-brand-orange/10 hover:shadow-brand-orange/25 hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98] flex items-center justify-center gap-2 shrink-0"
-        >
-          <Plus className="w-4.5 h-4.5 animate-pulse" />
-          Add New User
-        </button>
+        <div className="flex items-center gap-3 w-full sm:w-auto relative z-10 flex-col sm:flex-row mt-4 sm:mt-0">
+          <button
+            onClick={exportToCSV}
+            className="w-full sm:w-auto px-5 py-3 bg-white text-slate-700 font-bold rounded-xl text-xs sm:text-sm transition-all duration-300 shadow-sm border border-slate-200 hover:bg-slate-50 hover:border-slate-300 flex items-center justify-center gap-2 group/btn shrink-0"
+          >
+            <Download className="w-4 h-4 text-slate-400 group-hover/btn:text-brand-orange transition-colors" />
+            Export to Excel
+          </button>
+          <button
+            onClick={() => setIsCreateModalOpen(true)}
+            className="w-full sm:w-auto px-6 py-3 bg-gradient-to-r from-brand-orange to-orange-500 hover:from-orange-600 hover:to-orange-400 text-white font-bold rounded-xl text-xs sm:text-sm transition-all duration-300 shadow-md shadow-brand-orange/10 hover:shadow-brand-orange/25 hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98] flex items-center justify-center gap-2 shrink-0"
+          >
+            <Plus className="w-4.5 h-4.5 animate-pulse" />
+            Add New User
+          </button>
+        </div>
       </div>
 
       {/* Statistics Row */}
@@ -298,12 +343,12 @@ export default function UsersPage() {
           >
             {/* Hover color glow layer */}
             <div className={`absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 ${stat.glow} pointer-events-none`} />
-            
+
             <div className="space-y-1 relative z-10">
               <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">{stat.label}</span>
               <p className="text-2xl font-extrabold text-slate-800">{stat.value}</p>
             </div>
-            
+
             <div className={`relative z-10 w-11 h-11 rounded-2xl bg-gradient-to-br ${stat.color} text-white flex items-center justify-center shadow-md shadow-slate-200/50 group-hover:shadow-lg group-hover:scale-105 group-hover:rotate-3 transition-all duration-300`}>
               <stat.icon className="w-5.5 h-5.5" />
             </div>
@@ -313,7 +358,7 @@ export default function UsersPage() {
 
       {/* Main Users List Container */}
       <div className="bg-white/45 backdrop-blur-xl rounded-3xl border border-white/85 shadow-[0_12px_40px_-12px_rgba(148,163,184,0.08)] overflow-hidden">
-        
+
         {/* Search and Filter */}
         <div className="p-4 sm:p-6 border-b border-slate-100/50 flex flex-col md:flex-row gap-4 items-center justify-between">
           <div className="relative w-full md:max-w-md">
@@ -329,8 +374,8 @@ export default function UsersPage() {
           <div className="flex gap-3 w-full md:w-auto">
             <div className="relative w-full md:w-auto flex items-center bg-white/50 border border-slate-200 rounded-xl px-3 text-sm">
               <Filter className="w-4 h-4 text-slate-400 mr-2 shrink-0" />
-              <select 
-                value={roleFilter} 
+              <select
+                value={roleFilter}
                 onChange={(e) => setRoleFilter(e.target.value)}
                 className="bg-transparent py-2.5 outline-none text-slate-600 font-medium min-w-[100px] cursor-pointer"
               >
@@ -340,8 +385,8 @@ export default function UsersPage() {
               </select>
             </div>
             <div className="relative w-full md:w-auto flex items-center bg-white/50 border border-slate-200 rounded-xl px-3 text-sm">
-              <select 
-                value={statusFilter} 
+              <select
+                value={statusFilter}
                 onChange={(e) => setStatusFilter(e.target.value)}
                 className="bg-transparent py-2.5 outline-none text-slate-600 font-medium min-w-[120px] cursor-pointer"
               >
@@ -407,20 +452,18 @@ export default function UsersPage() {
                     </td>
                     <td className="py-4 px-6 font-semibold text-slate-600">{user.Nid || "—"}</td>
                     <td className="py-4 px-6">
-                      <span className={`inline-flex items-center px-2.5 py-0.5 rounded-lg text-[10px] font-bold uppercase tracking-wider border ${
-                        user.role === "admin"
+                      <span className={`inline-flex items-center px-2.5 py-0.5 rounded-lg text-[10px] font-bold uppercase tracking-wider border ${user.role === "admin"
                           ? "bg-orange-50 text-brand-orange border-orange-100"
                           : "bg-amber-50 text-amber-700 border-amber-100"
-                      }`}>
+                        }`}>
                         {user.role}
                       </span>
                     </td>
                     <td className="py-4 px-6">
-                      <span className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider border ${
-                        user.isBanned
+                      <span className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider border ${user.isBanned
                           ? "bg-red-50 text-red-700 border-red-100"
                           : "bg-orange-50 text-brand-orange border-orange-100"
-                      }`}>
+                        }`}>
                         <span className={`w-1.5 h-1.5 rounded-full ${user.isBanned ? "bg-red-500 animate-pulse" : "bg-brand-orange"}`} />
                         {user.isBanned ? "Banned" : "Active"}
                       </span>
@@ -443,11 +486,10 @@ export default function UsersPage() {
                         </button>
                         <button
                           onClick={() => setBanTarget(user)}
-                          className={`px-3 py-1.5 text-xs font-bold rounded-xl border transition shadow-sm flex items-center gap-1 active:scale-95 ${
-                            user.isBanned
+                          className={`px-3 py-1.5 text-xs font-bold rounded-xl border transition shadow-sm flex items-center gap-1 active:scale-95 ${user.isBanned
                               ? "bg-brand-orange text-white hover:bg-orange-600 border-transparent"
                               : "bg-amber-50 text-amber-700 border-amber-200 hover:bg-amber-100/70"
-                          }`}
+                            }`}
                         >
                           <Ban className="w-3.5 h-3.5" />
                           {user.isBanned ? "Unban" : "Ban"}
@@ -498,18 +540,16 @@ export default function UsersPage() {
                   <div className="flex-grow min-w-0">
                     <h4 className="font-bold text-slate-800 truncate">{user.name}</h4>
                     <div className="flex items-center gap-2 mt-1">
-                      <span className={`inline-block px-2 py-0.5 rounded-lg text-[9px] font-bold uppercase tracking-wider border ${
-                        user.role === "admin"
+                      <span className={`inline-block px-2 py-0.5 rounded-lg text-[9px] font-bold uppercase tracking-wider border ${user.role === "admin"
                           ? "bg-orange-50 text-brand-orange border-orange-100"
                           : "bg-amber-50 text-amber-700 border-amber-100"
-                      }`}>
+                        }`}>
                         {user.role}
                       </span>
-                      <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[9px] font-bold uppercase tracking-wider border ${
-                        user.isBanned
+                      <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[9px] font-bold uppercase tracking-wider border ${user.isBanned
                           ? "bg-red-50 text-red-700 border-red-100"
                           : "bg-orange-50 text-brand-orange border-orange-100"
-                      }`}>
+                        }`}>
                         <span className={`w-1.5 h-1.5 rounded-full ${user.isBanned ? "bg-red-500" : "bg-brand-orange"}`} />
                         {user.isBanned ? "Banned" : "Active"}
                       </span>
@@ -554,11 +594,10 @@ export default function UsersPage() {
                   </button>
                   <button
                     onClick={() => setBanTarget(user)}
-                    className={`py-2.5 text-xs font-bold rounded-xl border transition shadow-sm flex items-center justify-center gap-1 active:scale-95 ${
-                      user.isBanned
+                    className={`py-2.5 text-xs font-bold rounded-xl border transition shadow-sm flex items-center justify-center gap-1 active:scale-95 ${user.isBanned
                         ? "bg-brand-orange text-white hover:bg-orange-600 border-transparent col-span-2"
                         : "bg-amber-50 text-amber-700 border-amber-200 hover:bg-amber-100/70"
-                    }`}
+                      }`}
                   >
                     <Ban className="w-3.5 h-3.5" />
                     {user.isBanned ? "Unban" : "Ban User"}

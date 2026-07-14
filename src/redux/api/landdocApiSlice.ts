@@ -50,6 +50,13 @@ export const landdocApiSlice = apiSlice.injectEndpoints({
       }),
       invalidatesTags: (result, error, id) => [{ type: 'Landdoc', id }, 'Landdoc'],
     }),
+    rejectLanddoc: builder.mutation<any, string>({
+      query: (id) => ({
+        url: `/landdoc/${id}/reject`,
+        method: 'PATCH',
+      }),
+      invalidatesTags: (result, error, id) => [{ type: 'Landdoc', id }, 'Landdoc'],
+    }),
   }),
 });
 
@@ -61,4 +68,5 @@ export const {
   useDeleteLanddocMutation,
   useUploadLanddocFileMutation,
   useApproveLanddocMutation,
+  useRejectLanddocMutation,
 } = landdocApiSlice;
