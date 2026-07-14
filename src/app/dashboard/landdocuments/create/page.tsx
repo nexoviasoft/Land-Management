@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 import {
   useCreateLanddocMutation,
   useUploadLanddocFileMutation,
@@ -216,9 +217,11 @@ export default function CreateLandDocPage() {
     e.preventDefault();
 
     if (!khatianFile || !kharijFile) {
-      alert("Please upload both Khatian and Kharij copies.");
+      toast.error("Please upload both Khatian and Kharij copies.");
       return;
     }
+
+    const toastId = toast.loading("Saving document...");
 
     try {
       // 1. Upload required files
@@ -246,13 +249,13 @@ export default function CreateLandDocPage() {
       };
 
       await createLanddoc(payload).unwrap();
-      alert("Land document created successfully!");
+      toast.success("Land document created successfully!", { id: toastId });
       router.push("/dashboard/landdocuments");
     } catch (error: any) {
       console.dir(error); // Using dir instead of error to see the full object in console
       const backendMessage = error?.data?.message;
-      const errorMsg = Array.isArray(backendMessage) ? backendMessage.join("\\n") : backendMessage;
-      alert(errorMsg || "Error creating land document.");
+      const errorMsg = Array.isArray(backendMessage) ? backendMessage.join("\n") : backendMessage;
+      toast.error(errorMsg || "Error creating land document.", { id: toastId });
     }
   };
 

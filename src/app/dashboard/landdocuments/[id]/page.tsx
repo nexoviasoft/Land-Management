@@ -673,25 +673,48 @@ export default function LandDocumentDetailsPage() {
             </div>
             
             {/* User Info */}
-            <div className="mt-8 col-span-2">
+            <div className="mt-8 col-span-1">
               <h2 className="text-xl font-bold uppercase tracking-widest text-slate-400 mb-4 flex items-center gap-2">
                 <User className="w-5 h-5 text-slate-800" /> Creator Information
               </h2>
-              <div className="grid grid-cols-2 gap-12">
-                <div className="space-y-4">
-                  <div className="flex border-b border-slate-200 pb-2">
-                    <span className="w-1/3 font-semibold text-slate-500">Name</span>
-                    <span className="w-2/3 font-bold text-slate-900">{creatorName}</span>
-                  </div>
-                  <div className="flex border-b border-slate-200 pb-2">
-                    <span className="w-1/3 font-semibold text-slate-500">Email</span>
-                    <span className="w-2/3 font-bold text-slate-900">{creator?.email || "N/A"}</span>
-                  </div>
-                  <div className="flex border-b border-slate-200 pb-2">
-                    <span className="w-1/3 font-semibold text-slate-500">Role</span>
-                    <span className="w-2/3 font-bold text-slate-900 uppercase">{creator?.role || "N/A"}</span>
-                  </div>
+              <div className="space-y-4">
+                <div className="flex border-b border-slate-200 pb-2">
+                  <span className="w-1/3 font-semibold text-slate-500">Name</span>
+                  <span className="w-2/3 font-bold text-slate-900">{creatorName}</span>
                 </div>
+                <div className="flex border-b border-slate-200 pb-2">
+                  <span className="w-1/3 font-semibold text-slate-500">Email</span>
+                  <span className="w-2/3 font-bold text-slate-900">{creator?.email || "N/A"}</span>
+                </div>
+                <div className="flex border-b border-slate-200 pb-2">
+                  <span className="w-1/3 font-semibold text-slate-500">Role</span>
+                  <span className="w-2/3 font-bold text-slate-900 uppercase">{creator?.role || "N/A"}</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Date Information */}
+            <div className="mt-8 col-span-1">
+              <h2 className="text-xl font-bold uppercase tracking-widest text-slate-400 mb-4 flex items-center gap-2">
+                <Calendar className="w-5 h-5 text-slate-800" /> Date Information
+              </h2>
+              <div className="space-y-4">
+                <div className="flex border-b border-slate-200 pb-2">
+                  <span className="w-1/3 font-semibold text-slate-500">Created On</span>
+                  <span className="w-2/3 font-bold text-slate-900">{formatDate(createdAt || landdoc?.uploadedAt)}</span>
+                </div>
+                {landdoc?.status === 'approved' && (
+                  <div className="flex border-b border-slate-200 pb-2">
+                    <span className="w-1/3 font-semibold text-emerald-600">Approved On</span>
+                    <span className="w-2/3 font-bold text-slate-900">{formatDate(landdoc?.updatedAt)}</span>
+                  </div>
+                )}
+                {landdoc?.status === 'rejected' && (
+                  <div className="flex border-b border-slate-200 pb-2">
+                    <span className="w-1/3 font-semibold text-rose-600">Rejected On</span>
+                    <span className="w-2/3 font-bold text-slate-900">{formatDate(landdoc?.updatedAt)}</span>
+                  </div>
+                )}
               </div>
             </div>
             
