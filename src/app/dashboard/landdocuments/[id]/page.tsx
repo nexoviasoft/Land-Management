@@ -362,7 +362,7 @@ export default function LandDocumentDetailsPage() {
             </h1>
             <p className="text-[10px] text-slate-400 font-semibold tracking-wider uppercase mt-1 flex items-center gap-1.5 flex-wrap">
               <Calendar className="w-3.5 h-3.5 text-slate-400" />
-              Registered: {formatDate(createdAt)}
+              Registered: {formatDate(createdAt || landdoc?.uploadedAt)}
               <span className="mx-1 text-slate-300">•</span>
               <User className="w-3.5 h-3.5 text-slate-400" />
               By: {creatorName}
