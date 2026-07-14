@@ -19,42 +19,42 @@ export const trashApiSlice = apiSlice.injectEndpoints({
         url: `/trash/users/${id}/recover`,
         method: "POST",
       }),
-      invalidatesTags: ["Trash", "Users"],
+      invalidatesTags: ["Trash", "User"],
     }),
     recoverNotice: builder.mutation({
       query: (id) => ({
         url: `/trash/notices/${id}/recover`,
         method: "POST",
       }),
-      invalidatesTags: ["Trash", "Notices"],
+      invalidatesTags: ["Trash", "Notice"],
     }),
     recoverLandDoc: builder.mutation({
       query: (id) => ({
         url: `/trash/landdocs/${id}/recover`,
         method: "POST",
       }),
-      invalidatesTags: ["Trash", "LandDocuments"],
+      invalidatesTags: ["Trash", "Landdoc"],
     }),
     permanentlyDeleteUser: builder.mutation({
       query: (id) => ({
         url: `/trash/users/${id}`,
         method: "DELETE",
       }),
-      invalidatesTags: ["Trash", "Users"],
+      invalidatesTags: ["Trash", "User"],
     }),
     permanentlyDeleteNotice: builder.mutation({
       query: (id) => ({
         url: `/trash/notices/${id}`,
         method: "DELETE",
       }),
-      invalidatesTags: ["Trash", "Notices"],
+      invalidatesTags: ["Trash", "Notice"],
     }),
     permanentlyDeleteLandDoc: builder.mutation({
       query: (id) => ({
         url: `/trash/landdocs/${id}`,
         method: "DELETE",
       }),
-      invalidatesTags: ["Trash", "LandDocuments"],
+      invalidatesTags: ["Trash", "Landdoc"],
     }),
   }),
 });
