@@ -27,7 +27,7 @@ export const usersApiSlice = apiSlice.injectEndpoints({
         method: 'PATCH',
         body: data,
       }),
-      invalidatesTags: (result, error, { id }) => [{ type: 'User', id }],
+      invalidatesTags: ['User'],
     }),
     deleteUser: builder.mutation<any, string>({
       query: (id) => ({
@@ -41,14 +41,14 @@ export const usersApiSlice = apiSlice.injectEndpoints({
         url: `/users/${id}/ban`,
         method: 'PATCH',
       }),
-      invalidatesTags: (result, error, id) => [{ type: 'User', id }],
+      invalidatesTags: ['User'],
     }),
     unbanUser: builder.mutation<any, string>({
       query: (id) => ({
         url: `/users/${id}/unban`,
         method: 'PATCH',
       }),
-      invalidatesTags: (result, error, id) => [{ type: 'User', id }],
+      invalidatesTags: ['User'],
     }),
     uploadUserProfilePicture: builder.mutation<any, FormData>({
       query: (formData) => ({

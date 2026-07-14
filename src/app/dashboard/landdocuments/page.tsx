@@ -3,8 +3,10 @@
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useSelector } from "react-redux";
+import { toast } from "sonner";
 import { RootState } from "@/redux/store";
 import { useGetLanddocsQuery, useDeleteLanddocMutation } from "@/redux/api/landdocApiSlice";
+import { useGetUsersQuery } from "@/redux/api/usersApiSlice";
 import {
   Plus,
   Trash2,
@@ -19,7 +21,9 @@ import {
   Home,
   CheckCircle2,
   Clock,
-  CheckCircle
+  CheckCircle,
+  Search,
+  Filter
 } from "lucide-react";
 
 interface DeleteConfirmModalProps {
@@ -97,25 +101,72 @@ export default function LandDocumentsPage() {
   const [deleteLanddoc] = useDeleteLanddocMutation();
   const [deleteTarget, setDeleteTarget] = useState<any | null>(null);
 
+  const { data: usersData } = useGetUsersQuery({});
+  const usersList = usersData?.data || [];
+
+  const [searchTerm, setSearchTerm] = useState("");
+  const [statusTab, setStatusTab] = useState("all");
+  const [selectedUserId, setSelectedUserId] = useState("all");
+
   const allDocs = responseData?.data || [];
 
-  // Filter land documents: partners can only see their own uploaded documents
-  const docs = role === "partner" && user?.id
+  // 1. Filter by role/user
+  let baseDocs = role === "partner" && user?.id
     ? allDocs.filter((doc: any) =>
-      doc.userId === user.id ||
-      doc.user === user.id ||
-      (doc.user && typeof doc.user === "object" && (doc.user.id === user.id || doc.user._id === user.id))
+      String(doc.userId) === String(user.id) ||
+      String(doc.user) === String(user.id) ||
+      (doc.user && typeof doc.user === "object" && (String(doc.user.id) === String(user.id) || String(doc.user._id) === String(user.id)))
     )
     : allDocs;
 
+  // 2. Filter by User ID (admin dropdown)
+  if (selectedUserId !== "all") {
+    baseDocs = baseDocs.filter((doc: any) => 
+      String(doc.userId) === String(selectedUserId) || 
+      String(doc.user) === String(selectedUserId) || 
+      (doc.user && typeof doc.user === "object" && (String(doc.user.id) === String(selectedUserId) || String(doc.user._id) === String(selectedUserId)))
+    );
+  }
+
+  // 3. Search Filter
+  let docsBeforeStatus = baseDocs;
+  if (searchTerm) {
+    const lowerTerm = searchTerm.toLowerCase();
+    docsBeforeStatus = baseDocs.filter((doc: any) => {
+      const mouzaMatch = doc.location?.mouza?.toLowerCase().includes(lowerTerm);
+      const upazilaMatch = doc.location?.upazila?.toLowerCase().includes(lowerTerm);
+      const districtMatch = doc.location?.district?.toLowerCase().includes(lowerTerm);
+      const dagMatch = doc.landDetails?.dagNo?.toLowerCase().includes(lowerTerm);
+      const khatianMatch = doc.landDetails?.khatianNo?.toLowerCase().includes(lowerTerm);
+      return mouzaMatch || upazilaMatch || districtMatch || dagMatch || khatianMatch;
+    });
+  }
+
+  // Calculate counts based on current filters (excluding status)
+  const tabCounts: Record<string, number> = {
+    all: docsBeforeStatus.length,
+    pending: docsBeforeStatus.filter((d: any) => d.status === "pending").length,
+    approved: docsBeforeStatus.filter((d: any) => d.status === "approved").length,
+    rejected: docsBeforeStatus.filter((d: any) => d.status === "rejected").length,
+  };
+
+  // 4. Apply Status Filter
+  let docs = docsBeforeStatus;
+  if (statusTab !== "all") {
+    docs = docsBeforeStatus.filter((doc: any) => doc.status === statusTab);
+  }
+
   const handleConfirmDelete = async () => {
     if (!deleteTarget) return;
+    const toastId = toast.loading("Deleting document...");
     try {
       await deleteLanddoc(deleteTarget.id).unwrap();
+      toast.success("Document deleted successfully!", { id: toastId });
       setDeleteTarget(null);
     } catch (err: any) {
       console.error("Failed to delete document:", err);
-      alert(err?.data?.message || "Failed to delete document");
+      toast.error(err?.data?.message || "Failed to delete document", { id: toastId });
+      setDeleteTarget(null);
     }
   };
 
@@ -180,7 +231,7 @@ export default function LandDocumentsPage() {
           className="relative z-10 w-full sm:w-auto px-6 py-3 bg-gradient-to-r from-brand-orange to-orange-500 hover:from-brand-orange-hover hover:to-orange-400 text-white font-bold rounded-xl text-xs sm:text-sm transition-all duration-300 shadow-md shadow-brand-orange/10 hover:shadow-brand-orange/25 hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98] flex items-center justify-center gap-2 group/btn shrink-0"
         >
           <Plus className="w-4.5 h-4.5 transition-transform duration-300 group-hover/btn:rotate-90" />
-          Add New Title
+          Add New Land
         </button>
       </div>
 
@@ -211,6 +262,70 @@ export default function LandDocumentsPage() {
         ))}
       </div>
 
+      {/* Filters & Search */}
+      <div className="bg-white/45 backdrop-blur-xl rounded-3xl border border-white/85 shadow-sm p-4 sm:p-5 flex flex-col md:flex-row gap-4 justify-between items-start md:items-center">
+        {/* Status Tabs */}
+        <div className="flex bg-white/60 p-1.5 rounded-2xl shadow-inner border border-slate-200/50 w-full md:w-auto overflow-x-auto">
+          {["all", "pending", "approved", "rejected"].map((tab) => (
+            <button
+              key={tab}
+              onClick={() => setStatusTab(tab)}
+              className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold capitalize transition-all whitespace-nowrap ${
+                statusTab === tab
+                  ? "bg-brand-orange text-white shadow-md shadow-brand-orange/20"
+                  : "text-slate-500 hover:text-slate-700 hover:bg-slate-100/50"
+              }`}
+            >
+              <span>{tab}</span>
+              <span className={`px-2 py-0.5 rounded-md text-[10px] ${
+                statusTab === tab 
+                  ? "bg-white/20 text-white" 
+                  : "bg-slate-200/70 text-slate-500"
+              }`}>
+                {tabCounts[tab] || 0}
+              </span>
+            </button>
+          ))}
+        </div>
+
+        <div className="flex flex-col sm:flex-row gap-3 w-full md:w-auto">
+          {/* User Filter (Admins only) */}
+          {(role === "admin" || role === "superadmin") && (
+            <div className="relative">
+              <div className="absolute inset-y-0 left-3 flex items-center pointer-events-none">
+                <Filter className="w-4 h-4 text-slate-400" />
+              </div>
+              <select
+                value={selectedUserId}
+                onChange={(e) => setSelectedUserId(e.target.value)}
+                className="w-full sm:w-48 pl-9 pr-4 py-2.5 bg-white border border-slate-200 rounded-2xl text-xs font-semibold text-slate-700 focus:ring-2 focus:ring-brand-orange/20 focus:border-brand-orange outline-none appearance-none transition-all shadow-sm cursor-pointer"
+              >
+                <option value="all">All Users</option>
+                {usersList.map((u: any) => (
+                  <option key={u._id || u.id} value={u._id || u.id}>
+                    {u.name || u.email || "Unknown User"}
+                  </option>
+                ))}
+              </select>
+            </div>
+          )}
+
+          {/* Search Input */}
+          <div className="relative">
+            <div className="absolute inset-y-0 left-3 flex items-center pointer-events-none">
+              <Search className="w-4 h-4 text-slate-400" />
+            </div>
+            <input
+              type="text"
+              placeholder="Search by mouza, dag, khatian..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="w-full sm:w-64 pl-9 pr-4 py-2.5 bg-white border border-slate-200 rounded-2xl text-xs font-semibold text-slate-700 placeholder:text-slate-400 focus:ring-2 focus:ring-brand-orange/20 focus:border-brand-orange outline-none transition-all shadow-sm"
+            />
+          </div>
+        </div>
+      </div>
+
       {/* Main Container */}
       <div className="bg-white/45 backdrop-blur-xl rounded-3xl border border-white/85 shadow-[0_12px_40px_-12px_rgba(148,163,184,0.08)] overflow-hidden">
 
@@ -223,13 +338,14 @@ export default function LandDocumentsPage() {
                 <th className="py-4.5 px-6">Land Details</th>
                 <th className="py-4.5 px-6">Khatian No</th>
                 <th className="py-4.5 px-6">Dag No</th>
+                <th className="py-4.5 px-6">Status</th>
                 <th className="py-4.5 px-6 text-center">Actions</th>
               </tr>
             </thead>
             <tbody className="text-slate-600 text-sm divide-y divide-slate-200/25">
               {docs.length === 0 ? (
                 <tr>
-                  <td colSpan={5} className="py-16 text-center text-slate-400 font-medium space-y-3">
+                  <td colSpan={6} className="py-16 text-center text-slate-400 font-medium space-y-3">
                     <div className="w-12 h-12 rounded-full bg-slate-50 text-slate-400 flex items-center justify-center mx-auto border border-slate-100">
                       <FileText className="w-6 h-6" />
                     </div>
@@ -253,6 +369,11 @@ export default function LandDocumentsPage() {
                   else if (doc.landDetails?.landType === "Commercial") badgeStyles = "bg-yellow-50 text-yellow-700 border-yellow-100";
                   else if (doc.landDetails?.landType === "Industrial") badgeStyles = "bg-orange-100 text-brand-orange border-orange-200";
 
+                  let statusStyles = "bg-slate-50 text-slate-600 border-slate-200";
+                  if (doc.status === "approved") statusStyles = "bg-emerald-50 text-emerald-700 border-emerald-100";
+                  else if (doc.status === "pending") statusStyles = "bg-amber-50 text-amber-700 border-amber-100";
+                  else if (doc.status === "rejected") statusStyles = "bg-rose-50 text-rose-700 border-rose-100";
+
                   return (
                     <tr key={doc.id} className="hover:bg-white/60 transition-colors group">
                       <td className="py-4 px-6">
@@ -274,6 +395,11 @@ export default function LandDocumentsPage() {
                       </td>
                       <td className="py-4 px-6 text-slate-600 font-semibold">
                         {doc.landDetails?.dagNo || 'N/A'}
+                      </td>
+                      <td className="py-4 px-6">
+                        <span className={`inline-flex items-center px-2.5 py-0.5 rounded-lg text-[10px] font-bold uppercase tracking-wider border ${statusStyles}`}>
+                          {doc.status || 'pending'}
+                        </span>
                       </td>
                       <td className="py-4 px-6">
                         <div className="flex justify-center items-center gap-2">
@@ -334,6 +460,11 @@ export default function LandDocumentsPage() {
               else if (doc.landDetails?.landType === "Commercial") badgeStyles = "bg-yellow-50 text-yellow-700 border-yellow-100";
               else if (doc.landDetails?.landType === "Industrial") badgeStyles = "bg-orange-100 text-brand-orange border-orange-200";
 
+              let statusStyles = "bg-slate-50 text-slate-600 border-slate-200";
+              if (doc.status === "approved") statusStyles = "bg-emerald-50 text-emerald-700 border-emerald-100";
+              else if (doc.status === "pending") statusStyles = "bg-amber-50 text-amber-700 border-amber-100";
+              else if (doc.status === "rejected") statusStyles = "bg-rose-50 text-rose-700 border-rose-100";
+
               return (
                 <div
                   key={doc.id}
@@ -350,9 +481,14 @@ export default function LandDocumentsPage() {
                         {doc.location?.upazila || 'N/A'}, {doc.location?.district || 'N/A'}
                       </div>
                     </div>
-                    <span className={`inline-flex items-center px-2.5 py-0.5 rounded-lg text-[9px] font-extrabold uppercase tracking-wider border ${badgeStyles} shrink-0`}>
-                      {doc.landDetails?.landType || 'N/A'}
-                    </span>
+                    <div className="flex flex-col items-end gap-1.5 shrink-0">
+                      <span className={`inline-flex items-center px-2.5 py-0.5 rounded-lg text-[9px] font-extrabold uppercase tracking-wider border ${statusStyles}`}>
+                        {doc.status || 'pending'}
+                      </span>
+                      <span className={`inline-flex items-center px-2.5 py-0.5 rounded-lg text-[9px] font-extrabold uppercase tracking-wider border ${badgeStyles}`}>
+                        {doc.landDetails?.landType || 'N/A'}
+                      </span>
+                    </div>
                   </div>
 
                   {/* Document Grid */}

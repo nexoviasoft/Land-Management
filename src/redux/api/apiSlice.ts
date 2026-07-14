@@ -18,6 +18,6 @@ const baseQuery = fetchBaseQuery({
 export const apiSlice = createApi({
   reducerPath: 'api',
   baseQuery,
-  tagTypes: ['Landdoc', 'User', 'Auth', 'LoginSlide', 'Promotion'],
+  tagTypes: ['Landdoc', 'User', 'Auth', 'LoginSlide', 'Promotion', 'Notification', 'Notice', 'Trash'],
   endpoints: () => ({}),
 });

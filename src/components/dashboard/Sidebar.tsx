@@ -26,6 +26,7 @@ import {
   X,
   LogOut,
   Sparkles,
+  Trash2,
 } from "lucide-react";
 
 type NavLink = {
@@ -45,13 +46,16 @@ export default function Sidebar() {
   const router = useRouter();
 
   const adminLinks: NavLink[] = [
-    { name: "Overview", href: "/dashboard/admin", icon: <LayoutGrid size={18} /> },
+    { name: "Overview", href: "/dashboard/overview", icon: <LayoutGrid size={18} /> },
     { name: "Users Management", href: "/dashboard/users", badge: "3", icon: <Users size={18} /> },
     { name: "Land Documents", href: "/dashboard/landdocuments", icon: <FileText size={18} /> },
+    { name: "Notice Management", href: "/dashboard/notices", icon: <MessageSquare size={18} /> },
+    { name: "Trash Bin", href: "/dashboard/trash", icon: <Trash2 size={18} /> },
     { name: "Profile", href: "/dashboard/profile", icon: <User size={18} /> },
   ];
 
   const partnerLinks: NavLink[] = [
+    { name: "Overview", href: "/dashboard/overview", icon: <LayoutGrid size={18} /> },
     { name: "My Documents", href: "/dashboard/landdocuments", icon: <FileText size={18} /> },
     { name: "Profile", href: "/dashboard/profile", icon: <User size={18} /> },
   ];
@@ -218,21 +222,20 @@ export default function Sidebar() {
         {navLinks.map((link, idx) => {
           const isActive = pathname === link.href;
           // Shorten the labels for premium mobile bottom navbar spacing
-          const shortName = link.name === "Users Management" 
-            ? "Users" 
+          const shortName = link.name === "Users Management"
+            ? "Users"
             : link.name === "Land Documents" || link.name === "My Documents"
-            ? "Docs"
-            : link.name;
+              ? "Docs"
+              : link.name;
 
           return (
             <Link
               key={idx}
               href={link.href}
-              className={`flex flex-col items-center justify-center gap-1.5 py-1 px-3.5 rounded-2xl transition-all duration-355 relative ${
-                isActive 
-                  ? "text-brand-orange scale-105" 
-                  : "text-slate-400 hover:text-slate-700 active:scale-95"
-              }`}
+              className={`flex flex-col items-center justify-center gap-1.5 py-1 px-3.5 rounded-2xl transition-all duration-355 relative ${isActive
+                ? "text-brand-orange scale-105"
+                : "text-slate-400 hover:text-slate-700 active:scale-95"
+                }`}
             >
               <div className="relative flex items-center justify-center">
                 <span className={`transition-transform duration-300 ${isActive ? "text-brand-orange" : "text-slate-400"}`}>

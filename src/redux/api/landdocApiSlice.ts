@@ -43,6 +43,13 @@ export const landdocApiSlice = apiSlice.injectEndpoints({
         body: formData,
       }),
     }),
+    approveLanddoc: builder.mutation<any, string>({
+      query: (id) => ({
+        url: `/landdoc/${id}/approve`,
+        method: 'PATCH',
+      }),
+      invalidatesTags: (result, error, id) => [{ type: 'Landdoc', id }, 'Landdoc'],
+    }),
   }),
 });
 
@@ -53,4 +60,5 @@ export const {
   useUpdateLanddocMutation,
   useDeleteLanddocMutation,
   useUploadLanddocFileMutation,
+  useApproveLanddocMutation,
 } = landdocApiSlice;

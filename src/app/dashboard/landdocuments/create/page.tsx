@@ -28,6 +28,7 @@ import {
   Navigation,
   Locate,
   Tag,
+  FileText,
 } from "lucide-react";
 
 const customSelectStyles = {
@@ -510,6 +511,10 @@ export default function CreateLandDocPage() {
                       {/* eslint-disable-next-line @next/next/no-img-element */}
                       <img src={khatianPreview} alt="Khatian Preview" className="w-full h-full object-cover" />
                     </div>
+                  ) : khatianFile?.type === "application/pdf" ? (
+                    <div className="w-14 h-14 mb-2 flex items-center justify-center bg-red-50 text-red-500 rounded-xl border border-red-100 shadow-sm">
+                      <FileText className="w-7 h-7" />
+                    </div>
                   ) : (
                     <Upload className="w-8 h-8 text-slate-400 group-hover:text-brand-orange transition-colors mb-2" />
                   )}
@@ -534,6 +539,10 @@ export default function CreateLandDocPage() {
                     <div className="relative w-24 h-24 mb-2 rounded-xl overflow-hidden border border-slate-200 shadow-sm">
                       {/* eslint-disable-next-line @next/next/no-img-element */}
                       <img src={kharijPreview} alt="Kharij Preview" className="w-full h-full object-cover" />
+                    </div>
+                  ) : kharijFile?.type === "application/pdf" ? (
+                    <div className="w-14 h-14 mb-2 flex items-center justify-center bg-red-50 text-red-500 rounded-xl border border-red-100 shadow-sm">
+                      <FileText className="w-7 h-7" />
                     </div>
                   ) : (
                     <Upload className="w-8 h-8 text-slate-400 group-hover:text-brand-orange transition-colors mb-2" />
@@ -594,6 +603,10 @@ export default function CreateLandDocPage() {
                         <div className="w-6 h-6 rounded-md overflow-hidden border border-slate-200 shadow-sm shrink-0">
                           {/* eslint-disable-next-line @next/next/no-img-element */}
                           <img src={record.preview} alt="Preview" className="w-full h-full object-cover" />
+                        </div>
+                      ) : record.file?.type === "application/pdf" ? (
+                        <div className="w-6 h-6 rounded-md bg-red-50 text-red-500 flex items-center justify-center shrink-0 border border-red-100">
+                          <FileText className="w-4 h-4" />
                         </div>
                       ) : (
                         <Upload className="w-4.5 h-4.5 text-slate-400 shrink-0" />

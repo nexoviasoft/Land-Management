@@ -2,6 +2,8 @@
 
 import React from "react";
 import Link from "next/link";
+import { useSelector } from "react-redux";
+import { RootState } from "@/redux/store";
 import {
   Users,
   FileText,
@@ -14,8 +16,9 @@ import {
   ShieldCheck,
   Landmark,
 } from "lucide-react";
+import { useGetSuperAdminOverviewQuery, useGetUserOverviewQuery } from "@/redux/api/overviewApiSlice";
 
-export default function AdminOverviewPage() {
+export default function OverviewPage() {
   const currentDate = new Date().toLocaleDateString("en-US", {
     weekday: "long",
     year: "numeric",
@@ -23,72 +26,98 @@ export default function AdminOverviewPage() {
     day: "numeric",
   });
 
-  const stats = [
+  const role = useSelector((state: RootState) => state.auth.role);
+  const user = useSelector((state: RootState) => state.auth.user);
+
+  const { data: superAdminData, isLoading: isLoadingAdmin } = useGetSuperAdminOverviewQuery({}, { skip: role !== "admin" });
+  const { data: userData, isLoading: isLoadingUser } = useGetUserOverviewQuery(user?.id || "", { skip: role !== "partner" || !user?.id });
+
+  const isLoading = role === "admin" ? isLoadingAdmin : isLoadingUser;
+  const apiData = role === "admin" ? superAdminData?.data || {} : userData?.data || {};
+
+  const stats = role === "admin" ? [
     {
       title: "Total Registered Users",
-      value: "4 Active",
-      change: "+25% from last week",
+      value: apiData.totalPartners !== undefined ? `${apiData.totalPartners} Active` : (isLoading ? "Loading..." : "0 Active"),
+      change: "Active partners in system",
       icon: <Users className="w-5 h-5 sm:w-6 sm:h-6" />,
       color: "from-brand-orange to-orange-500",
       glow: "shadow-brand-orange/10",
     },
     {
       title: "Land Records Ledger",
-      value: "14 Deeds",
-      change: "+3 new titles pending",
+      value: apiData.totalLandDocs !== undefined ? `${apiData.totalLandDocs} Deeds` : (isLoading ? "Loading..." : "0 Deeds"),
+      change: "Total land registered",
       icon: <FileText className="w-5 h-5 sm:w-6 sm:h-6" />,
       color: "from-orange-500 to-amber-500",
       glow: "shadow-brand-orange/10",
     },
     {
-      title: "Verified Land Deeds",
-      value: "11 Certified",
-      change: "85% verification rate",
-      icon: <CheckCircle2 className="w-5 h-5 sm:w-6 sm:h-6" />,
+      title: "Pending Approvals",
+      value: apiData.pendingApprovals !== undefined ? `${apiData.pendingApprovals} Pending` : (isLoading ? "Loading..." : "0 Pending"),
+      change: "Land docs awaiting review",
+      icon: <Clock className="w-5 h-5 sm:w-6 sm:h-6" />,
       color: "from-orange-600 to-brand-orange",
       glow: "shadow-brand-orange/10",
     },
     {
       title: "Active System Health",
       value: "100% Online",
-      change: "All nodes fully secure",
+      change: apiData.recentActivity || "All nodes fully secure",
       icon: <Activity className="w-5 h-5 sm:w-6 sm:h-6" />,
       color: "from-amber-600 to-brand-orange",
       glow: "shadow-brand-orange/10",
     },
-  ];
-
-  const recentRequests = [
+  ] : [
     {
-      id: "REQ-0428",
-      khatian: "Khatian #5821",
-      mouza: "Gulshan",
-      district: "Dhaka",
-      status: "Approved",
-      statusColor: "bg-orange-50 text-brand-orange border-orange-100",
-      time: "2 hours ago",
+      title: "My Land Records",
+      value: apiData.totalLandDocs !== undefined ? `${apiData.totalLandDocs} Deeds` : (isLoading ? "Loading..." : "0 Deeds"),
+      change: "Total documents uploaded",
+      icon: <FileText className="w-5 h-5 sm:w-6 sm:h-6" />,
+      color: "from-brand-orange to-orange-500",
+      glow: "shadow-brand-orange/10",
     },
     {
-      id: "REQ-0427",
-      khatian: "Khatian #3942",
-      mouza: "Banani",
-      district: "Dhaka",
-      status: "Pending",
-      statusColor: "bg-amber-50 text-amber-700 border-amber-100",
-      time: "5 hours ago",
+      title: "Pending Approvals",
+      value: apiData.pendingApprovals !== undefined ? `${apiData.pendingApprovals} Pending` : (isLoading ? "Loading..." : "0 Pending"),
+      change: "Docs awaiting review",
+      icon: <Clock className="w-5 h-5 sm:w-6 sm:h-6" />,
+      color: "from-orange-600 to-brand-orange",
+      glow: "shadow-brand-orange/10",
     },
     {
-      id: "REQ-0426",
-      khatian: "Khatian #8812",
-      mouza: "Mirpur",
-      district: "Dhaka",
-      status: "In Review",
-      statusColor: "bg-blue-50 text-blue-700 border-blue-100",
-      time: "1 day ago",
+      title: "Active System Health",
+      value: "100% Online",
+      change: apiData.recentActivity || "All nodes fully secure",
+      icon: <Activity className="w-5 h-5 sm:w-6 sm:h-6" />,
+      color: "from-amber-600 to-amber-500",
+      glow: "shadow-brand-orange/10",
     },
   ];
 
-  const quickLinks = [
+  const recentRequests = apiData.recentDocs?.length > 0
+    ? apiData.recentDocs.map((doc: any) => ({
+      id: `REQ-${doc.id || Math.floor(Math.random() * 1000)}`,
+      khatian: `Khatian #${doc.landDetails?.khatianNo || 'N/A'}`,
+      mouza: doc.location?.mouza || 'Unknown',
+      district: doc.location?.district || 'Unknown',
+      status: doc.status ? doc.status.charAt(0).toUpperCase() + doc.status.slice(1) : "Unknown",
+      statusColor: doc.status === "approved" ? "bg-emerald-50 text-emerald-600 border-emerald-100" : (doc.status === "rejected" ? "bg-rose-50 text-rose-600 border-rose-100" : "bg-orange-50 text-brand-orange border-orange-100"),
+      time: new Date(doc.uploadedAt).toLocaleDateString(),
+    }))
+    : [
+      {
+        id: "-",
+        khatian: isLoading ? "Loading..." : "No recent activity",
+        mouza: "-",
+        district: "-",
+        status: "N/A",
+        statusColor: "bg-slate-50 text-slate-500 border-slate-100",
+        time: "-",
+      }
+    ];
+
+  const quickLinks = role === "admin" ? [
     {
       href: "/dashboard/users",
       label: "Manage Platform Users",
@@ -104,29 +133,30 @@ export default function AdminOverviewPage() {
       label: "Audit Profile Security",
       icon: <Clock className="w-4 h-4" />,
     },
+  ] : [
+    {
+      href: "/dashboard/landdocuments",
+      label: "View My Land Ledgers",
+      icon: <FileText className="w-4 h-4" />,
+    },
+    {
+      href: "/dashboard/profile",
+      label: "My Profile",
+      icon: <Clock className="w-4 h-4" />,
+    },
   ];
 
   return (
     <div className="w-full min-h-screen space-y-6 sm:space-y-8 lg:space-y-10 px-3 sm:px-6 lg:px-10 py-4 sm:py-6 relative overflow-x-hidden">
-      {/* Background Radial Glow elements */}
       <div className="absolute top-[-10%] right-[-5%] w-[450px] h-[450px] bg-brand-orange/10 rounded-full blur-[120px] -z-10 pointer-events-none animate-pulse" style={{ animationDuration: '8s' }} />
       <div className="absolute top-[20%] left-[-10%] w-[380px] h-[380px] bg-amber-400/10 rounded-full blur-[110px] -z-10 pointer-events-none animate-pulse" style={{ animationDuration: '10s' }} />
       <div className="absolute bottom-[10%] right-[15%] w-[420px] h-[420px] bg-brand-orange/10 rounded-full blur-[130px] -z-10 pointer-events-none" />
       <div className="absolute top-[50%] left-[40%] w-[300px] h-[300px] bg-orange-200/5 rounded-full blur-[100px] -z-10 pointer-events-none" />
 
-      {/* Welcome Banner */}
       <div className="w-full bg-white/45 backdrop-blur-xl border border-white/85 rounded-3xl p-6 sm:p-8 lg:p-10 flex flex-col md:flex-row items-center justify-between gap-6 shadow-[0_12px_40px_-12px_rgba(148,163,184,0.12)] relative overflow-hidden group hover:border-brand-orange/25 transition-all duration-500">
-        {/* Decorative inner light shine */}
         <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/5 to-white/10 opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none" />
-        
+
         <div className="space-y-3.5 text-center md:text-left w-full md:w-auto relative z-10">
-          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-bold bg-gradient-to-r from-brand-orange/10 to-orange-500/10 border border-brand-orange/15 text-brand-orange shadow-sm shadow-brand-orange/5">
-            <span className="relative flex h-2 w-2">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-brand-orange opacity-75"></span>
-              <span className="relative inline-flex rounded-full h-2 w-2 bg-brand-orange"></span>
-            </span>
-            Superadmin Session Active
-          </div>
           <h1 className="text-3xl sm:text-4xl font-extrabold bg-gradient-to-r from-slate-900 via-slate-800 to-orange-950 bg-clip-text text-transparent tracking-tight">
             Dashboard Overview
           </h1>
@@ -141,13 +171,12 @@ export default function AdminOverviewPage() {
             className="w-full md:w-auto inline-flex items-center justify-center gap-2.5 px-6 py-3.5 rounded-2xl text-sm font-bold bg-gradient-to-r from-brand-orange to-orange-600 text-white hover:from-orange-600 hover:to-orange-500 transition-all duration-300 shadow-lg shadow-brand-orange/20 hover:shadow-brand-orange/30 hover:scale-[1.02] active:scale-[0.98] group/btn"
           >
             <Plus className="w-5 h-5 transition-transform duration-300 group-hover/btn:rotate-90" />
-            Add Land Title
+            Add Land
           </Link>
         </div>
       </div>
 
-      {/* Grid Stats */}
-      <div className="w-full grid grid-cols-1 xs:grid-cols-2 lg:grid-cols-4 gap-5 sm:gap-6">
+      <div className={`w-full grid grid-cols-1 xs:grid-cols-2 lg:grid-cols-${role === 'admin' ? '4' : '3'} gap-5 sm:gap-6`}>
         {stats.map((stat, idx) => (
           <div
             key={idx}
@@ -178,9 +207,7 @@ export default function AdminOverviewPage() {
         ))}
       </div>
 
-      {/* Main Grid: Activities & Quick Links */}
       <div className="w-full grid grid-cols-1 lg:grid-cols-3 gap-6 sm:gap-8">
-        {/* Recent Ledger Requests */}
         <div className="lg:col-span-2 bg-white/45 backdrop-blur-xl border border-white/85 rounded-3xl p-6 sm:p-8 space-y-6 shadow-[0_8px_30px_rgb(0,0,0,0.02)] hover:border-brand-orange/20 transition-all duration-500">
           <div className="flex items-center justify-between gap-3">
             <div className="space-y-1">
@@ -238,7 +265,6 @@ export default function AdminOverviewPage() {
           </div>
         </div>
 
-        {/* Quick Operations panel */}
         <div className="bg-white/45 backdrop-blur-xl border border-white/85 rounded-3xl p-6 sm:p-8 space-y-6 shadow-[0_8px_30px_rgb(0,0,0,0.02)] hover:border-brand-orange/20 transition-all duration-500 flex flex-col justify-between">
           <div className="space-y-6">
             <div className="space-y-1">
@@ -246,10 +272,10 @@ export default function AdminOverviewPage() {
                 Quick Operations
               </h2>
               <p className="text-xs text-slate-500 font-medium">
-                Shortcuts to main administrative modules
+                Shortcuts to main modules
               </p>
             </div>
- 
+
             <div className="space-y-3.5">
               {quickLinks.map((link) => (
                 <Link

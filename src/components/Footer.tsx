@@ -48,7 +48,7 @@ const navigationLinks = [
 
 const portalLinks = [
   { href: "/dashboard/user", label: "Citizen Console", icon: LogIn },
-  { href: "/dashboard/admin", label: "Admin Registry", icon: Shield },
+  { href: "/dashboard/overview", label: "Admin Registry", icon: Shield },
   { href: "/contact", label: "Support Center", icon: Phone },
   { href: "/verify", label: "Record Verification", icon: CheckCircle },
 ];

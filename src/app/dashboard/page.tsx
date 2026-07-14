@@ -10,10 +10,8 @@ export default function DashboardLandingPage() {
   const role = useSelector((state: RootState) => state.auth.role);
 
   useEffect(() => {
-    if (role === "admin") {
-      router.replace("/dashboard/admin");
-    } else if (role === "partner") {
-      router.replace("/dashboard/landdocuments");
+    if (role === "admin" || role === "partner") {
+      router.replace("/dashboard/overview");
     }
   }, [role, router]);
 

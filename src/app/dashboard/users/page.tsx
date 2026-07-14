@@ -26,6 +26,8 @@ import {
   Mail,
   FileSpreadsheet,
   UserCheck,
+  Search,
+  Filter
 } from "lucide-react";
 
 type UserRole = "partner" | "admin";
@@ -176,6 +178,23 @@ export default function UsersPage() {
 
   const users: User[] = responseData?.data || [];
 
+  const [searchTerm, setSearchTerm] = useState("");
+  const [roleFilter, setRoleFilter] = useState("all");
+  const [statusFilter, setStatusFilter] = useState("all");
+
+  const filteredUsers = users.filter((u) => {
+    const matchesSearch = searchTerm === "" || 
+      u.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
+      u.email.toLowerCase().includes(searchTerm.toLowerCase()) || 
+      (u.Nid && u.Nid.toLowerCase().includes(searchTerm.toLowerCase())) ||
+      (u.phone && u.phone.includes(searchTerm));
+    
+    const matchesRole = roleFilter === "all" || u.role === roleFilter;
+    const matchesStatus = statusFilter === "all" || (statusFilter === "banned" ? u.isBanned : !u.isBanned);
+
+    return matchesSearch && matchesRole && matchesStatus;
+  });
+
   // Computed stats
   const totalUsers = users.length;
   const activeUsers = users.filter((u) => !u.isBanned).length;
@@ -295,6 +314,45 @@ export default function UsersPage() {
       {/* Main Users List Container */}
       <div className="bg-white/45 backdrop-blur-xl rounded-3xl border border-white/85 shadow-[0_12px_40px_-12px_rgba(148,163,184,0.08)] overflow-hidden">
         
+        {/* Search and Filter */}
+        <div className="p-4 sm:p-6 border-b border-slate-100/50 flex flex-col md:flex-row gap-4 items-center justify-between">
+          <div className="relative w-full md:max-w-md">
+            <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4.5 h-4.5 text-slate-400" />
+            <input
+              type="text"
+              placeholder="Search by name, email, NID or phone..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-slate-200 bg-white/50 text-sm focus:outline-none focus:ring-2 focus:ring-brand-orange/20 transition-all"
+            />
+          </div>
+          <div className="flex gap-3 w-full md:w-auto">
+            <div className="relative w-full md:w-auto flex items-center bg-white/50 border border-slate-200 rounded-xl px-3 text-sm">
+              <Filter className="w-4 h-4 text-slate-400 mr-2 shrink-0" />
+              <select 
+                value={roleFilter} 
+                onChange={(e) => setRoleFilter(e.target.value)}
+                className="bg-transparent py-2.5 outline-none text-slate-600 font-medium min-w-[100px] cursor-pointer"
+              >
+                <option value="all">All Roles</option>
+                <option value="admin">Admin</option>
+                <option value="partner">Partner</option>
+              </select>
+            </div>
+            <div className="relative w-full md:w-auto flex items-center bg-white/50 border border-slate-200 rounded-xl px-3 text-sm">
+              <select 
+                value={statusFilter} 
+                onChange={(e) => setStatusFilter(e.target.value)}
+                className="bg-transparent py-2.5 outline-none text-slate-600 font-medium min-w-[120px] cursor-pointer"
+              >
+                <option value="all">All Status</option>
+                <option value="active">Active Only</option>
+                <option value="banned">Banned Only</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
         {/* Desktop View Table */}
         <div className="hidden md:block overflow-x-auto">
           <table className="w-full text-left border-collapse">
@@ -309,14 +367,14 @@ export default function UsersPage() {
               </tr>
             </thead>
             <tbody className="text-slate-600 text-sm divide-y divide-slate-100/50">
-              {users.length === 0 ? (
+              {filteredUsers.length === 0 ? (
                 <tr>
                   <td colSpan={6} className="py-16 text-center text-slate-400 font-semibold">
-                    No users found.
+                    No users found matching your filters.
                   </td>
                 </tr>
               ) : (
-                users.map((user) => (
+                filteredUsers.map((user) => (
                   <tr key={user.id} className="hover:bg-white/30 transition-colors duration-200">
                     <td className="py-4 px-6 flex items-center gap-3">
                       {user.picture ? (
@@ -412,12 +470,12 @@ export default function UsersPage() {
 
         {/* Mobile Card List View */}
         <div className="block md:hidden p-4 space-y-4">
-          {users.length === 0 ? (
+          {filteredUsers.length === 0 ? (
             <div className="py-12 text-center text-slate-400 font-semibold bg-white/20 rounded-2xl">
-              No users found.
+              No users found matching your filters.
             </div>
           ) : (
-            users.map((user) => (
+            filteredUsers.map((user) => (
               <div
                 key={user.id}
                 className="bg-white/50 backdrop-blur-md border border-white/60 p-5 rounded-2xl space-y-4 shadow-sm relative hover:border-brand-orange/20 transition-all duration-300"

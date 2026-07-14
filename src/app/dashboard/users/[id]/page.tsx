@@ -12,7 +12,10 @@ import {
   Calendar,
   Shield,
   Activity,
+  MapPin,
+  FileCheck
 } from "lucide-react";
+import { useGetLanddocsQuery } from "@/redux/api/landdocApiSlice";
 
 export default function UserDetailsPage() {
   const params = useParams();
@@ -23,7 +26,13 @@ export default function UserDetailsPage() {
     skip: !id,
   });
 
+  const { data: landdocsResponse, isLoading: isLoadingLanddocs } = useGetLanddocsQuery(
+    { userId: id }, 
+    { skip: !id }
+  );
+
   const user = responseData?.data;
+  const landdocs = landdocsResponse?.data || [];
 
   if (isLoading) {
     return (
@@ -179,6 +188,67 @@ export default function UserDetailsPage() {
             </div>
 
           </div>
+        </div>
+      </div>
+
+      {/* Land Documents Section */}
+      <div className="bg-white/45 backdrop-blur-xl rounded-3xl border border-white/85 shadow-[0_12px_40px_-12px_rgba(148,163,184,0.08)] overflow-hidden">
+        <div className="p-6 sm:p-8 border-b border-slate-100 flex items-center justify-between">
+          <div className="space-y-1">
+            <h2 className="text-lg font-bold text-slate-800">Land Documents</h2>
+            <p className="text-xs text-slate-500">Deeds and records associated with this user</p>
+          </div>
+          <div className="w-10 h-10 rounded-2xl bg-orange-50 flex items-center justify-center text-brand-orange">
+            <FileText className="w-5 h-5" />
+          </div>
+        </div>
+        
+        <div className="p-6 sm:p-8">
+          {isLoadingLanddocs ? (
+            <div className="py-8 text-center text-sm font-medium text-slate-500">Loading land records...</div>
+          ) : landdocs.length === 0 ? (
+            <div className="py-10 text-center bg-white/40 rounded-2xl border border-dashed border-slate-300">
+              <FileCheck className="w-8 h-8 mx-auto text-slate-300 mb-2" />
+              <p className="text-sm font-semibold text-slate-600">No Land Documents Found</p>
+              <p className="text-xs text-slate-400 mt-1">This user hasn't registered any land documents yet.</p>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {landdocs.map((doc: any) => (
+                <div key={doc.id} className="bg-white/60 hover:bg-white p-5 rounded-2xl border border-slate-200 transition-all shadow-sm flex flex-col justify-between group">
+                  <div>
+                    <div className="flex items-center justify-between mb-3">
+                      <span className={`px-2.5 py-1 text-[10px] font-bold uppercase rounded-lg border ${
+                        doc.status === "pending" ? "bg-amber-50 text-amber-600 border-amber-200" :
+                        doc.status === "approved" ? "bg-emerald-50 text-emerald-600 border-emerald-200" :
+                        "bg-red-50 text-red-600 border-red-200"
+                      }`}>
+                        {doc.status}
+                      </span>
+                      <span className="text-[10px] font-medium text-slate-400">
+                        {new Date(doc.uploadedAt).toLocaleDateString()}
+                      </span>
+                    </div>
+                    
+                    <h3 className="font-bold text-slate-800 text-sm mb-1">
+                      Khatian: {doc.landDetails?.khatianNo || "N/A"}
+                    </h3>
+                    <div className="flex items-center gap-1.5 text-xs text-slate-500 mb-3">
+                      <MapPin className="w-3.5 h-3.5 text-slate-400" />
+                      {doc.location?.mouza}, {doc.location?.district}
+                    </div>
+                  </div>
+                  
+                  <button 
+                    onClick={() => router.push(`/dashboard/landdocuments/${doc.id}`)}
+                    className="w-full mt-4 py-2 text-xs font-bold bg-slate-50 hover:bg-brand-orange hover:text-white text-slate-600 rounded-xl transition-colors border border-slate-200 hover:border-brand-orange"
+                  >
+                    View Details
+                  </button>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
       </div>
     </div>

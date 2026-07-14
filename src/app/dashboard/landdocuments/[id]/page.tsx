@@ -2,8 +2,10 @@
 
 import React from "react";
 import { useParams, useRouter } from "next/navigation";
-import { useGetLanddocQuery } from "@/redux/api/landdocApiSlice";
+import { useGetLanddocQuery, useApproveLanddocMutation } from "@/redux/api/landdocApiSlice";
 import { toast } from "sonner";
+import { useSelector } from "react-redux";
+import { RootState } from "@/redux/store";
 import {
   ArrowLeft,
   Download,
@@ -19,7 +21,8 @@ import {
   Navigation,
   Locate,
   AlertTriangle,
-  FolderOpen
+  FolderOpen,
+  CheckCircle2
 } from "lucide-react";
 
 export default function LandDocumentDetailsPage() {
@@ -30,6 +33,18 @@ export default function LandDocumentDetailsPage() {
   const { data: responseData, error, isLoading } = useGetLanddocQuery(id, {
     skip: !id,
   });
+
+  const role = useSelector((state: RootState) => state.auth.role);
+  const [approveLanddoc, { isLoading: isApproving }] = useApproveLanddocMutation();
+
+  const handleApprove = async () => {
+    try {
+      await approveLanddoc(id).unwrap();
+      toast.success("Document approved successfully!");
+    } catch (error) {
+      toast.error("Failed to approve document.");
+    }
+  };
 
   const landdoc = responseData?.data;
 
@@ -255,13 +270,26 @@ export default function LandDocumentDetailsPage() {
           </div>
         </div>
         
-        <button
-          onClick={handleDownloadAll}
-          className="relative z-10 w-full md:w-auto px-5 py-2.5 bg-gradient-to-r from-brand-orange to-orange-500 hover:from-brand-orange-hover hover:to-orange-400 text-white text-xs font-bold rounded-xl flex items-center justify-center gap-2 shadow-md shadow-brand-orange/10 hover:shadow-brand-orange/25 transition-all duration-300 active:scale-98"
-        >
-          <Download className="w-4 h-4 animate-pulse" />
-          Download All Files
-        </button>
+        <div className="flex gap-2 w-full md:w-auto relative z-10 flex-col sm:flex-row mt-4 md:mt-0">
+          {role === "admin" && landdoc.status === "pending" && (
+            <button
+              onClick={handleApprove}
+              disabled={isApproving}
+              className="flex-1 md:flex-none px-5 py-2.5 bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-500 text-white text-xs font-bold rounded-xl flex items-center justify-center gap-2 shadow-md shadow-emerald-500/10 hover:shadow-emerald-500/25 transition-all duration-300 active:scale-95 disabled:opacity-70"
+            >
+              <CheckCircle2 className={`w-4 h-4 ${isApproving ? 'animate-pulse' : ''}`} />
+              {isApproving ? "Approving..." : "Approve Document"}
+            </button>
+          )}
+          
+          <button
+            onClick={handleDownloadAll}
+            className="flex-1 md:flex-none px-5 py-2.5 bg-gradient-to-r from-brand-orange to-orange-500 hover:from-brand-orange-hover hover:to-orange-400 text-white text-xs font-bold rounded-xl flex items-center justify-center gap-2 shadow-md shadow-brand-orange/10 hover:shadow-brand-orange/25 transition-all duration-300 active:scale-95"
+          >
+            <Download className="w-4 h-4 animate-pulse" />
+            Download All Files
+          </button>
+        </div>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">

@@ -165,7 +165,7 @@ export default function Navbar() {
             </motion.div>
             <motion.div variants={buttonVariants} whileHover="hover" whileTap="tap">
               <Link
-                href="/dashboard/admin"
+                href="/dashboard/overview"
                 className="flex items-center gap-2 text-xs sm:text-sm font-semibold px-3 sm:px-4 py-2 rounded-lg bg-emerald-600 text-white shadow-md"
               >
                 <Shield className="w-4 h-4" strokeWidth={2} />
@@ -231,7 +231,7 @@ export default function Navbar() {
                   <LogIn className="w-5 h-5" strokeWidth={2} />
                   User Portal
                 </Link>
-                <Link href="/dashboard/admin" className="flex items-center justify-center gap-2 text-sm font-semibold px-4 py-3 rounded-lg bg-emerald-600 text-white shadow-md">
+                <Link href="/dashboard/overview" className="flex items-center justify-center gap-2 text-sm font-semibold px-4 py-3 rounded-lg bg-emerald-600 text-white shadow-md">
                   <Shield className="w-5 h-5" strokeWidth={2} />
                   Admin Portal
                 </Link>
